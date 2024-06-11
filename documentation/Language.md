@@ -9,9 +9,26 @@ No runtime checks are performed on compiled code. It is possible to write and ex
 
 
 
+# Syntax
+
+__Note: Whitespace is ignored__
 
 
+#### Variable declaration
 
+- Declarations are performed at the beggining of the program in the 'data' section
+- Each variable has a base type as well as type modifiers
+
+| Base datatypes | Syntax      | 
+|----------------|-------------|
+| integer        | int         |
+| float          | float       |
+| character      | char        |
+
+| Datatype modifiers | Syntax      | Extra                                       |
+|--------------------|-------------|---------------------------------------------|
+| array              | [n]         | static array holding n of the base datatype |
+| pointer            | @           | pointer to another variable                 |
 
 
 
