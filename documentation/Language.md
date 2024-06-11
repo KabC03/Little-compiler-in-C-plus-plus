@@ -20,6 +20,7 @@ __Note: Whitespace (including indentation) is ignored__
 - Each variable has a base type as well as type modifiers
 - Variable types cannot be changed past the 'program' declaration
 - Expressions must not appear in declarations
+- A NULL pointer points to address 0x0
 
   __Datatype size can be modified with compiler flags__
 
@@ -29,11 +30,11 @@ __Note: Whitespace (including indentation) is ignored__
 | IEEE754 float  | float       |
 | UTF8 character | char        |
 
-| Datatype modifiers | Syntax      | Extra                                                           |
-|--------------------|-------------|-----------------------------------------------------------------|
-| array              | [n]         | static array holding n of the base datatype, zero base indexing |
-| pointer            | n@          | pointer with indirection level n, dereference with @            |
-
+| Datatype modifiers | Syntax      | Extra                                                             |
+|--------------------|-------------|-------------------------------------------------------------------|
+| array              | [n]         | static array holding n of the base datatype, zero base indexing   |
+| pointer            | n@          | pointer with indirection level n, dereference with @              |
+| constant           | %           | a constant, unchanging value                                      |
 
 
 ##### Example
@@ -150,30 +151,90 @@ __Note: Whitespace (including indentation) is ignored__
 
     $data$
       # Something
-    #program$
+    $program$
 
       while(x != 2 || y == 0):
         # Do something
       end;
+  
+
+
+
+#### Declaring functions
+
+- Functions allow the same code to be used at multiple places in the program - preventing code duplication
+- Declared in the 'function' section of the program above 'program'
+- This section does not need to be present if no functions are defined
+- All arguments are passed by reference
+- Functions have their own 'data' and 'program' sections
+  - Variables must be declared in the data section before their use in 'program'
+- Function declarations are finished with a return
+- Arrays cannot be returned
+
+##### Example
+
+      $data$
+        # Something
+      $function$
+  
+        my_function(int x |@, int y |, char z |, ...) -> int |@:
+            $data$
+              # Data here
+            $program$
+
+              result = x;
+              return result;
+
+      $program$
+        # Something
+      
+
+
+#### Calling functions
+
+- Functions are called in the 'program' section with the 'call' keyword
+- Can be assigned to a value
+
+##### Example
+      $data$
+        # Something
+      $function$
+        # Something
+  
+      $program$
+        x[i] = my_function(a,b,c); # Assign the array x at index i to the return value of my_function when passed values a,b and c
 
 
 
 
+#### Dynamic memory functions
+
+- Allocate and free are used to request and free dynamic memory the program requires
+
+  
+  - Allocate takes the datatype and number of the datatype to allocate memory for
+    - Continguous block of memory returned, can be indexed into
+    - If an array is passed as a datatype, its value must be a constant
+    - A NULL pointer of value 0 is returned if allocation fails
+    - On success a pointer to the new memory block is returned
 
 
+  - Free frees a variable given a pointer
+    - Does not return a value
+   
+    
+__Memory saftey is NOT checked at compiletime or runtime - includes OOB access, null pointer access and overflow errors__
 
-
-
-
-
-
-
-
-
-
-
-
-
+      $data$
+        # Something
+      $function$
+        # Something
+  
+      $program$
+        x = allocate(10, int |@); # Allocate space for 10 integer pointers
+        y = allocate(1, float |); # Allocate space for 1 float
+        free(x);                  # Free dynamic memory
+        free(y);                  # Free dynamic memory
 
 
 
