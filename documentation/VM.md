@@ -68,7 +68,6 @@ If by the end of the file not all label definitions have been resolved, executio
     - Most instructions are translated into C library features
         - INPUT_x -> scanf
         - OUTPUT_x -> printf
-        - SLEEP -> sleep()
 
     - ALLOCATE is handled by the interpreter searching the memory pool for an available block
     - FREE is handled by the intepreter setting the block as unused memory
