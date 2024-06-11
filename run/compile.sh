@@ -6,7 +6,7 @@ files=""
 flags="-Wall -Werror -fsanitize=address -fno-omit-frame-pointer "
 
 
-for file in "src"/*.c; do
+for file in "../src"/*.c; do
 
     files+="$file "
 done
