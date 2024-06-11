@@ -1,5 +1,5 @@
 #!/bin/bash
-#Compile everything in ./src then run if compilation was ok
+#Compile everything in ./src and ./libraries then run if compilation was ok
 
 
 files=""
@@ -7,6 +7,12 @@ flags="-Wall -Werror -fsanitize=address -fno-omit-frame-pointer "
 
 
 for file in "./src"/*.c; do
+
+    files+="$file "
+done
+
+
+for file in "./libraries"/*.c; do
 
     files+="$file "
 done
@@ -25,23 +31,3 @@ if [[ $prevOutput -eq 0 ]]; then
 else
     echo "Compilation error"
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
