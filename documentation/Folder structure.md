@@ -4,43 +4,43 @@
 
 ### /data
 
-  Contains data files.
+- Contains data files.
   
-  Specifically compiler source/IR/asm files as .txt.
+- Specifically compiler source/IR/asm files as .txt.
 
 
 
 
 ### /documentation
 
-  Contains documentation and TODO
+- Contains documentation and TODO
 
 
 
 ### /libraries
 
-  Contains core library files
+- Contains core library files
   
-  Includes things such as vector/map/stack/etc implementations
+- Includes things such as vector/map/stack/etc implementations
 
 
 ### /output
 
-  Holds compiled output executable files
+- Holds compiled output executable files
   
 
 ### /run
 
-  Contains shell scripts used to compile and run the compiler source files
+- Contains shell scripts used to compile and run the compiler source files
 
 
 
 
 ### /src
 
-  Contains project-specific files
+- Contains project-specific files
   
-  Includes the tokeniser/parser/VM/etc
+- Includes the tokeniser/parser/VM/etc
 
 
 
