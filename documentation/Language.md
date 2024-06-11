@@ -19,6 +19,8 @@ __Note: Whitespace is ignored__
 - Declarations are performed at the beggining of the program in the 'data' section
 - Each variable has a base type as well as type modifiers
 
+  __Datatype size can be modified with compiler flags__
+
 | Base datatypes | Syntax      | 
 |----------------|-------------|
 | integer        | int         |
