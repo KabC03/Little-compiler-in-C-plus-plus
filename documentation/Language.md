@@ -30,30 +30,55 @@ __Note: Whitespace (including indentation) is ignored__
 | Datatype modifiers | Syntax      | Extra                                                           |
 |--------------------|-------------|-----------------------------------------------------------------|
 | array              | [n]         | static array holding n of the base datatype, zero base indexing |
-| pointer            | n@          | pointer with indirection level n                                |
+| pointer            | n@          | pointer with indirection level n, dereference with @            |
 
 
 
 ##### Examples
 
-    ||data||          # Data section specifies variable declarations are made here
+    $data$          # Data section specifies variable declarations are made here
     
       int: x |2@;       # A double pointer named 'x' that points to an integer
       char: abc |[20];  # An array of 20 characters
       float: number|;   #A float named 'number'
     
-    ||program||       # Rest of the program is below
+    $program$       # Rest of the program is below
 
 
 
 
 
 
+#### If statement
+
+- Check if two values meet a condition
+- Can chain conditions together with || (or) and && (and) tokens
+  - Expression is evaluated via BODMAS, && has higher precedence than ||
 
 
+| Condition               | Syntax       | 
+|-------------------------|--------------|
+| Equal                   | ==           |
+| Not equal               | !=           |
+| Greater than            | >            |
+| Less than               | <            |
+| Greater than or equal   | >=           |
+| Less than or equal      | <=           |
 
+##### Examples
 
+    $data$
+      #Something
+    $program$
 
+      if((x == 0 || y == 3) && x != 99):
+        # Do something
+
+      elif(x == 0):
+        # Do something else
+
+      else:
+        #Do this if the other two are not true
 
 
 
