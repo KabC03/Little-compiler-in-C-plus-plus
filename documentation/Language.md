@@ -11,7 +11,7 @@ No runtime checks are performed on compiled code. It is possible to write and ex
 
 # Syntax
 
-__Note: Whitespace is ignored__
+__Note: Whitespace (including indentation) is ignored__
 
 
 #### Variable declaration
@@ -25,20 +25,24 @@ __Note: Whitespace is ignored__
 |----------------|-------------|
 | integer        | int         |
 | IEEE754 float  | float       |
-| character      | char        |
+| UTF8 character | char        |
 
 | Datatype modifiers | Syntax      | Extra                                                           |
 |--------------------|-------------|-----------------------------------------------------------------|
 | array              | [n]         | static array holding n of the base datatype, zero base indexing |
-| pointer            | @           | pointer to another variable                                     |
+| pointer            | n@          | pointer with indirection level n                                |
 
 
 
+##### Examples
 
-
-
-
-
+    ||data||          # Data section specifies variable declarations are made here
+    
+      int: x |2@;       # A double pointer named 'x' that points to an integer
+      char: abc |[20];  # An array of 20 characters
+      float: number|;   #A float named 'number'
+    
+    ||program||       # Rest of the program is below
 
 
 
