@@ -24,13 +24,13 @@ __Note: Whitespace is ignored__
 | Base datatypes | Syntax      | 
 |----------------|-------------|
 | integer        | int         |
-| float          | float       |
+| IEEE754 float  | float       |
 | character      | char        |
 
-| Datatype modifiers | Syntax      | Extra                                       |
-|--------------------|-------------|---------------------------------------------|
-| array              | [n]         | static array holding n of the base datatype |
-| pointer            | @           | pointer to another variable                 |
+| Datatype modifiers | Syntax      | Extra                                                           |
+|--------------------|-------------|-----------------------------------------------------------------|
+| array              | [n]         | static array holding n of the base datatype, zero base indexing |
+| pointer            | @           | pointer to another variable                                     |
 
 
 
