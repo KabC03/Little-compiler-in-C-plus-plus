@@ -85,23 +85,6 @@ The IR virtual machine has its own system calls that map to C functions
     - Pauses execution and sleeps for R0 microseconds
 
 
-
-- PARALLEL_START I0
-
-    - Marks the instructions below it to be executed in parallel by a CPU core with ID (I0)
-
-- PARALLEL_STOP
-
-    - Stops the current CPU core executing a block in parallel causing it to idle indefinitely
-
-- SYNC I0
-
-    - Synchronises CPU cores by pausing execution until all cores executing a program with the ID of (I0) reach their SYNC instruction with the same ID of (I0)
-
-
-
-
-
 ### Instructions
 
 
