@@ -11,7 +11,6 @@
 
 typedef enum OPCODE {
 
-    END, //USED TO DENOTE END OF TOKEN STREAM - NOT PART OF ISA
 
     ADD_I,
     SUB_I,
@@ -64,6 +63,7 @@ typedef struct Instruction {
     
     INSTRUCTION_TYPE instructionType;
 
+
     OPCODE opcode;
     OPCODE_DATATYPE opcodeDatatype;
 
@@ -93,7 +93,8 @@ struct VM {
     Registers *registers;              //Pointer to register array (NOTE - SP is considered to be to R0)
 
     Instruction *instructionMemory;    //Array of instructions
-    RAM_TYPE *RAM;                      //Bytes
+    size_t numInstructions;            //Size of instructionMemory
+    RAM_TYPE *RAM;                     //Bytes
 
 };
 
@@ -140,7 +141,7 @@ bool destroy_VM(void) {
     }
     if(VirtualMachine.instructionMemory != NULL) {
 
-        for(int i = 0; current_instruction.opcode != END; i++) {
+        for(int i = 0; current_instruction.opcode != VirtualMachine.numInstructions; i++) {
             if(current_instruction.instructionType == I || current_instruction.instructionType == J) {
                 if(current_instruction.ARG3.label != NULL) {
                     free(current_instruction.ARG3.label);
