@@ -105,7 +105,6 @@ VM VirtualMachine; //Only ONE should exist
 char **labelKey = NULL;
 size_t *labelValue = NULL;
 size_t labelDictionarySize = 0;
-size_t firstLabel = -1;
 bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
 
     if(numberOfRegisters == 0 || sizeOfRam == 0) {
@@ -593,21 +592,26 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
-            if(i - firstLabel == labelDictionarySize) { //Reallocate memory
-                labelKey = realloc(labelKey, (labelDictionarySize + LABEL_EXPANSION * sizeof(char*)));
-                labelValue = realloc(labelValue, (labelDictionarySize + LABEL_EXPANSION * sizeof(size_t)));
-
-                if(labelKey == NULL || labelValue == NULL) {
-                    printf("Failed to allocate memory for label dictionary\n");
-                    return false;
-                }
-                labelKey[labelDictionarySize] = malloc((strlen(currentToken) + 1) * sizeof(char));
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected label: '%s'\n",instructionInputBuffer);
+                return false;
+            }
 
 
-                if(labelKey[labelDictionarySize] == NULL) {
-                    printf("Failed to allocate memory for label dictionary\n");
-                    return false;
-                }
+            labelKey = realloc(labelKey, (labelDictionarySize + 1 * sizeof(char*)));
+            labelValue = realloc(labelValue, (labelDictionarySize + 1 * sizeof(size_t)));
+
+            if(labelKey == NULL || labelValue == NULL) {
+                printf("Failed to allocate memory for label dictionary\n");
+                return false;
+            }
+            labelKey[labelDictionarySize] = malloc((strlen(currentToken) + 1) * sizeof(char));
+
+
+            if(labelKey[labelDictionarySize] == NULL) {
+                printf("Failed to allocate memory for label dictionary\n");
+                return false;
             }
 
 
@@ -616,11 +620,7 @@ bool get_tokens_VM(char *IRfileName) {
             strcpy(labelKey[labelDictionarySize], currentToken);
             labelValue[labelDictionarySize] = i; //Assign to current insruction address
 
-
-            if(firstLabel == -1) {
-                firstLabel = i;
-            }
-            labelDictionarySize += LABEL_EXPANSION; 
+            labelDictionarySize += 1; 
 
 
 
