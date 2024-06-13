@@ -626,6 +626,9 @@ bool get_tokens_VM(char *IRfileName) {
             } else if(strcmp(currentToken, "JAL") == 0) {
                 current_instruction.opcode = JAL;
                 current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "JRT") == 0) {
+                current_instruction.opcode = JRT;
+                current_instruction.opcodeDatatype = NONE;
             } else {
                 printf("Unrecognised J type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
