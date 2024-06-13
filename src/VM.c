@@ -258,6 +258,7 @@ bool get_tokens_VM(char *IRfileName) {
         //Get instruction type
         currentToken = strtok(instructionInputBuffer, " \n");
         if(currentToken == NULL) { //Empty line
+            i--;
             continue;
         }
         
@@ -600,7 +601,7 @@ bool get_tokens_VM(char *IRfileName) {
 
 
             labelKey = realloc(labelKey, (labelDictionarySize + 1 * sizeof(char*)));
-            labelValue = realloc(labelValue, (labelDictionarySize + 1 * sizeof(size_t)));
+            labelValue = realloc(labelValue, (labelDictionarySize + 1 * sizeof(size_t)));   
 
             if(labelKey == NULL || labelValue == NULL) {
                 printf("Failed to allocate memory for label dictionary\n");
