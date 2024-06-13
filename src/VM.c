@@ -777,10 +777,10 @@ bool get_tokens_VM(char *IRfileName) {
         
 
 
-        //Cleanup
-        fclose(IRfile);
-        //print_dictionary();
-        return true;
+    //Cleanup
+    fclose(IRfile);
+    //print_dictionary();
+    return true;
 }
 
 
