@@ -11,6 +11,10 @@
 #define LABEL_EXPANSION 1
 #define INSTRUCTION_INPUT_BUFFER 100
 
+//Float and int sizes (bytes)
+#define FLOAT_SIZE 2
+#define INT_SIZE 2
+
 
 typedef enum OPCODE {
 
@@ -897,7 +901,17 @@ bool run_VM(void) {
 
         case ALLOC:
 
-            int bytesRequested = VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
+
+            int bytesRequested = VirtualMachine.registers[current_instruction.reg1].intValue;
+            if(current_instruction.ARG3.abstractDatatype == INTEGER) {
+                bytesRequested *= INT_SIZE;
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
+                bytesRequested *= FLOAT_SIZE;
+            } else {
+                printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
+            }
+
+
             int memAddress = -1; //Negative number indicates failure
 
             if(bytesRequested < VirtualMachine.RAMSize && bytesRequested > 0) { //DO this to prevent underflow
