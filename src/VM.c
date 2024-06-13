@@ -117,6 +117,7 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
     VirtualMachine.RAM = malloc(sizeOfRam * sizeof(RAM_TYPE));
     VirtualMachine.instructionMemory = NULL;
     VirtualMachine.programCounter = 0;
+    VirtualMachine.numInstructions = 0;
 
     if(VirtualMachine.registers == NULL || VirtualMachine.RAM == NULL) {
         printf("Unable to allocate space for registers or RAM\n");
@@ -252,20 +253,19 @@ bool get_tokens_VM(char *IRfileName) {
     char instructionInputBuffer[INSTRUCTION_INPUT_BUFFER];
     char copyInstructionInputBuffer[INSTRUCTION_INPUT_BUFFER]; //Used for displaying errors since strtok is destructuve
 
-    //Note: programCounter being used TEMPORARILY to keep track of the instructionMemory size
-    VirtualMachine.programCounter = 0;
+    VirtualMachine.numInstructions = 0;
     char *currentToken = NULL;
     for(int i = 0; fgets(instructionInputBuffer, array_len(instructionInputBuffer), IRfile); i++) {
 
 
         strcpy(copyInstructionInputBuffer, instructionInputBuffer);
-        if(i == VirtualMachine.programCounter) { //Reallocate memory
-            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, (VirtualMachine.programCounter + INSTRUCTION_MEMORY_EXPANSION) * sizeof(Instruction)); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
+        if(i == VirtualMachine.numInstructions) { //Reallocate memory
+            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, (VirtualMachine.numInstructions + INSTRUCTION_MEMORY_EXPANSION) * sizeof(Instruction)); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
             if(VirtualMachine.instructionMemory == NULL) {
                 printf("Memory allocation failure when expanding instruction memory\n");
                 return false;
             }
-            VirtualMachine.programCounter += INSTRUCTION_MEMORY_EXPANSION;
+            VirtualMachine.numInstructions += INSTRUCTION_MEMORY_EXPANSION;
         }
 
         //Get instruction type
@@ -724,7 +724,6 @@ bool get_tokens_VM(char *IRfileName) {
 
     //Cleanup
     fclose(IRfile);
-    VirtualMachine.programCounter = 0;
     //print_dictionary();
     return true;
 }
