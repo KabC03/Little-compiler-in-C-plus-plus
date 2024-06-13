@@ -8,7 +8,7 @@
   - AST
   - Map (generic but also allow str -> size_t)
   - Vector (also make it work with strings)
-  - VM tokenising. Make labels more efficient. Stop doing realloc every loop
+  - VM tokenising. Make labels more efficient. Stop doing realloc every loop. Free VM memory upon failure
 
 
 
