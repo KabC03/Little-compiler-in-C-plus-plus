@@ -836,8 +836,8 @@ bool get_tokens_VM(char *IRfileName) {
 
     //Cleanup
     fclose(IRfile);
-    print_dictionary();
-    print_instructions();
+    //print_dictionary();
+    //print_instructions();
     return true;
 }
 
