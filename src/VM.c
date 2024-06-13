@@ -34,6 +34,8 @@ typedef enum OPCODE {
     JAL,
     CAL,
 
+    ALLOC, //A type function (basically malloc)
+    FREE,  //A type function (basically free)
 
     LAB,
 
@@ -443,6 +445,70 @@ bool get_tokens_VM(char *IRfileName) {
 
         } else if(strcmp(currentToken, "[C]") == 0) {
             current_instruction.instructionType = C; //Compare
+
+
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            if(strcmp(currentToken, "BEQ") == 0) {
+                current_instruction.opcode = BEQ;
+                current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "BLT") == 0) {
+                current_instruction.opcode = BLT;
+                current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "BLE") == 0) {
+                current_instruction.opcode = BLE;
+                current_instruction.opcodeDatatype = NONE;
+            } else {
+                printf("Unrecognised C type instruction: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            //Register arguments
+
+            //Destination register
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected destination register in C type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+            //Source register 1
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected source register in C type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+            //Label
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected label in C type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            current_instruction.ARG3.label = malloc((strlen(currentToken) + 1) * sizeof(char));
+            if(current_instruction.ARG3.label == NULL) {
+                printf("Failure to allocate memory for label\n");
+                return false;
+            }
+            strcpy(current_instruction.ARG3.label, currentToken);
 
 
 
