@@ -168,7 +168,7 @@ bool destroy_VM(void) {
 void print_instruction(Instruction instruction) {
 
     printf("Instruction Type: %d\n",instruction.instructionType);
-    printf("Opcode: %s\n",instruction.opcode);
+    printf("Opcode: %d\n",instruction.opcode);
     printf("Opcode datatype: %d\n",instruction.opcodeDatatype);
     printf("Source register: %d\n",instruction.reg0);
     printf("Argument register: %d\n",instruction.reg1);
