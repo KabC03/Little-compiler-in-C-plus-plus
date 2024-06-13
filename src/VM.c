@@ -399,7 +399,7 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Expected immediate in I type instruciton: '%s'\n", instructionInputBuffer);
                 return false;
             }
-            if(currentToken[0] != 'R' || is_float_or_integer(currentToken) == true) {
+            if(is_float_or_integer(currentToken) == false) {
                 printf("Incorrectly formatted immediate argument: '%s'\n",instructionInputBuffer);
                 return false;
             }
