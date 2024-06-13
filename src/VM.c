@@ -151,6 +151,7 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam, size_t stackSize)
     VirtualMachine.numInstructions = 0;
     VirtualMachine.registerSize = numberOfRegisters;
     VirtualMachine.RAMSize = sizeOfRam;
+    VirtualMachine.stackSize = stackSize;
 
     if(VirtualMachine.registers == NULL || VirtualMachine.RAM == NULL) {
         printf("Unable to allocate space for registers or RAM\n");
@@ -1235,15 +1236,45 @@ bool run_VM(void) {
 
         case JAL:
 
+            //Push PC onto stack then jump to label
 
+            if(VirtualMachine.stackSize >= VirtualMachine.RAMSize - (VirtualMachine.registers[1]).intValue - sizeof(int)) {
+                printf("Stack overflow\n");
+                return false;
+            }
+
+
+            (VirtualMachine.registers[1]).intValue -= sizeof(int); //Move back by size of int in bytes
+            *((int*)(VirtualMachine.RAM + (VirtualMachine.registers[1]).intValue)) = i; //R1 has SP
+            //Add byte offset, cast to int pointer then dereference
+
+
+            if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
+                return false;
+            }
+            i = labelOut; //Set the PC (i) to this value
 
 
             break;
         case JRT:
 
+            //Pop address from stack, set PC to it
+
+
+
+            if((VirtualMachine.registers[1]).intValue - sizeof(int) >= VirtualMachine.RAMSize) {
+                printf("Stack underflow\n");
+                return false;
+            }
+
+
+
+            i = *((int*)(VirtualMachine.RAM + (VirtualMachine.registers[1]).intValue)); //R1 has SP
+            (VirtualMachine.registers[1]).intValue += sizeof(int); //Move back by size of int in bytes
+            //Add byte offset, cast to int pointer then dereference
+
+
             break;
-
-
 
 
         case ALLOC:
@@ -1363,6 +1394,3 @@ bool run_VM(void) {
 
     return true;
 }
-
-
-
