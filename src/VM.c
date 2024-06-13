@@ -71,7 +71,7 @@ typedef struct Instruction {
         char *label;
         float floatImmediate;
         int intImmediate;
-        size_t reg2;
+        int reg2;
     } ARG3;
 
 } Instruction;
@@ -169,7 +169,7 @@ void print_instruction(Instruction instruction) {
 
     printf("Instruction Type: %d\n",instruction.instructionType);
     printf("Opcode: %s\n",instruction.opcode);
-    printf("Opcode datatype: %s\n",instruction.opcodeDatatype);
+    printf("Opcode datatype: %d\n",instruction.opcodeDatatype);
     printf("Source register: %d\n",instruction.reg0);
     printf("Argument register: %d\n",instruction.reg1);
 
@@ -452,6 +452,7 @@ bool get_tokens_VM(char *IRfileName) {
             printf("Unrecognised instruction '%s'\n",currentToken);
             return false;
         }
+        print_instruction(current_instruction);
     }
     
 
