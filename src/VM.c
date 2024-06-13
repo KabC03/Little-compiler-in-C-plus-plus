@@ -5,6 +5,7 @@
 
 #define RAM_TYPE uint8_t
 #define INSTRUCTION_MEMORY_EXPANSION 10
+#define LABEL_EXPANSION 10
 #define INSTRUCTION_INPUT_BUFFER 100
 
 
@@ -100,6 +101,11 @@ struct VM {
 
 
 VM VirtualMachine; //Only ONE should exist
+//Dictionary for labels
+char **labelKey = NULL;
+size_t *labelValue = NULL;
+size_t labelDictionarySize = 0;
+size_t firstLabel = -1;
 bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
 
     if(numberOfRegisters == 0 || sizeOfRam == 0) {
@@ -568,8 +574,45 @@ bool get_tokens_VM(char *IRfileName) {
         } else if(strcmp(currentToken, "[L]") == 0) {
             current_instruction.instructionType = L; //Label
 
+            //Put into a dictionary
 
 
+
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            if(strcmp(currentToken, "LABEL") == 0) {
+                i--; //Do this because this instruction should not appear in memory
+            } else {
+                printf("Unrecognised L type instruction: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            if(firstLabel == -1) {
+                firstLabel = i;
+            }
+
+
+            if(i - firstLabel == labelDictionarySize) {
+                labelKey = realloc(labelKey, labelDictionarySize + (LABEL_EXPANSION * sizeof(char*)));
+                labelValue = realloc(labelValue, labelDictionarySize + (LABEL_EXPANSION * sizeof(size_t)));
+                if(labelKey == NULL || labelValue == NULL) {
+                    printf("Failed to allocate memory for label dictionary\n");
+                    return false;
+                }
+                labelKey[labelDictionarySize] = malloc((strlen(currentToken) + 1) * sizeof(char));
+
+
+                if(labelKey[labelDictionarySize] == NULL) {
+                    printf("Failed to allocate memory for label dictionary\n");
+                    return false;
+                }
+            }
+
+            strcpy(labelKey[labelDictionarySize], currentToken);
+            labelValue[labelDictionarySize] = i; //Assign to current insruction address
 
 
 
@@ -603,7 +646,7 @@ bool get_tokens_VM(char *IRfileName) {
             //Destination register
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected destination register in C type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected destination register in A type instruciton: '%s'\n", instructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
@@ -618,7 +661,7 @@ bool get_tokens_VM(char *IRfileName) {
             //Source register 1
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected source register in C type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected source register in A type instruciton: '%s'\n", instructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
@@ -633,7 +676,7 @@ bool get_tokens_VM(char *IRfileName) {
 
 
             if(strtok(NULL, " \n") != NULL) {
-                printf("Too many operands passed to J type instruction: '%s'\n",instructionInputBuffer);
+                printf("Too many operands passed to A type instruction: '%s'\n",instructionInputBuffer);
             }
 
 
