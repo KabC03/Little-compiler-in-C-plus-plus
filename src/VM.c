@@ -618,6 +618,11 @@ bool get_tokens_VM(char *IRfileName) {
             }
 
 
+
+            if(strtok(NULL, " \n") != NULL) {
+                printf("Too many operands passed to L type instruction: '%s'\n",instructionInputBuffer);
+            }
+
         } else if(strcmp(currentToken, "[A]") == 0) {
             current_instruction.instructionType = A; //Abstract
 
@@ -695,7 +700,6 @@ bool get_tokens_VM(char *IRfileName) {
     VirtualMachine.programCounter = 0;
     return true;
 }
-
 
 
 
