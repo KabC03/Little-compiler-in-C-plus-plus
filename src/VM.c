@@ -36,6 +36,8 @@ typedef enum OPCODE {
 
     ALLOC, //A type function (basically malloc)
     FREE,  //A type function (basically free)
+    PRINT, //A type function (print ONE value) - PRINT R0 R1 INT (Print INT in R0 if R1 > 0)
+    INPUT, //A type function (input ONE value)
 
     LABEL, //NOT an instruction - used to declare labels
 
@@ -57,7 +59,12 @@ typedef enum OPCODE_DATATYPE {
     NONE,
 
 } OPCODE_DATATYPE;
+typedef enum ABSTRACT_DATATYPE {
 
+    INTEGER_TYPE,
+    FLOAT_TYPE,
+
+} ABSTRACT_DATATYPE;
 
 typedef struct Instruction {
     
@@ -75,6 +82,7 @@ typedef struct Instruction {
         float floatImmediate;
         int intImmediate;
         int reg2;
+        ABSTRACT_DATATYPE abstractDatatype; //allocate float, or int
     } ARG3;
 
 } Instruction;
@@ -90,7 +98,7 @@ struct VM {
 
     size_t programCounter;             //Program counter index into instructionMemory
 
-    Registers *registers;              //Pointer to register array (NOTE - SP is considered to be to R0)
+    Registers *registers;              //Pointer to register array (NOTE - SP is considered to be to R1, R0 is ALWAYS 0)
 
     Instruction *instructionMemory;    //Array of instructions
     size_t numInstructions;            //Size of instructionMemory
@@ -666,6 +674,12 @@ bool get_tokens_VM(char *IRfileName) {
             } else if(strcmp(currentToken, "FREE") == 0) {
                 current_instruction.opcode = FREE;
                 current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "PRINT") == 0) {
+                current_instruction.opcode = PRINT;
+                current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "INPUT") == 0) {
+                current_instruction.opcode = INPUT;
+                current_instruction.opcodeDatatype = NONE;
             } else {
                 printf("Unrecognised A type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
@@ -700,6 +714,27 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
             current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+
+            //Datatype for function
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected datatype in A type instruciton: '%s'\n", copyInstructionInputBuffer);
+                return false;
+            }
+
+            if(strcmp(currentToken, "FLOAT") == 0) {
+                current_instruction.ARG3.abstractDatatype = FLOAT_TYPE;
+
+            } else if(strcmp(currentToken, "INTEGER") == 0) {
+                current_instruction.ARG3.abstractDatatype = INTEGER_TYPE;
+            } else {
+                printf("Invalid datatype passed to A type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
+
+
 
 
 
