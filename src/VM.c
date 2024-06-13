@@ -1,6 +1,9 @@
 #include "VM.h"
 #define array_len(array) sizeof(array)/sizeof(array[0])
 #define current_instruction ((VirtualMachine.instructionMemory)[i])
+#define destination_register (VirtualMachine.registers[current_instruction.reg0])
+#define source_register1 (VirtualMachine.registers[current_instruction.reg1])
+#define source_register2 (VirtualMachine.registers[current_instruction.ARG3.reg2])
 
 
 #define RAM_TYPE uint8_t
@@ -771,14 +774,17 @@ bool get_tokens_VM(char *IRfileName) {
         }
         //print_instruction(current_instruction);
     }
-    
+        
 
 
-    //Cleanup
-    fclose(IRfile);
-    //print_dictionary();
-    return true;
+        //Cleanup
+        fclose(IRfile);
+        //print_dictionary();
+        return true;
+    }
+    return false;
 }
+
 
 
 
@@ -796,31 +802,31 @@ bool run_VM(void) {
 
 
         case ADD_I:
-            VirtualMachine.registers[current_instruction.reg0].intValue = VirtualMachine.registers[current_instruction.reg1].intValue + VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
+            destination_register.intValue = source_register1.intValue + source_register2.intValue;
             break;
         case ADD_F:
-            /* code */
+            destination_register.floatValue = source_register1.floatValue + source_register2.floatValue;
             break;
 
         case SUB_I:
-            /* code */
+            destination_register.intValue = source_register1.intValue - source_register2.intValue;
             break;
         case SUB_F:
-            /* code */
+            destination_register.floatValue = source_register1.floatValue - source_register2.floatValue;
             break;
 
         case MUL_I:
-            /* code */
+            destination_register.intValue = source_register1.intValue * source_register2.intValue;
             break;
         case MUL_F:
-            /* code */
+            destination_register.floatValue = source_register1.floatValue * source_register2.floatValue;
             break;
             
         case DIV_I:
-            /* code */
+            destination_register.intValue = source_register1.intValue / source_register2.intValue;
             break;
         case DIV_F:
-            /* code */
+            destination_register.floatValue = source_register1.floatValue / source_register2.floatValue;
             break;
 
 
@@ -885,7 +891,7 @@ bool run_VM(void) {
             break;
 
         default:
-            printf("Invalid instruction: '%s'\n",current_instruction.opcode);
+            printf("Invalid instruction: '%d'\n",current_instruction.opcode);
             return false;
         }
 
@@ -898,127 +904,6 @@ bool run_VM(void) {
 
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
