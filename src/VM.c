@@ -55,8 +55,8 @@ typedef struct Instruction {
 
     OPCODE opcode;
 
-    size_t reg0;
-    size_t reg1;
+    int reg0;
+    int reg1;
 
     union ARG3 {
         char *label;
@@ -188,7 +188,7 @@ bool get_tokens_VM(char *IRfileName) {
     //Note: programCounter being used TEMPORARILY to keep track of the instructionMemory size
     VirtualMachine.programCounter = 0;
     char *currentToken = NULL;
-    for(size_t i = 0; fgets(instructionInputBuffer, array_len(instructionInputBuffer), IRfile); i++) {
+    for(int i = 0; fgets(instructionInputBuffer, array_len(instructionInputBuffer), IRfile); i++) {
 
         if(i == VirtualMachine.programCounter) { //Reallocate memory
             VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, VirtualMachine.programCounter + INSTRUCTION_MEMORY_EXPANSION); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
