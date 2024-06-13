@@ -353,6 +353,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in R type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -372,6 +373,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in R type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -391,6 +393,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.ARG3.reg2 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in R type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -467,6 +470,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in I type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -486,6 +490,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in I type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -572,6 +577,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in C type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -590,6 +596,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in C type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -768,6 +775,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in A type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -790,6 +798,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
             } else {
                 printf("OOB register access in A type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
