@@ -176,9 +176,10 @@ bool destroy_VM(void) {
 
 void print_dictionary(void) {
 
-    printf("Key   ||| Value\n");
+    printf("       Key   |||        Value\n");
+    printf("---------------------------------\n");
     for(int i = 0; i < labelDictionarySize; i++) {
-        printf("%s   |||   %zu\n",labelKey[i], labelValue[i]);        
+        printf("%10s   |||   %10zu\n",labelKey[i], labelValue[i]);        
     }
     return;
 }
