@@ -124,6 +124,7 @@ struct VM {
     size_t numInstructions;            //Size of instructionMemory
     RAMElement *RAM;                   //Array of RAM elements
     size_t RAMSize;
+    size_t stackSize;
 
 };
 
@@ -135,7 +136,7 @@ VM VirtualMachine; //Only ONE should exist
 char **labelKey = NULL;
 size_t *labelValue = NULL;
 size_t labelDictionarySize = 0;
-bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
+bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam, size_t stackSize) {
 
     if(numberOfRegisters == 0 || sizeOfRam == 0) {
         printf("Number of registers or size of RAM cannot be zero\n");
@@ -1234,6 +1235,9 @@ bool run_VM(void) {
 
         case JAL:
 
+
+
+
             break;
         case JRT:
 
@@ -1359,3 +1363,6 @@ bool run_VM(void) {
 
     return true;
 }
+
+
+
