@@ -825,7 +825,8 @@ bool get_tokens_VM(char *IRfileName) {
             }
 
 
-
+        } else if(currentToken[0] == '#') {
+            i--;
         } else { //Unrecognised instruction type
             printf("Unrecognised instruction '%s'\n",copyInstructionInputBuffer);
             return false;
