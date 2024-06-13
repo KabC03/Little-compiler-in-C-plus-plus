@@ -102,6 +102,14 @@ typedef union Registers {
     float floatValue;
 
 } Registers;
+typedef union RAMElement{
+
+    RAM_TYPE RAM;
+    bool isUsed; //If the current byte is in use (for memory allocation)
+
+} RAMElement;
+
+
 
 
 struct VM {
@@ -109,10 +117,12 @@ struct VM {
     size_t programCounter;             //Program counter index into instructionMemory
 
     Registers *registers;              //Pointer to register array (NOTE - SP is considered to be to R0)
+    size_t registerSize;
 
     Instruction *instructionMemory;    //Array of instructions
     size_t numInstructions;            //Size of instructionMemory
-    RAM_TYPE *RAM;                     //Bytes
+    RAMElement *RAM;                   //Array of RAM elements
+    size_t RAMSize;
 
 };
 
@@ -132,10 +142,12 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
     }
     //malloc(numberOfRegisters * sizeof(Registers))
     VirtualMachine.registers = calloc(numberOfRegisters, sizeof(Registers));
-    VirtualMachine.RAM = malloc(sizeOfRam * sizeof(RAM_TYPE));
+    VirtualMachine.RAM = malloc(sizeOfRam * sizeof(RAMElement));
     VirtualMachine.instructionMemory = NULL;
     VirtualMachine.programCounter = 0;
     VirtualMachine.numInstructions = 0;
+    VirtualMachine.registerSize = numberOfRegisters;
+    VirtualMachine.RAMSize = sizeOfRam;
 
     if(VirtualMachine.registers == NULL || VirtualMachine.RAM == NULL) {
         printf("Unable to allocate space for registers or RAM\n");
@@ -802,9 +814,7 @@ bool run_VM(void) {
 
 
         case ADD_I:
-            VirtualMachine.registers[current_instruction.reg0].intValue = 
-            VirtualMachine.registers[current_instruction.reg1].intValue + 
-            VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
+
             break;
         case ADD_F:
             break;
@@ -836,16 +846,16 @@ bool run_VM(void) {
 
 
 
-        //Do these
+
         case LOD:
-            /* code */
+
             break;
         case STR:
-            /* code */
+
             break;
 
 
-        //Done
+
         case BEQ_I:
             
 
@@ -874,28 +884,89 @@ bool run_VM(void) {
 
 
 
-        //Do these
+
         case JAL:
-            /* code */
+
             break;
         case JRT:
-            /* code */
+
             break;
 
 
 
-        //Do these
+
         case ALLOC:
-            /* code */
+
+            int bytesRequested = VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
+            int memAddress = -1; //Negative number indicates failure
+
+            if(bytesRequested < VirtualMachine.RAMSize && bytesRequested > 0) { //DO this to prevent underflow
+                for(int j = 0; j < VirtualMachine.RAMSize - bytesRequested; j++) {
+                    memAddress = j;
+                    for(int k = j; k < j + bytesRequested; k++) {
+                        if((VirtualMachine.RAM[k]).isUsed == true) {
+                            memAddress = -1;
+                            break;
+                        }
+                    }
+
+                    if(memAddress != -1) {
+                        break; //Found a free location
+                    }
+                }
+
+                for(int j = memAddress; j < memAddress + bytesRequested; j++) {
+
+                    (VirtualMachine.RAM[j]).isUsed = true;
+                }
+            }
+            VirtualMachine.registers[current_instruction.reg0].intValue = memAddress; //Assign the new address
+
+
+
+
+
+
             break;
         case FREE:
-            /* code */
-            break;
-        case PRINT:
 
             break;
+
+
+
+        //These work
+        case PRINT:
+            if(current_instruction.ARG3.abstractDatatype == INTEGER) {
+
+                printf("%d",VirtualMachine.registers[current_instruction.reg0].intValue);
+
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
+                printf("%g",VirtualMachine.registers[current_instruction.reg0].floatValue);
+
+            } else {
+                printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
+            }
+            break;
         case INPUT:
-            /* code */
+
+            if(current_instruction.ARG3.abstractDatatype == INTEGER) {
+
+                int newDataInt = 0;
+                scanf("%d",&newDataInt);
+                VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt;
+
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
+                
+                float newDataFloat = 0;
+                scanf("%f",&newDataFloat);
+                VirtualMachine.registers[current_instruction.reg0].floatValue = newDataFloat;
+
+            } else {
+                printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
+            }
+
+
+
             break;
 
         default:
