@@ -22,12 +22,20 @@ typedef enum OPCODE {
     MUL_F,
     DIV_F,
 
+
     LOD,
     STR,
 
-    BEQ,
-    BLT,
-    BLE,
+
+    BEQ_I,
+    BLT_I,
+    BLE_I,
+
+    BEQ_F,
+    BLT_F,
+    BLE_F,
+
+
 
     JUM,
 
@@ -486,15 +494,24 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Expected opcode: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
-            if(strcmp(currentToken, "BEQ") == 0) {
-                current_instruction.opcode = BEQ;
-                current_instruction.opcodeDatatype = NONE;
-            } else if(strcmp(currentToken, "BLT") == 0) {
-                current_instruction.opcode = BLT;
-                current_instruction.opcodeDatatype = NONE;
-            } else if(strcmp(currentToken, "BLE") == 0) {
-                current_instruction.opcode = BLE;
-                current_instruction.opcodeDatatype = NONE;
+            if(strcmp(currentToken, "BEQ_I") == 0) {
+                current_instruction.opcode = BEQ_I;
+                current_instruction.opcodeDatatype = INTEGER;
+            } else if(strcmp(currentToken, "BLT_I") == 0) {
+                current_instruction.opcode = BLT_I;
+                current_instruction.opcodeDatatype = INTEGER;
+            } else if(strcmp(currentToken, "BLE_I") == 0) {
+                current_instruction.opcode = BLE_I;
+                current_instruction.opcodeDatatype = INTEGER;
+            if(strcmp(currentToken, "BEQ_F") == 0) {
+                current_instruction.opcode = BEQ_F;
+                current_instruction.opcodeDatatype = FLOAT;
+            } else if(strcmp(currentToken, "BLT_F") == 0) {
+                current_instruction.opcode = BLT_F;
+                current_instruction.opcodeDatatype = FLOAT;
+            } else if(strcmp(currentToken, "BLE_F") == 0) {
+                current_instruction.opcode = BLE_F;
+                current_instruction.opcodeDatatype = FLOAT;
             } else {
                 printf("Unrecognised C type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
@@ -779,7 +796,7 @@ bool run_VM(void) {
 
 
         case ADD_I:
-            /* code */
+            VirtualMachine.registers[current_instruction.reg0].intValue = VirtualMachine.registers[current_instruction.reg1].intValue + VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
             break;
         case ADD_F:
             /* code */
@@ -819,17 +836,27 @@ bool run_VM(void) {
         case STR:
             /* code */
             break;
-        case BEQ:
+
+
+        case BEQ_I:
             /* code */
             break;
-        case BLT:
+        case BLT_I:
             /* code */
             break;
-        case BLE:
+        case BLE_I:
             /* code */
             break;
 
-
+        case BEQ_F:
+            /* code */
+            break;
+        case BLT_F:
+            /* code */
+            break;
+        case BLE_F:
+            /* code */
+            break;
 
 
         case JUM:
@@ -996,4 +1023,3 @@ bool run_VM(void) {
 
 
 
- 
