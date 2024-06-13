@@ -559,36 +559,9 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
-            //Destination register
-            currentToken = strtok(NULL, " \n");
-            if(currentToken == NULL) {
-                printf("Expected destination register in A type instruciton: '%s'\n", instructionInputBuffer);
-                return false;
-            }
-            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
-                return false;
-            }
-
-            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
-
-
-
-            //Source register 1
-            currentToken = strtok(NULL, " \n");
-            if(currentToken == NULL) {
-                printf("Expected source register in A type instruciton: '%s'\n", instructionInputBuffer);
-                return false;
-            }
-            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);    
-                return false;
-            }
-            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
-
 
             if(strtok(NULL, " \n") != NULL) {
-                printf("Too many operands passed to A type instruction: '%s'\n",instructionInputBuffer);
+                printf("Too many operands passed to J type instruction: '%s'\n",instructionInputBuffer);
             }
 
 
@@ -627,8 +600,32 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
+            //Destination register
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected destination register in C type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
 
 
+
+            //Source register 1
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected source register in C type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);    
+                return false;
+            }
+            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
 
 
 
