@@ -195,43 +195,18 @@ bool destroy_VM(void) {
 
 
 
+
+
 void print_dictionary(void) {
 
-    printf("       Key   |||        Value\n");
-    printf("---------------------------------\n");
+
+    printf("Key ||| Value")
     for(int i = 0; i < labelDictionarySize; i++) {
-        printf("%10s   |||   %10zu\n",labelKey[i], labelValue[i]);        
-    }
-    return;
-}
-void print_instruction(Instruction instruction) {
 
-    printf("Instruction Type: %d\n",instruction.instructionType);
-    printf("Opcode: %d\n",instruction.opcode);
-    printf("Opcode datatype: %d\n",instruction.opcodeDatatype);
-    printf("Source register: %d\n",instruction.reg0);
-    printf("Argument register: %d\n",instruction.reg1);
-
-
-    if(instruction.instructionType == R) {
-        printf("Argument register: %d\n",instruction.ARG3.reg2);
-    } else if(instruction.instructionType == I) {
-        if(instruction.opcodeDatatype == FLOAT) {
-            printf("Immediate: %f\n",instruction.ARG3.floatImmediate);
-        } else {
-            printf("Immediate: %d\n",instruction.ARG3.intImmediate);
-        }
-    } else if(instruction.instructionType == C || instruction.instructionType == L || instruction.instructionType == J) {
-
-        if(instruction.ARG3.label != NULL) {
-            printf("Label: %s\n",instruction.ARG3.label);
-        }
     }
 
-    printf("\n\n");
     return;
 }
-
 bool is_integer(char *str) {
 
     for(int i = 0; str[i] != '\0'; i++) {
