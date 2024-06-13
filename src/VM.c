@@ -752,6 +752,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.ARG3.abstractDatatype = INTEGER_TYPE;
             } else {
                 printf("Invalid datatype passed to A type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -954,6 +955,8 @@ bool run_VM(void) {
             break;
 
 
+
+        //Do these
         case ALLOC:
             /* code */
             break;
@@ -961,7 +964,14 @@ bool run_VM(void) {
             /* code */
             break;
         case PRINT:
-            /* code */
+            if(source_register1.floatValue == 0) {
+
+                if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
+                    printf("%d",destination_register.intValue);
+                } else {
+                    printf("%f",destination_register.floatValue);
+                }
+            }
             break;
         case INPUT:
             /* code */
