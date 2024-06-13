@@ -89,7 +89,7 @@ struct VM {
 
     size_t programCounter;             //Program counter index into instructionMemory
 
-    Registers *registers;              //Pointer to register array
+    Registers *registers;              //Pointer to register array (NOTE - SP is considered to be to R0)
 
     Instruction *instructionMemory;    //Array of instructions
     RAM_TYPE *RAM;                      //Bytes
@@ -116,6 +116,7 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
         printf("Unable to allocate space for registers or RAM\n");
         return false;
     }
+    (VirtualMachine.registers[0]).intValue = sizeOfRam - 1; //Set the SP to the last element in RAM (stack grows backwards)
 
 
     return true;
@@ -490,7 +491,7 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);    
                 return false;
             }
             current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
@@ -532,7 +533,6 @@ bool get_tokens_VM(char *IRfileName) {
     VirtualMachine.programCounter = 0;
     return true;
 }
-
 
 
 
