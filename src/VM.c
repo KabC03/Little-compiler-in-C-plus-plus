@@ -191,7 +191,7 @@ bool get_tokens_VM(char *IRfileName) {
     for(int i = 0; fgets(instructionInputBuffer, array_len(instructionInputBuffer), IRfile); i++) {
 
         if(i == VirtualMachine.programCounter) { //Reallocate memory
-            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, VirtualMachine.programCounter + INSTRUCTION_MEMORY_EXPANSION); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
+            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, VirtualMachine.programCounter + (INSTRUCTION_MEMORY_EXPANSION) * sizeof(Instruction)); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
             if(VirtualMachine.instructionMemory == NULL) {
                 printf("Memory allocation failure when expanding instruction memory\n");
                 return false;
@@ -251,6 +251,7 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
                 return false;
             }
+
             current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
 
 
