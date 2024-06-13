@@ -163,8 +163,9 @@ bool destroy_VM(void) {
 
 
 
-
-
+void void_func(void) {
+    return;
+}
 void print_instruction(Instruction instruction) {
 
     printf("Instruction Type: %d\n",instruction.instructionType);
@@ -182,11 +183,14 @@ void print_instruction(Instruction instruction) {
         } else {
             printf("Immediate: %d\n",instruction.ARG3.intImmediate);
         }
-    } else {
-        printf("Label: %s\n",instruction.ARG3.label);
+    } else if(instruction.instructionType == C || instruction.instructionType == L || instruction.instructionType == J) {
+
+        if(instruction.ARG3.label != NULL) {
+            printf("Label: %s\n",instruction.ARG3.label);
+        }
     }
 
-
+    printf("\n\n");
     return;
 }
 
@@ -452,7 +456,7 @@ bool get_tokens_VM(char *IRfileName) {
             printf("Unrecognised instruction '%s'\n",currentToken);
             return false;
         }
-        print_instruction(current_instruction);
+        //print_instruction(current_instruction);
     }
     
 
