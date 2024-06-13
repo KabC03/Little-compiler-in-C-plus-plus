@@ -165,7 +165,30 @@ bool destroy_VM(void) {
 
 
 
+void print_instruction(Instruction instruction) {
 
+    printf("Instruction Type: %d\n",instruction.instructionType);
+    printf("Opcode: %s\n",instruction.opcode);
+    printf("Opcode datatype: %s\n",instruction.opcodeDatatype);
+    printf("Source register: %d\n",instruction.reg0);
+    printf("Argument register: %d\n",instruction.reg1);
+
+
+    if(instruction.instructionType == R) {
+        printf("Argument register: %d\n",instruction.ARG3.reg2);
+    } else if(instruction.instructionType == I) {
+        if(instruction.opcodeDatatype == FLOAT) {
+            printf("Immediate: %f\n",instruction.ARG3.floatImmediate);
+        } else {
+            printf("Immediate: %d\n",instruction.ARG3.intImmediate);
+        }
+    } else {
+        printf("Label: %s\n",instruction.ARG3.label);
+    }
+
+
+    return;
+}
 
 bool is_integer(char *str) {
 
