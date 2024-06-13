@@ -533,14 +533,11 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Expected opcode: '%s'\n",instructionInputBuffer);
                 return false;
             }
-            if(strcmp(currentToken, "BEQ") == 0) {
-                current_instruction.opcode = BEQ;
+            if(strcmp(currentToken, "JUM") == 0) {
+                current_instruction.opcode = JUM;
                 current_instruction.opcodeDatatype = NONE;
-            } else if(strcmp(currentToken, "BLT") == 0) {
-                current_instruction.opcode = BLT;
-                current_instruction.opcodeDatatype = NONE;
-            } else if(strcmp(currentToken, "BLE") == 0) {
-                current_instruction.opcode = BLE;
+            } else if(strcmp(currentToken, "JAL") == 0) {
+                current_instruction.opcode = JAL;
                 current_instruction.opcodeDatatype = NONE;
             } else {
                 printf("Unrecognised C type instruction: '%s'\n",instructionInputBuffer);
