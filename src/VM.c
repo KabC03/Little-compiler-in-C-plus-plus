@@ -895,26 +895,170 @@ bool run_VM(void) {
 
             break;
         case ADD_F:
+
+
+
+            if(current_instruction.instructionType == R) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = 
+                VirtualMachine.registers[current_instruction.reg1].floatValue +
+                VirtualMachine.registers[current_instruction.ARG3.reg2].floatValue;
+
+            } else if(current_instruction.instructionType == I) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = 
+                VirtualMachine.registers[current_instruction.reg1].floatValue +
+                current_instruction.ARG3.floatImmediate;
+
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+            }
+
+
+
             break;
 
         case SUB_I:
 
+
+            if(current_instruction.instructionType == R) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = 
+                VirtualMachine.registers[current_instruction.reg1].intValue -
+                VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
+
+            } else if(current_instruction.instructionType == I) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = 
+                VirtualMachine.registers[current_instruction.reg1].intValue -
+                current_instruction.ARG3.intImmediate;
+
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+            }
+
+
+
             break;
         case SUB_F:
+
+            if(current_instruction.instructionType == R) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = 
+                VirtualMachine.registers[current_instruction.reg1].floatValue -
+                VirtualMachine.registers[current_instruction.ARG3.reg2].floatValue;
+
+            } else if(current_instruction.instructionType == I) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = 
+                VirtualMachine.registers[current_instruction.reg1].floatValue -
+                current_instruction.ARG3.floatImmediate;
+
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+            }
+
+
+
 
             break;
 
         case MUL_I:
 
+
+            if(current_instruction.instructionType == R) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = 
+                VirtualMachine.registers[current_instruction.reg1].intValue *
+                VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
+
+            } else if(current_instruction.instructionType == I) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = 
+                VirtualMachine.registers[current_instruction.reg1].intValue *
+                current_instruction.ARG3.intImmediate;
+
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+            }
+
+
+
+
+
             break;
         case MUL_F:
+
+
+            if(current_instruction.instructionType == R) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = 
+                VirtualMachine.registers[current_instruction.reg1].floatValue *
+                VirtualMachine.registers[current_instruction.ARG3.reg2].floatValue;
+
+            } else if(current_instruction.instructionType == I) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = 
+                VirtualMachine.registers[current_instruction.reg1].floatValue *
+                current_instruction.ARG3.floatImmediate;
+
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+            }
+
+
+
 
             break;
             
         case DIV_I:
 
+
+            if(current_instruction.instructionType == R) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = 
+                VirtualMachine.registers[current_instruction.reg1].intValue /
+                VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
+
+            } else if(current_instruction.instructionType == I) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = 
+                VirtualMachine.registers[current_instruction.reg1].intValue /
+                current_instruction.ARG3.intImmediate;
+
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+            }
+
+
+
             break;
         case DIV_F:
+
+
+            if(current_instruction.instructionType == R) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = 
+                VirtualMachine.registers[current_instruction.reg1].floatValue /
+                VirtualMachine.registers[current_instruction.ARG3.reg2].floatValue;
+
+            } else if(current_instruction.instructionType == I) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = 
+                VirtualMachine.registers[current_instruction.reg1].floatValue /
+                current_instruction.ARG3.floatImmediate;
+
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+            }
+
 
             break;
 
