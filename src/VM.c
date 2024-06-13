@@ -43,10 +43,10 @@ typedef enum OPCODE {
     JUM,
 
     JAL,
-    CAL,
+    JRT,
 
-    ALLOC, //A type function (basically malloc)
-    FREE,  //A type function (basically free)
+    ALLOC, //A type function (basiJRTly malloc)
+    FREE,  //A type function (basiJRTly free)
     PRINT, //A type function (print ONE value) - PRINT R0 Rx INT (Print INT in R0 if Rx == 0)
     INPUT, //A type function (input ONE value)
 
@@ -787,7 +787,19 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
+bool get_value_label_dict(char *label, size_t *valueOut) {
 
+    for(int i = 0; i < labelDictionarySize + 1; i++) {
+
+        if(strcmp(labelKey[i], label) == 0) {
+            *(valueOut) = labelValue[i];
+            return true;
+        }
+
+    }
+    printf("Label '%s' not defined\n",label);
+    return false; //Should never happen
+}
 bool run_VM(void) {
 
     if(VirtualMachine.registers == NULL || VirtualMachine.RAM == NULL || VirtualMachine.instructionMemory == NULL) {
@@ -795,12 +807,13 @@ bool run_VM(void) {
         return false;
     }
 
-
+    size_t jumpAddress = -1;
     for(int i = 0; i < VirtualMachine.numInstructions; i++) {
 
         switch (current_instruction.opcode) {
 
 
+        //Done
         case ADD_I:
             destination_register.intValue = source_register1.intValue + source_register2.intValue;
             break;
@@ -835,7 +848,7 @@ bool run_VM(void) {
 
 
 
-
+        //Do these
         case LOD:
             /* code */
             break;
@@ -844,35 +857,99 @@ bool run_VM(void) {
             break;
 
 
+        //Done
         case BEQ_I:
-            /* code */
+            
+            if(destination_register.intValue == source_register1.intValue) {
+
+                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
+                    return false;
+                }
+                VirtualMachine.programCounter = jumpAddress;
+            } else {
+
+            }
             break;
         case BLT_I:
-            /* code */
+
+            if(destination_register.intValue < source_register1.intValue) {
+
+
+                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
+                    return false;
+                }
+                VirtualMachine.programCounter = jumpAddress;
+            } else {
+
+            }
             break;
         case BLE_I:
-            /* code */
+            if(destination_register.intValue <= source_register1.intValue) {
+
+
+                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
+                    return false;
+                }
+                VirtualMachine.programCounter = jumpAddress;
+            } else {
+
+            }
             break;
 
         case BEQ_F:
-            /* code */
+            if(destination_register.floatValue == source_register1.floatValue) {
+
+
+                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
+                    return false;
+                }
+                VirtualMachine.programCounter = jumpAddress;
+            } else {
+
+            }
             break;
         case BLT_F:
-            /* code */
+            if(destination_register.floatValue < source_register1.floatValue) {
+
+
+                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
+                    return false;
+                }
+                VirtualMachine.programCounter = jumpAddress;
+            } else {
+
+            }
             break;
         case BLE_F:
-            /* code */
+            if(destination_register.floatValue <= source_register1.floatValue) {
+
+
+                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
+                    return false;
+                }
+                VirtualMachine.programCounter = jumpAddress;
+            } else {
+
+            }
             break;
 
 
         case JUM:
-            /* code */
+
+            if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
+                return false;
+            }
+            VirtualMachine.programCounter = jumpAddress;
             break;
 
+
+
+
+        //Do these
         case JAL:
             /* code */
             break;
-        case CAL:
+        case JRT:
             /* code */
             break;
 
