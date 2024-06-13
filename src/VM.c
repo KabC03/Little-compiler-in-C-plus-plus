@@ -22,13 +22,6 @@ typedef enum OPCODE {
     MUL_F,
     DIV_F,
 
-    SHL,
-    SHR,
-
-    AND,
-    OR,
-    NOT,
-
     LOD,
     STR,
 
@@ -41,20 +34,17 @@ typedef enum OPCODE {
     JAL,
     CAL,
 
+
+    LAB,
+
 } OPCODE;
-typedef enum OPCODE_TYPE {
-
-    NONE,
-    INTEGER,
-    FLOAT,
-
-} OPCODE_TYPE;
 typedef enum INSTRUCTION_TYPE {
 
     R,
     I,
     J,
     A,
+    L,
 
 } INSTRUCTION_TYPE;
 
@@ -64,7 +54,6 @@ typedef struct Instruction {
     INSTRUCTION_TYPE instructionType;
 
     OPCODE opcode;
-    OPCODE_TYPE opcodeType;
 
     size_t reg0;
     size_t reg1;
@@ -126,18 +115,54 @@ bool destroy_VM(void) {
     //Free memory associated with VM
     if(VirtualMachine.registers != NULL) {
         free(VirtualMachine.registers);
+        VirtualMachine.registers = NULL;
     }
     if(VirtualMachine.RAM != NULL) {
         free(VirtualMachine.RAM);
+        VirtualMachine.RAM = NULL;
     }
     if(VirtualMachine.instructionMemory != NULL) {
 
         for(int i = 0; current_instruction.opcode != END; i++) {
-            if(current_instruction.instructionType == I) {
-
-            } else if(current_instruction.instructionType == J) {
-                
+            if(current_instruction.instructionType == I || current_instruction.instructionType == J) {
+                if(current_instruction.ARG3.label != NULL) {
+                    free(current_instruction.ARG3.label);
+                    current_instruction.ARG3.label = NULL;
+                }
             }
+        }
+    }
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool is_integer(char *str) {
+
+    for(int i = 0; str[i] != '\0'; i++) {
+        if(isdigit(str[i]) == 0) {
+            return false;
         }
     }
     return true;
@@ -166,7 +191,7 @@ bool get_tokens_VM(char *IRfileName) {
     for(size_t i = 0; fgets(instructionInputBuffer, array_len(instructionInputBuffer), IRfile); i++) {
 
         if(i == VirtualMachine.programCounter) { //Reallocate memory
-            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, VirtualMachine.programCounter + INSTRUCTION_MEMORY_EXPANSION); //NEED TO HANDLE IF REALLOC FAILS
+            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, VirtualMachine.programCounter + INSTRUCTION_MEMORY_EXPANSION); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
             if(VirtualMachine.instructionMemory == NULL) {
                 printf("Memory allocation failure when expanding instruction memory\n");
                 return false;
@@ -180,29 +205,99 @@ bool get_tokens_VM(char *IRfileName) {
             continue;
         }
         
+
+
+
         if(strcmp(currentToken, "[R]") == 0) {
-            current_instruction.instructionType = R;
+            current_instruction.instructionType = R; //Register
+
+
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            if(strcmp(currentToken, "ADD_I") == 0) {
+                current_instruction.opcode = ADD_I;
+            } else if(strcmp(currentToken, "ADD_F") == 0) {
+                current_instruction.opcode = ADD_F;
+            } else if(strcmp(currentToken, "SUB_I") == 0) {
+                current_instruction.opcode = SUB_I;
+            } else if(strcmp(currentToken, "SUB_F") == 0) {
+                current_instruction.opcode = SUB_F;
+            } else if(strcmp(currentToken, "MUL_I") == 0) {
+                current_instruction.opcode = MUL_I;
+            } else if(strcmp(currentToken, "MUL_F") == 0) {
+                current_instruction.opcode = MUL_F;
+
+            } else if(strcmp(currentToken, "DIV_I") == 0) {
+                current_instruction.opcode = DIV_I;
+            } else if(strcmp(currentToken, "DIV_F") == 0) {
+                current_instruction.opcode = DIV_F;
+            } else {
+                printf("Unrecognised R type instruction: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            //Register arguments
+
+            //Destination register
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected destination register in R type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+            //Source register 1
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected source register in R type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+            //Source register 2
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected source register in R type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            current_instruction.ARG3.reg2 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+
         } else if(strcmp(currentToken, "[I]") == 0) {
-            current_instruction.instructionType = I;
+            current_instruction.instructionType = I; //Immediate
         } else if(strcmp(currentToken, "[J]") == 0) {
-            current_instruction.instructionType = J;
+            current_instruction.instructionType = J; //Jump
+        } else if(strcmp(currentToken, "[L]") == 0) {
+            current_instruction.instructionType = L; //Label
         } else if(strcmp(currentToken, "[A]") == 0) {
-            current_instruction.instructionType = A;
+            current_instruction.instructionType = A; //Abstract
         } else { //Unrecognised instruction type
             printf("Unrecognised instruction '%s'\n",currentToken);
             return false;
         }
-
-
-        //Continue
-
-
-
-
     }
     
-
-
 
 
     //Cleanup
