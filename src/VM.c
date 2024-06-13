@@ -765,7 +765,27 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
+bool run_VM(void) {
 
+    if(VirtualMachine.registers == NULL || VirtualMachine.RAM == NULL || VirtualMachine.instructionMemory == NULL) {
+        printf("Virtual machine not initialised\n");
+        return false;
+    }
+
+
+    for(int i = 0; i < VirtualMachine.numInstructions; i++) {
+
+        printf("%d\n",i);
+
+
+
+    }
+
+
+
+
+    return true;
+}
 
 
 
