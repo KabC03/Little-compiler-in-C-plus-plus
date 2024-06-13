@@ -98,7 +98,7 @@ struct VM {
 
     size_t programCounter;             //Program counter index into instructionMemory
 
-    Registers *registers;              //Pointer to register array (NOTE - SP is considered to be to R1, R0 is ALWAYS 0)
+    Registers *registers;              //Pointer to register array (NOTE - SP is considered to be to R0)
 
     Instruction *instructionMemory;    //Array of instructions
     size_t numInstructions;            //Size of instructionMemory
@@ -891,4 +891,3 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
- 
