@@ -890,6 +890,7 @@ bool run_VM(void) {
 
             } else {
                 printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
             }
 
 
@@ -913,6 +914,7 @@ bool run_VM(void) {
 
             } else {
                 printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
             }
 
 
@@ -937,6 +939,7 @@ bool run_VM(void) {
 
             } else {
                 printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
             }
 
 
@@ -959,6 +962,7 @@ bool run_VM(void) {
 
             } else {
                 printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
             }
 
 
@@ -984,6 +988,7 @@ bool run_VM(void) {
 
             } else {
                 printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
             }
 
 
@@ -1009,6 +1014,7 @@ bool run_VM(void) {
 
             } else {
                 printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
             }
 
 
@@ -1034,6 +1040,7 @@ bool run_VM(void) {
 
             } else {
                 printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
             }
 
 
@@ -1057,6 +1064,7 @@ bool run_VM(void) {
 
             } else {
                 printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
             }
 
 
@@ -1071,6 +1079,7 @@ bool run_VM(void) {
 
         case LOD:
 
+        
             break;
         case STR:
 
