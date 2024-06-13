@@ -814,40 +814,31 @@ bool run_VM(void) {
         switch (current_instruction.opcode) {
 
 
-        //Just do the immediates
         case ADD_I:
-
-            if(current_instruction.instructionType == R) {
-                destination_register.intValue = source_register1.intValue + source_register2.intValue;
-            } else {
-                destination_register.intValue = source_register1.intValue + current_instruction.ARG3.intImmediate;
-            }
-
 
             break;
         case ADD_F:
-            destination_register.floatValue = source_register1.floatValue + source_register2.floatValue;
             break;
 
         case SUB_I:
-            destination_register.intValue = source_register1.intValue - source_register2.intValue;
+
             break;
         case SUB_F:
-            destination_register.floatValue = source_register1.floatValue - source_register2.floatValue;
+
             break;
 
         case MUL_I:
-            destination_register.intValue = source_register1.intValue * source_register2.intValue;
+
             break;
         case MUL_F:
-            destination_register.floatValue = source_register1.floatValue * source_register2.floatValue;
+
             break;
             
         case DIV_I:
-            destination_register.intValue = source_register1.intValue / source_register2.intValue;
+
             break;
         case DIV_F:
-            destination_register.floatValue = source_register1.floatValue / source_register2.floatValue;
+
             break;
 
 
@@ -868,86 +859,27 @@ bool run_VM(void) {
         //Done
         case BEQ_I:
             
-            if(destination_register.intValue == source_register1.intValue) {
 
-                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
-                    return false;
-                }
-                VirtualMachine.programCounter = jumpAddress;
-            } else {
-
-            }
             break;
         case BLT_I:
 
-            if(destination_register.intValue < source_register1.intValue) {
 
-
-                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
-                    return false;
-                }
-                VirtualMachine.programCounter = jumpAddress;
-            } else {
-
-            }
             break;
         case BLE_I:
-            if(destination_register.intValue <= source_register1.intValue) {
 
-
-                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
-                    return false;
-                }
-                VirtualMachine.programCounter = jumpAddress;
-            } else {
-
-            }
             break;
 
         case BEQ_F:
-            if(destination_register.floatValue == source_register1.floatValue) {
 
-
-                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
-                    return false;
-                }
-                VirtualMachine.programCounter = jumpAddress;
-            } else {
-
-            }
             break;
         case BLT_F:
-            if(destination_register.floatValue < source_register1.floatValue) {
 
-
-                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
-                    return false;
-                }
-                VirtualMachine.programCounter = jumpAddress;
-            } else {
-
-            }
             break;
         case BLE_F:
-            if(destination_register.floatValue <= source_register1.floatValue) {
 
-
-                if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
-                    return false;
-                }
-                VirtualMachine.programCounter = jumpAddress;
-            } else {
-
-            }
             break;
-
-
         case JUM:
 
-            if(get_value_label_dict(current_instruction.ARG3.label, &jumpAddress) == false) {
-                return false;
-            }
-            VirtualMachine.programCounter = jumpAddress;
             break;
 
 
@@ -971,14 +903,7 @@ bool run_VM(void) {
             /* code */
             break;
         case PRINT:
-            if(source_register1.floatValue != 0) {
 
-                if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
-                    printf("%d",destination_register.intValue);
-                } else {
-                    printf("%f",destination_register.floatValue);
-                }
-            }
             break;
         case INPUT:
             /* code */
@@ -998,7 +923,3 @@ bool run_VM(void) {
 
     return true;
 }
-
-
-
-
