@@ -775,7 +775,92 @@ bool run_VM(void) {
 
     for(int i = 0; i < VirtualMachine.numInstructions; i++) {
 
-        printf("%d\n",i);
+        switch (current_instruction.opcode) {
+
+
+        case ADD_I:
+            /* code */
+            break;
+        case ADD_F:
+            /* code */
+            break;
+
+        case SUB_I:
+            /* code */
+            break;
+        case SUB_F:
+            /* code */
+            break;
+
+        case MUL_I:
+            /* code */
+            break;
+        case MUL_F:
+            /* code */
+            break;
+            
+        case DIV_I:
+            /* code */
+            break;
+        case DIV_F:
+            /* code */
+            break;
+
+
+
+
+
+
+
+
+        case LOD:
+            /* code */
+            break;
+        case STR:
+            /* code */
+            break;
+        case BEQ:
+            /* code */
+            break;
+        case BLT:
+            /* code */
+            break;
+        case BLE:
+            /* code */
+            break;
+
+
+
+
+        case JUM:
+            /* code */
+            break;
+
+        case JAL:
+            /* code */
+            break;
+        case CAL:
+            /* code */
+            break;
+
+
+        case ALLOC:
+            /* code */
+            break;
+        case FREE:
+            /* code */
+            break;
+        case PRINT:
+            /* code */
+            break;
+        case INPUT:
+            /* code */
+            break;
+
+        default:
+            printf("Invalid instruction: '%s'\n",current_instruction.opcode);
+            return false;
+        }
 
 
 
@@ -911,3 +996,4 @@ bool run_VM(void) {
 
 
 
+ 
