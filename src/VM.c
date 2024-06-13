@@ -715,7 +715,7 @@ bool get_tokens_VM(char *IRfileName) {
     //Cleanup
     fclose(IRfile);
     VirtualMachine.programCounter = 0;
-    print_dictionary();
+    //print_dictionary();
     return true;
 }
 
