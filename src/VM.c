@@ -869,6 +869,7 @@ bool run_VM(void) {
     int memAddress = 0;
     int bytesToFree = 0;
     int baseAddress = 0;
+    size_t labelOut = 0;
     //size_t jumpAddress = -1;
     for(int i = 0; i < VirtualMachine.numInstructions; i++) {
 
@@ -1132,25 +1133,98 @@ bool run_VM(void) {
         case BEQ_I:
             
 
+            if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
+                return false;
+            }
+
+
+            if((VirtualMachine.registers[current_instruction.reg0]).intValue == 
+            (VirtualMachine.registers[current_instruction.reg1]).intValue) {
+                i = labelOut; //Set the PC (i) to this value
+            }
+
+
             break;
         case BLT_I:
+
+            if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
+                return false;
+            }
+
+
+            if((VirtualMachine.registers[current_instruction.reg0]).intValue < 
+            (VirtualMachine.registers[current_instruction.reg1]).intValue) {
+                i = labelOut; //Set the PC (i) to this value
+            }
 
 
             break;
         case BLE_I:
 
+
+            if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
+                return false;
+            }
+
+
+            if((VirtualMachine.registers[current_instruction.reg0]).intValue <= 
+            (VirtualMachine.registers[current_instruction.reg1]).intValue) {
+                i = labelOut; //Set the PC (i) to this value
+            }
+
             break;
 
         case BEQ_F:
 
+            if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
+                return false;
+            }
+
+
+            if((VirtualMachine.registers[current_instruction.reg0]).floatValue < 
+            (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
+                i = labelOut; //Set the PC (i) to this value
+            }
+
+
             break;
         case BLT_F:
+
+            if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
+                return false;
+            }
+
+
+            if((VirtualMachine.registers[current_instruction.reg0]).floatValue < 
+            (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
+                i = labelOut; //Set the PC (i) to this value
+            }
+
 
             break;
         case BLE_F:
 
+            if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
+                return false;
+            }
+
+
+            if((VirtualMachine.registers[current_instruction.reg0]).floatValue <= 
+            (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
+                i = labelOut; //Set the PC (i) to this value
+            }
+
+
             break;
         case JUM:
+
+
+            if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
+                return false;
+            }
+
+            i = labelOut; //Set the PC (i) to this value
+
 
             break;
 
