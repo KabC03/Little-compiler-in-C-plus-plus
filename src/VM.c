@@ -11,9 +11,6 @@
 #define LABEL_EXPANSION 1
 #define INSTRUCTION_INPUT_BUFFER 100
 
-//Float and int sizes (bytes)
-#define FLOAT_SIZE 2
-#define INT_SIZE 2
 
 
 typedef enum OPCODE {
@@ -29,8 +26,8 @@ typedef enum OPCODE {
     DIV_F,
 
 
-    LOD,
-    STR,
+    LOD, //A because its easier to parse
+    STR, //A because its easier to parse
 
 
     BEQ_I,
@@ -738,6 +735,12 @@ bool get_tokens_VM(char *IRfileName) {
             } else if(strcmp(currentToken, "INPUT") == 0) {
                 current_instruction.opcode = INPUT;
                 current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "LOD") == 0) {
+                current_instruction.opcode = LOD;
+                current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "STR") == 0) {
+                current_instruction.opcode = STR;
+                current_instruction.opcodeDatatype = NONE;
             } else {
                 printf("Unrecognised A type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
@@ -1079,9 +1082,48 @@ bool run_VM(void) {
 
         case LOD:
 
-        
+            if(current_instruction.reg1 < 0 || current_instruction.reg1 > VirtualMachine.RAMSize) {
+                printf("Segmentation fault while reading from RAM\n");
+                return false;
+            }
+
+            if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = *((int*)(VirtualMachine.RAM + current_instruction.reg1)); 
+                //Add byte offset, cast to int pointer then dereference
+
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
+
+                VirtualMachine.registers[current_instruction.reg0].floatValue = *((float*)(VirtualMachine.RAM + current_instruction.reg1)); 
+                //Add byte offset, cast to int pointer then dereference
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
+            }
+
             break;
         case STR:
+
+            if(current_instruction.reg1 < 0 || current_instruction.reg1 > VirtualMachine.RAMSize) {
+                printf("Segmentation fault while storing into RAM\n");
+                return false;
+            }
+
+            if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
+
+                *((int*)(VirtualMachine.RAM + current_instruction.reg1)) = VirtualMachine.registers[current_instruction.reg0].intValue; 
+                //Add byte offset, cast to int pointer then dereference
+
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
+
+                *((float*)(VirtualMachine.RAM + current_instruction.reg1)) = VirtualMachine.registers[current_instruction.reg0].floatValue; 
+                //Add byte offset, cast to int pointer then dereference
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+                return false;
+            }
 
             break;
 
@@ -1130,10 +1172,10 @@ bool run_VM(void) {
 
 
             bytesRequested = VirtualMachine.registers[current_instruction.reg1].intValue;
-            if(current_instruction.ARG3.abstractDatatype == INTEGER) {
-                bytesRequested *= INT_SIZE;
-            } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
-                bytesRequested *= FLOAT_SIZE;
+            if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
+                bytesRequested *= sizeof(int);
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
+                bytesRequested *= sizeof(float);
             } else {
                 printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
             }
@@ -1175,10 +1217,10 @@ bool run_VM(void) {
             bytesToFree = VirtualMachine.registers[current_instruction.reg1].intValue;
             baseAddress = current_instruction.reg0;
 
-            if(current_instruction.ARG3.abstractDatatype == INTEGER) {
-                bytesToFree *= INT_SIZE;
-            } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
-                bytesToFree *= FLOAT_SIZE;
+            if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
+                bytesToFree *= sizeof(int);
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
+                bytesToFree *= sizeof(float);
             } else {
                 printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
             }
@@ -1196,11 +1238,11 @@ bool run_VM(void) {
 
         //These work
         case PRINT:
-            if(current_instruction.ARG3.abstractDatatype == INTEGER) {
+            if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
 
                 printf("%d",VirtualMachine.registers[current_instruction.reg0].intValue);
 
-            } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
                 printf("%g",VirtualMachine.registers[current_instruction.reg0].floatValue);
 
             } else {
@@ -1209,13 +1251,13 @@ bool run_VM(void) {
             break;
         case INPUT:
 
-            if(current_instruction.ARG3.abstractDatatype == INTEGER) {
+            if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
 
                 int newDataInt = 0;
                 scanf("%d",&newDataInt);
                 VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt;
 
-            } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
                 
                 float newDataFloat = 0;
                 scanf("%f",&newDataFloat);
