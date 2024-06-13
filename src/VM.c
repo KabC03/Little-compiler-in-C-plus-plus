@@ -144,7 +144,7 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
         printf("Number of registers or size of RAM cannot be zero\n");
         return false;
     }
-    numberOfRegisters ++; //Account for ZERO register
+    numberOfRegisters += 2; //Account for ZERO register (R0) and SP (R1)
     //malloc(numberOfRegisters * sizeof(Registers))
     VirtualMachine.registers = calloc(numberOfRegisters, sizeof(Registers));
     VirtualMachine.RAM = malloc(sizeOfRam * sizeof(RAMElement));
@@ -158,7 +158,7 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
         printf("Unable to allocate space for registers or RAM\n");
         return false;
     }
-
+    (VirtualMachine.registers[1]).intValue = sizeOfRam - 1; //Set SP to end of heap
 
     return true;
 }
