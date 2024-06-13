@@ -14,7 +14,6 @@
 
 typedef enum OPCODE {
 
-
     ADD_I,
     SUB_I,
     MUL_I,
@@ -195,15 +194,22 @@ bool destroy_VM(void) {
 
 
 
+void print_instructions(void) {
 
+    printf("\n\n Instruction     |||     OPCODE     R0     R1     R2\n");
+    printf("==========================================================\n");
+    for(int i = 0; i < VirtualMachine.numInstructions; i++) {
+        printf("%5d            |||     %5d  %5d  %5d  %5d\n",i,current_instruction.opcode, current_instruction.reg0,current_instruction.reg1,current_instruction.ARG3.reg2);
 
+    }
+
+}
 void print_dictionary(void) {
 
-
-    printf("Label        |||        Address\n");
-    printf("===============================\n");
+    printf("\n\n Label        |||        Address\n");
+    printf("=================================\n");
     for(int i = 0; i < labelDictionarySize; i++) {
-        printf("%10s   ||| %10zu\n",labelKey[i],labelValue[i]);
+        printf("%10s    ||| %10zu\n",labelKey[i],labelValue[i]);
     }
 
     return;
@@ -250,12 +256,14 @@ bool get_tokens_VM(char *IRfileName) {
 
     VirtualMachine.numInstructions = 0;
     char *currentToken = NULL;
+
+    int iMax = 0;
     for(int i = 0; fgets(instructionInputBuffer, array_len(instructionInputBuffer), IRfile); i++) {
 
 
         strcpy(copyInstructionInputBuffer, instructionInputBuffer);
         if(i == VirtualMachine.numInstructions) { //Reallocate memory
-            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, (VirtualMachine.numInstructions + INSTRUCTION_MEMORY_EXPANSION) * sizeof(Instruction)); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
+            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, (VirtualMachine.numInstructions + INSTRUCTION_MEMORY_EXPANSION + 1) * sizeof(Instruction)); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
             if(VirtualMachine.instructionMemory == NULL) {
                 printf("Memory allocation failure when expanding instruction memory\n");
                 return false;
@@ -750,13 +758,16 @@ bool get_tokens_VM(char *IRfileName) {
             return false;
         }
         //print_instruction(current_instruction);
+        iMax = i;
     }
-        
+    VirtualMachine.numInstructions = iMax + 1;
+    
 
 
     //Cleanup
     fclose(IRfile);
     print_dictionary();
+    print_instructions();
     return true;
 }
 
@@ -784,7 +795,7 @@ bool run_VM(void) {
         return false;
     }
 
-    size_t jumpAddress = -1;
+    //size_t jumpAddress = -1;
     for(int i = 0; i < VirtualMachine.numInstructions; i++) {
 
         switch (current_instruction.opcode) {
