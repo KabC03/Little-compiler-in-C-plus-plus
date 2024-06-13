@@ -36,7 +36,7 @@ typedef enum OPCODE {
 
     ALLOC, //A type function (basically malloc)
     FREE,  //A type function (basically free)
-    PRINT, //A type function (print ONE value) - PRINT R0 R1 INT (Print INT in R0 if R1 > 0)
+    PRINT, //A type function (print ONE value) - PRINT R0 Rx INT (Print INT in R0 if Rx == 0)
     INPUT, //A type function (input ONE value)
 
     LABEL, //NOT an instruction - used to declare labels
@@ -891,3 +891,4 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
+ 
