@@ -144,6 +144,7 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
         printf("Number of registers or size of RAM cannot be zero\n");
         return false;
     }
+    numberOfRegisters ++; //Account for ZERO register
     //malloc(numberOfRegisters * sizeof(Registers))
     VirtualMachine.registers = calloc(numberOfRegisters, sizeof(Registers));
     VirtualMachine.RAM = malloc(sizeOfRam * sizeof(RAMElement));
@@ -157,7 +158,6 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
         printf("Unable to allocate space for registers or RAM\n");
         return false;
     }
-    (VirtualMachine.registers[0]).intValue = sizeOfRam - 1; //Set the SP to the last element in RAM (stack grows backwards)
 
 
     return true;
@@ -873,6 +873,25 @@ bool run_VM(void) {
 
 
         case ADD_I:
+
+
+            if(current_instruction.instructionType == R) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = 
+                VirtualMachine.registers[current_instruction.reg1].intValue +
+                VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
+
+            } else if(current_instruction.instructionType == I) {
+
+                VirtualMachine.registers[current_instruction.reg0].intValue = 
+                VirtualMachine.registers[current_instruction.reg1].intValue +
+                current_instruction.ARG3.intImmediate;
+
+
+            } else {
+                printf("Unexpected datatype in instruction: '%d'\n",current_instruction.opcode);
+            }
+
 
             break;
         case ADD_F:
