@@ -802,7 +802,9 @@ bool run_VM(void) {
 
 
         case ADD_I:
-
+            VirtualMachine.registers[current_instruction.reg0].intValue = 
+            VirtualMachine.registers[current_instruction.reg1].intValue + 
+            VirtualMachine.registers[current_instruction.ARG3.reg2].intValue;
             break;
         case ADD_F:
             break;
