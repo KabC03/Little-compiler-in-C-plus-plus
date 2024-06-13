@@ -40,13 +40,21 @@ typedef enum OPCODE {
 } OPCODE;
 typedef enum INSTRUCTION_TYPE {
 
-    R,
-    I,
-    J,
-    A,
-    L,
+    R, //Register
+    I, //Immediate
+    C, //Compare
+    J, //Jump
+    A, //Abstract
+    L, //Label
 
 } INSTRUCTION_TYPE;
+typedef enum OPCODE_DATATYPE {
+
+    INTEGER,
+    FLOAT,
+    NONE,
+
+} OPCODE_DATATYPE;
 
 
 typedef struct Instruction {
@@ -54,6 +62,7 @@ typedef struct Instruction {
     INSTRUCTION_TYPE instructionType;
 
     OPCODE opcode;
+    OPCODE_DATATYPE opcodeDatatype;
 
     int reg0;
     int reg1;
@@ -167,7 +176,19 @@ bool is_integer(char *str) {
     }
     return true;
 }
+bool is_float_or_integer(char *str) {
 
+    bool foundDecimal = false;
+    for(int i = 0; str[i] != '\0'; i++) {
+
+        if(str[i] =='.' && foundDecimal == false) {
+            foundDecimal = true;
+        } else if(isdigit(str[i]) == 0) {
+            return false;
+        }
+    }
+    return true;
+}
 
 
 bool get_tokens_VM(char *IRfileName) {
@@ -219,21 +240,28 @@ bool get_tokens_VM(char *IRfileName) {
             }
             if(strcmp(currentToken, "ADD_I") == 0) {
                 current_instruction.opcode = ADD_I;
+                current_instruction.opcodeDatatype = INTEGER;
             } else if(strcmp(currentToken, "ADD_F") == 0) {
                 current_instruction.opcode = ADD_F;
+                current_instruction.opcodeDatatype = FLOAT;
             } else if(strcmp(currentToken, "SUB_I") == 0) {
                 current_instruction.opcode = SUB_I;
+                current_instruction.opcodeDatatype = INTEGER;
             } else if(strcmp(currentToken, "SUB_F") == 0) {
                 current_instruction.opcode = SUB_F;
+                current_instruction.opcodeDatatype = FLOAT;
             } else if(strcmp(currentToken, "MUL_I") == 0) {
                 current_instruction.opcode = MUL_I;
+                current_instruction.opcodeDatatype = INTEGER;
             } else if(strcmp(currentToken, "MUL_F") == 0) {
                 current_instruction.opcode = MUL_F;
-
+                current_instruction.opcodeDatatype = FLOAT;
             } else if(strcmp(currentToken, "DIV_I") == 0) {
                 current_instruction.opcode = DIV_I;
+                current_instruction.opcodeDatatype = INTEGER;
             } else if(strcmp(currentToken, "DIV_F") == 0) {
                 current_instruction.opcode = DIV_F;
+                current_instruction.opcodeDatatype = FLOAT;
             } else {
                 printf("Unrecognised R type instruction: '%s'\n",instructionInputBuffer);
                 return false;
@@ -287,6 +315,110 @@ bool get_tokens_VM(char *IRfileName) {
 
         } else if(strcmp(currentToken, "[I]") == 0) {
             current_instruction.instructionType = I; //Immediate
+
+            bool isFloat = false;
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            if(strcmp(currentToken, "ADD_I") == 0) {
+                current_instruction.opcode = ADD_I;
+                current_instruction.opcodeDatatype = INTEGER;
+            } else if(strcmp(currentToken, "ADD_F") == 0) {
+                current_instruction.opcode = ADD_F;
+                current_instruction.opcodeDatatype = FLOAT;
+                isFloat = true;
+
+
+            } else if(strcmp(currentToken, "SUB_I") == 0) {
+                current_instruction.opcode = SUB_I;
+                current_instruction.opcodeDatatype = INTEGER;
+            } else if(strcmp(currentToken, "SUB_F") == 0) {
+                current_instruction.opcode = SUB_F;
+                current_instruction.opcodeDatatype = FLOAT;
+                isFloat = true;
+
+
+            } else if(strcmp(currentToken, "MUL_I") == 0) {
+                current_instruction.opcode = MUL_I;
+                current_instruction.opcodeDatatype = INTEGER;
+            } else if(strcmp(currentToken, "MUL_F") == 0) {
+                current_instruction.opcode = MUL_F;
+                current_instruction.opcodeDatatype = FLOAT;
+                isFloat = true;
+
+
+            } else if(strcmp(currentToken, "DIV_I") == 0) {
+                current_instruction.opcode = DIV_I;
+                current_instruction.opcodeDatatype = INTEGER;
+            } else if(strcmp(currentToken, "DIV_F") == 0) {
+                current_instruction.opcode = DIV_F;
+                current_instruction.opcodeDatatype = FLOAT;
+                isFloat = true;
+
+            } else {
+                printf("Unrecognised I type instruction: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            //Register arguments
+
+            //Destination register
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected destination register in I type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+            //Source register 1
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected source register in I type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+            //Immediate
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected immediate in I type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_float_or_integer(currentToken) == true) {
+                printf("Incorrectly formatted immediate argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            if(isFloat == false) {
+                current_instruction.ARG3.intImmediate = atoi(currentToken);
+            } else {
+                current_instruction.ARG3.floatImmediate = atof(currentToken);
+            }
+
+
+
+
+
+        } else if(strcmp(currentToken, "[C]") == 0) {
+            current_instruction.instructionType = C; //Compare
+
+
+
         } else if(strcmp(currentToken, "[J]") == 0) {
             current_instruction.instructionType = J; //Jump
         } else if(strcmp(currentToken, "[L]") == 0) {
