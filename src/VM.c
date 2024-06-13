@@ -171,7 +171,15 @@ bool destroy_VM(void) {
 
 
 
-void void_func(void) {
+
+
+
+void print_dictionary(void) {
+
+    printf("Key   ||| Value\n");
+    for(int i = 0; i < labelDictionarySize; i++) {
+        printf("%s   |||   %zu\n",labelKey[i], labelValue[i]);        
+    }
     return;
 }
 void print_instruction(Instruction instruction) {
@@ -584,7 +592,7 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
             if(strcmp(currentToken, "LABEL") == 0) {
-                i--; //Do this because this instruction should not appear in memory
+
             } else {
                 printf("Unrecognised L type instruction: '%s'\n",instructionInputBuffer);
                 return false;
@@ -628,6 +636,8 @@ bool get_tokens_VM(char *IRfileName) {
             if(strtok(NULL, " \n") != NULL) {
                 printf("Too many operands passed to L type instruction: '%s'\n",instructionInputBuffer);
             }
+
+            i--; //Do this because this instruction should not appear in memory
 
         } else if(strcmp(currentToken, "[A]") == 0) {
             current_instruction.instructionType = A; //Abstract
@@ -704,6 +714,7 @@ bool get_tokens_VM(char *IRfileName) {
     //Cleanup
     fclose(IRfile);
     VirtualMachine.programCounter = 0;
+    print_dictionary();
     return true;
 }
 
