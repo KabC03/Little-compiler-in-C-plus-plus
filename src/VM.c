@@ -622,7 +622,7 @@ bool get_tokens_VM(char *IRfileName) {
 
             labelDictionarySize += 1; 
 
-
+            printf("key: %s || value: %d\n",labelKey[labelDictionarySize], labelValue[labelDictionarySize]);
 
             if(strtok(NULL, " \n") != NULL) {
                 printf("Too many operands passed to L type instruction: '%s'\n",instructionInputBuffer);
