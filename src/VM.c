@@ -869,6 +869,12 @@ bool run_VM(void) {
         return false;
     }
 
+
+
+    int bytesRequested = 0;
+    int memAddress = 0;
+    int bytesToFree = 0;
+    int baseAddress = 0;
     //size_t jumpAddress = -1;
     for(int i = 0; i < VirtualMachine.numInstructions; i++) {
 
@@ -960,7 +966,7 @@ bool run_VM(void) {
         case ALLOC:
 
 
-            int bytesRequested = VirtualMachine.registers[current_instruction.reg1].intValue;
+            bytesRequested = VirtualMachine.registers[current_instruction.reg1].intValue;
             if(current_instruction.ARG3.abstractDatatype == INTEGER) {
                 bytesRequested *= INT_SIZE;
             } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
@@ -970,7 +976,7 @@ bool run_VM(void) {
             }
 
 
-            int memAddress = -1; //Negative number indicates failure
+            memAddress = -1; //Negative number indicates failure
 
             if(bytesRequested < VirtualMachine.RAMSize && bytesRequested > 0) { //DO this to prevent underflow
                 for(int j = 0; j < VirtualMachine.RAMSize - bytesRequested; j++) {
@@ -1003,8 +1009,8 @@ bool run_VM(void) {
         case FREE:
 
             
-            int bytesToFree = VirtualMachine.registers[current_instruction.reg1].intValue;
-            int baseAddress = current_instruction.reg0;
+            bytesToFree = VirtualMachine.registers[current_instruction.reg1].intValue;
+            baseAddress = current_instruction.reg0;
 
             if(current_instruction.ARG3.abstractDatatype == INTEGER) {
                 bytesToFree *= INT_SIZE;
