@@ -37,7 +37,7 @@ typedef enum OPCODE {
     ALLOC, //A type function (basically malloc)
     FREE,  //A type function (basically free)
 
-    LAB,
+    LABEL, //NOT an instruction - used to declare labels
 
 } OPCODE;
 typedef enum INSTRUCTION_TYPE {
@@ -559,16 +559,88 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
+            //Destination register
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected destination register in A type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+
+
+
+            //Source register 1
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected source register in A type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
+                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);    
+                return false;
+            }
+            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+
+
+            if(strtok(NULL, " \n") != NULL) {
+                printf("Too many operands passed to A type instruction: '%s'\n",instructionInputBuffer);
+            }
+
+
+        } else if(strcmp(currentToken, "[L]") == 0) {
+            current_instruction.instructionType = L; //Label
+
+
+
+
+
+
+
+
+        } else if(strcmp(currentToken, "[A]") == 0) {
+            current_instruction.instructionType = A; //Abstract
+
+
+
+
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            if(strcmp(currentToken, "ALLOC") == 0) {
+                current_instruction.opcode = ALLOC;
+                current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "FREE") == 0) {
+                current_instruction.opcode = FREE;
+                current_instruction.opcodeDatatype = NONE;
+            } else {
+                printf("Unrecognised A type instruction: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+
+
+
+
+
+
+
+
+
+
 
             if(strtok(NULL, " \n") != NULL) {
                 printf("Too many operands passed to J type instruction: '%s'\n",instructionInputBuffer);
             }
 
 
-        } else if(strcmp(currentToken, "[L]") == 0) {
-            current_instruction.instructionType = L; //Label
-        } else if(strcmp(currentToken, "[A]") == 0) {
-            current_instruction.instructionType = A; //Abstract
+
         } else { //Unrecognised instruction type
             printf("Unrecognised instruction '%s'\n",currentToken);
             return false;
