@@ -249,12 +249,15 @@ bool get_tokens_VM(char *IRfileName) {
     }
 
     char instructionInputBuffer[INSTRUCTION_INPUT_BUFFER];
+    char copyInstructionInputBuffer[INSTRUCTION_INPUT_BUFFER]; //Used for displaying errors since strtok is destructuve
 
     //Note: programCounter being used TEMPORARILY to keep track of the instructionMemory size
     VirtualMachine.programCounter = 0;
     char *currentToken = NULL;
     for(int i = 0; fgets(instructionInputBuffer, array_len(instructionInputBuffer), IRfile); i++) {
 
+
+        strcpy(copyInstructionInputBuffer, instructionInputBuffer);
         if(i == VirtualMachine.programCounter) { //Reallocate memory
             VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, (VirtualMachine.programCounter + INSTRUCTION_MEMORY_EXPANSION) * sizeof(Instruction)); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
             if(VirtualMachine.instructionMemory == NULL) {
@@ -280,7 +283,7 @@ bool get_tokens_VM(char *IRfileName) {
 
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                printf("Expected opcode: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             if(strcmp(currentToken, "ADD_I") == 0) {
@@ -308,7 +311,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.opcode = DIV_F;
                 current_instruction.opcodeDatatype = FLOAT;
             } else {
-                printf("Unrecognised R type instruction: '%s'\n",instructionInputBuffer);
+                printf("Unrecognised R type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -317,11 +320,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Destination register
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected destination register in R type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected destination register in R type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted register destination argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -332,11 +335,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Source register 1
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected source register in R type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected source register in R type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
@@ -346,18 +349,19 @@ bool get_tokens_VM(char *IRfileName) {
             //Source register 2
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected source register in R type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected source register in R type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             current_instruction.ARG3.reg2 = atoi(currentToken + 1); //Skip the first "R"
 
 
             if(strtok(NULL, " \n") != NULL) {
-                printf("Too many operands passed to R type instruction: '%s'\n",instructionInputBuffer);
+                printf("Too many operands passed to R type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
         } else if(strcmp(currentToken, "[I]") == 0) {
@@ -366,7 +370,7 @@ bool get_tokens_VM(char *IRfileName) {
             bool isFloat = false;
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                printf("Expected opcode: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             if(strcmp(currentToken, "ADD_I") == 0) {
@@ -405,7 +409,7 @@ bool get_tokens_VM(char *IRfileName) {
                 isFloat = true;
 
             } else {
-                printf("Unrecognised I type instruction: '%s'\n",instructionInputBuffer);
+                printf("Unrecognised I type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -414,11 +418,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Destination register
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected destination register in I type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected destination register in I type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted register destination argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -429,11 +433,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Source register 1
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected source register in I type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected source register in I type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
@@ -443,11 +447,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Immediate
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected immediate in I type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected immediate in I type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(is_float_or_integer(currentToken) == false) {
-                printf("Incorrectly formatted immediate argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted immediate argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -459,7 +463,8 @@ bool get_tokens_VM(char *IRfileName) {
 
 
             if(strtok(NULL, " \n") != NULL) {
-                printf("Too many operands passed to I type instruction: '%s'\n",instructionInputBuffer);
+                printf("Too many operands passed to I type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -469,7 +474,7 @@ bool get_tokens_VM(char *IRfileName) {
 
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                printf("Expected opcode: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             if(strcmp(currentToken, "BEQ") == 0) {
@@ -482,7 +487,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.opcode = BLE;
                 current_instruction.opcodeDatatype = NONE;
             } else {
-                printf("Unrecognised C type instruction: '%s'\n",instructionInputBuffer);
+                printf("Unrecognised C type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -491,11 +496,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Destination register
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected destination register in C type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected destination register in C type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted register destination argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -506,11 +511,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Source register 1
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected source register in C type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected source register in C type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);    
+                printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);    
                 return false;
             }
             current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
@@ -520,7 +525,7 @@ bool get_tokens_VM(char *IRfileName) {
             //Label
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected label in C type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected label in C type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             current_instruction.ARG3.label = malloc((strlen(currentToken) + 1) * sizeof(char));
@@ -533,7 +538,8 @@ bool get_tokens_VM(char *IRfileName) {
 
 
             if(strtok(NULL, " \n") != NULL) {
-                printf("Too many operands passed to C type instruction: '%s'\n",instructionInputBuffer);
+                printf("Too many operands passed to C type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -545,7 +551,7 @@ bool get_tokens_VM(char *IRfileName) {
 
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                printf("Expected opcode: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             if(strcmp(currentToken, "JUM") == 0) {
@@ -555,14 +561,14 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.opcode = JAL;
                 current_instruction.opcodeDatatype = NONE;
             } else {
-                printf("Unrecognised C type instruction: '%s'\n",instructionInputBuffer);
+                printf("Unrecognised C type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
 
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected label in C type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected label in C type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             current_instruction.ARG3.label = malloc((strlen(currentToken) + 1) * sizeof(char));
@@ -576,7 +582,8 @@ bool get_tokens_VM(char *IRfileName) {
 
 
             if(strtok(NULL, " \n") != NULL) {
-                printf("Too many operands passed to J type instruction: '%s'\n",instructionInputBuffer);
+                printf("Too many operands passed to J type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
@@ -589,13 +596,13 @@ bool get_tokens_VM(char *IRfileName) {
 
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                printf("Expected opcode: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             if(strcmp(currentToken, "LABEL") == 0) {
 
             } else {
-                printf("Unrecognised L type instruction: '%s'\n",instructionInputBuffer);
+                printf("Unrecognised L type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -604,7 +611,7 @@ bool get_tokens_VM(char *IRfileName) {
 
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected label: '%s'\n",instructionInputBuffer);
+                printf("Expected label: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -635,7 +642,8 @@ bool get_tokens_VM(char *IRfileName) {
             //printf("key: %s || value: %d\n",labelKey[labelDictionarySize], labelValue[labelDictionarySize]);
 
             if(strtok(NULL, " \n") != NULL) {
-                printf("Too many operands passed to L type instruction: '%s'\n",instructionInputBuffer);
+                printf("Too many operands passed to L type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
             i--; //Do this because this instruction should not appear in memory
@@ -648,7 +656,7 @@ bool get_tokens_VM(char *IRfileName) {
 
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                printf("Expected opcode: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
             if(strcmp(currentToken, "ALLOC") == 0) {
@@ -658,7 +666,7 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.opcode = FREE;
                 current_instruction.opcodeDatatype = NONE;
             } else {
-                printf("Unrecognised A type instruction: '%s'\n",instructionInputBuffer);
+                printf("Unrecognised A type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -668,11 +676,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Destination register
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected destination register in A type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected destination register in A type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register destination argument: '%s'\n",instructionInputBuffer);
+                printf("Incorrectly formatted register destination argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
@@ -683,11 +691,11 @@ bool get_tokens_VM(char *IRfileName) {
             //Source register 1
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected source register in A type instruciton: '%s'\n", instructionInputBuffer);
+                printf("Expected source register in A type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             if(currentToken[0] != 'R' || is_integer(currentToken + 1) == false) { //Skip the fist letter (which should be 'R')
-                printf("Incorrectly formatted register source argument: '%s'\n",instructionInputBuffer);    
+                printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);    
                 return false;
             }
             current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
@@ -698,13 +706,14 @@ bool get_tokens_VM(char *IRfileName) {
 
 
             if(strtok(NULL, " \n") != NULL) {
-                printf("Too many operands passed to A type instruction: '%s'\n",instructionInputBuffer);
+                printf("Too many operands passed to A type instruction: '%s'\n",copyInstructionInputBuffer);
+                return false;
             }
 
 
 
         } else { //Unrecognised instruction type
-            printf("Unrecognised instruction '%s'\n",currentToken);
+            printf("Unrecognised instruction '%s'\n",copyInstructionInputBuffer);
             return false;
         }
         //print_instruction(current_instruction);
