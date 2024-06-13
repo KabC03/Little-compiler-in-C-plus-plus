@@ -596,6 +596,7 @@ bool get_tokens_VM(char *IRfileName) {
             if(i - firstLabel == labelDictionarySize) {
                 labelKey = realloc(labelKey, (labelDictionarySize + LABEL_EXPANSION * sizeof(char*)));
                 labelValue = realloc(labelValue, (labelDictionarySize + LABEL_EXPANSION * sizeof(size_t)));
+
                 if(labelKey == NULL || labelValue == NULL) {
                     printf("Failed to allocate memory for label dictionary\n");
                     return false;
@@ -609,6 +610,10 @@ bool get_tokens_VM(char *IRfileName) {
                 }
             }
 
+
+
+
+
             strcpy(labelKey[labelDictionarySize], currentToken);
             labelValue[labelDictionarySize] = i; //Assign to current insruction address
 
@@ -616,9 +621,10 @@ bool get_tokens_VM(char *IRfileName) {
             if(firstLabel == -1) {
                 firstLabel = i;
             }
+            labelDictionarySize += LABEL_EXPANSION; 
 
 
-
+            
             if(strtok(NULL, " \n") != NULL) {
                 printf("Too many operands passed to L type instruction: '%s'\n",instructionInputBuffer);
             }
@@ -829,3 +835,4 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
+ 
