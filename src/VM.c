@@ -944,6 +944,25 @@ bool run_VM(void) {
             break;
         case FREE:
 
+            
+            int bytesToFree = VirtualMachine.registers[current_instruction.reg1].intValue;
+            int baseAddress = current_instruction.reg0;
+
+            if(current_instruction.ARG3.abstractDatatype == INTEGER) {
+                bytesToFree *= INT_SIZE;
+            } else if(current_instruction.ARG3.abstractDatatype == FLOAT) {
+                bytesToFree *= FLOAT_SIZE;
+            } else {
+                printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
+            }
+
+
+            if(baseAddress + bytesToFree > 0 && baseAddress + bytesToFree < VirtualMachine.RAMSize && baseAddress >= 0) {
+                for(int j = baseAddress; j < baseAddress + bytesToFree; j++) {
+                    (VirtualMachine.RAM[j].isUsed) = false;
+                }
+            }
+
             break;
 
 
@@ -996,4 +1015,4 @@ bool run_VM(void) {
 
 
     return true;
-}
+} 
