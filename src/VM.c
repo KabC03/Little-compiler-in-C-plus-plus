@@ -341,7 +341,9 @@ bool get_tokens_VM(char *IRfileName) {
             current_instruction.ARG3.reg2 = atoi(currentToken + 1); //Skip the first "R"
 
 
-
+            if(strtok(NULL, " \n") != NULL) {
+                printf("Too many operands passed to R type instruction: '%s'\n",instructionInputBuffer);
+            }
 
         } else if(strcmp(currentToken, "[I]") == 0) {
             current_instruction.instructionType = I; //Immediate
@@ -441,7 +443,9 @@ bool get_tokens_VM(char *IRfileName) {
             }
 
 
-
+            if(strtok(NULL, " \n") != NULL) {
+                printf("Too many operands passed to I type instruction: '%s'\n",instructionInputBuffer);
+            }
 
 
         } else if(strcmp(currentToken, "[C]") == 0) {
@@ -513,8 +517,57 @@ bool get_tokens_VM(char *IRfileName) {
 
 
 
+            if(strtok(NULL, " \n") != NULL) {
+                printf("Too many operands passed to C type instruction: '%s'\n",instructionInputBuffer);
+            }
+
+
+
+
+
         } else if(strcmp(currentToken, "[J]") == 0) {
             current_instruction.instructionType = J; //Jump
+
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected opcode: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+            if(strcmp(currentToken, "BEQ") == 0) {
+                current_instruction.opcode = BEQ;
+                current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "BLT") == 0) {
+                current_instruction.opcode = BLT;
+                current_instruction.opcodeDatatype = NONE;
+            } else if(strcmp(currentToken, "BLE") == 0) {
+                current_instruction.opcode = BLE;
+                current_instruction.opcodeDatatype = NONE;
+            } else {
+                printf("Unrecognised C type instruction: '%s'\n",instructionInputBuffer);
+                return false;
+            }
+
+
+            currentToken = strtok(NULL, " \n");
+            if(currentToken == NULL) {
+                printf("Expected label in C type instruciton: '%s'\n", instructionInputBuffer);
+                return false;
+            }
+            current_instruction.ARG3.label = malloc((strlen(currentToken) + 1) * sizeof(char));
+            if(current_instruction.ARG3.label == NULL) {
+                printf("Failure to allocate memory for label\n");
+                return false;
+            }
+            strcpy(current_instruction.ARG3.label, currentToken);
+
+
+
+
+            if(strtok(NULL, " \n") != NULL) {
+                printf("Too many operands passed to J type instruction: '%s'\n",instructionInputBuffer);
+            }
+
+
         } else if(strcmp(currentToken, "[L]") == 0) {
             current_instruction.instructionType = L; //Label
         } else if(strcmp(currentToken, "[A]") == 0) {
@@ -533,6 +586,7 @@ bool get_tokens_VM(char *IRfileName) {
     VirtualMachine.programCounter = 0;
     return true;
 }
+
 
 
 
