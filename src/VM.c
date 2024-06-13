@@ -506,7 +506,7 @@ bool get_tokens_VM(char *IRfileName) {
             } else if(strcmp(currentToken, "BLE_I") == 0) {
                 current_instruction.opcode = BLE_I;
                 current_instruction.opcodeDatatype = INTEGER;
-            if(strcmp(currentToken, "BEQ_F") == 0) {
+            } else if(strcmp(currentToken, "BEQ_F") == 0) {
                 current_instruction.opcode = BEQ_F;
                 current_instruction.opcodeDatatype = FLOAT;
             } else if(strcmp(currentToken, "BLT_F") == 0) {
@@ -781,9 +781,9 @@ bool get_tokens_VM(char *IRfileName) {
         fclose(IRfile);
         //print_dictionary();
         return true;
-    }
-    return false;
 }
+
+
 
 
 
