@@ -348,8 +348,12 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
 
-            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
 
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in R type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
 
 
             //Source register 1
@@ -362,8 +366,13 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
-            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
 
+
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in R type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
 
 
             //Source register 2
@@ -376,7 +385,14 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
-            current_instruction.ARG3.reg2 = atoi(currentToken + 1); //Skip the first "R"
+
+
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.ARG3.reg2 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in R type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
+
 
 
             if(strtok(NULL, " \n") != NULL) {
@@ -446,8 +462,12 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
 
-            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
 
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in I type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
 
 
             //Source register 1
@@ -460,7 +480,13 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
-            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+
+
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in I type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
 
 
 
@@ -476,9 +502,18 @@ bool get_tokens_VM(char *IRfileName) {
             }
 
             if(isFloat == false) {
+
                 current_instruction.ARG3.intImmediate = atoi(currentToken);
+
+
+
+                
             } else {
-                current_instruction.ARG3.floatImmediate = atof(currentToken);
+
+                current_instruction.ARG3.floatImmediate = atof(currentToken);   
+
+
+
             }
 
 
@@ -533,8 +568,11 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
 
-            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
-
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in C type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
 
 
             //Source register 1
@@ -547,7 +585,14 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);    
                 return false;
             }
-            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in C type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
+
+
 
 
 
@@ -590,14 +635,14 @@ bool get_tokens_VM(char *IRfileName) {
                 current_instruction.opcode = JAL;
                 current_instruction.opcodeDatatype = NONE;
             } else {
-                printf("Unrecognised C type instruction: '%s'\n",copyInstructionInputBuffer);
+                printf("Unrecognised J type instruction: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
 
 
             currentToken = strtok(NULL, " \n");
             if(currentToken == NULL) {
-                printf("Expected label in C type instruciton: '%s'\n", copyInstructionInputBuffer);
+                printf("Expected label in J type instruciton: '%s'\n", copyInstructionInputBuffer);
                 return false;
             }
             current_instruction.ARG3.label = malloc((strlen(currentToken) + 1) * sizeof(char));
@@ -719,7 +764,14 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
 
-            current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.reg0 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in A type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
+
+
+
 
 
 
@@ -733,7 +785,13 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Incorrectly formatted register source argument: '%s'\n",copyInstructionInputBuffer);    
                 return false;
             }
-            current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+
+            if(atoi(currentToken + 1) > 0 && atoi(currentToken + 1) < VirtualMachine.registerSize) {
+                current_instruction.reg1 = atoi(currentToken + 1); //Skip the first "R"
+            } else {
+                printf("OOB register access in A type instruction: '%s'\n",copyInstructionInputBuffer);
+            }
+
 
 
 
@@ -1015,4 +1073,4 @@ bool run_VM(void) {
 
 
     return true;
-} 
+}
