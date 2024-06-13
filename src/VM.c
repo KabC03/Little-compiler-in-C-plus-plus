@@ -131,8 +131,8 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam) {
         printf("Number of registers or size of RAM cannot be zero\n");
         return false;
     }
-
-    VirtualMachine.registers = malloc(numberOfRegisters * sizeof(Registers));
+    //malloc(numberOfRegisters * sizeof(Registers))
+    VirtualMachine.registers = calloc(numberOfRegisters, sizeof(Registers));
     VirtualMachine.RAM = malloc(sizeOfRam * sizeof(RAM_TYPE));
     VirtualMachine.instructionMemory = NULL;
     VirtualMachine.programCounter = 0;
@@ -814,9 +814,16 @@ bool run_VM(void) {
         switch (current_instruction.opcode) {
 
 
-        //Done
+        //Just do the immediates
         case ADD_I:
-            destination_register.intValue = source_register1.intValue + source_register2.intValue;
+
+            if(current_instruction.instructionType == R) {
+                destination_register.intValue = source_register1.intValue + source_register2.intValue;
+            } else {
+                destination_register.intValue = source_register1.intValue + current_instruction.ARG3.intImmediate;
+            }
+
+
             break;
         case ADD_F:
             destination_register.floatValue = source_register1.floatValue + source_register2.floatValue;
@@ -964,7 +971,7 @@ bool run_VM(void) {
             /* code */
             break;
         case PRINT:
-            if(source_register1.floatValue == 0) {
+            if(source_register1.floatValue != 0) {
 
                 if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
                     printf("%d",destination_register.intValue);
