@@ -200,9 +200,10 @@ bool destroy_VM(void) {
 void print_dictionary(void) {
 
 
-    printf("Key ||| Value")
+    printf("Label        |||        Address\n");
+    printf("===============================\n");
     for(int i = 0; i < labelDictionarySize; i++) {
-
+        printf("%10s   ||| %10zu\n",labelKey[i],labelValue[i]);
     }
 
     return;
@@ -755,7 +756,7 @@ bool get_tokens_VM(char *IRfileName) {
 
     //Cleanup
     fclose(IRfile);
-    //print_dictionary();
+    print_dictionary();
     return true;
 }
 
