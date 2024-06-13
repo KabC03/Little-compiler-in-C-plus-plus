@@ -4,8 +4,8 @@
 
 
 #define RAM_TYPE uint8_t
-#define INSTRUCTION_MEMORY_EXPANSION 10
-#define LABEL_EXPANSION 10
+#define INSTRUCTION_MEMORY_EXPANSION 1
+#define LABEL_EXPANSION 1
 #define INSTRUCTION_INPUT_BUFFER 100
 
 
@@ -248,7 +248,7 @@ bool get_tokens_VM(char *IRfileName) {
     for(int i = 0; fgets(instructionInputBuffer, array_len(instructionInputBuffer), IRfile); i++) {
 
         if(i == VirtualMachine.programCounter) { //Reallocate memory
-            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, VirtualMachine.programCounter + (INSTRUCTION_MEMORY_EXPANSION) * sizeof(Instruction)); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
+            VirtualMachine.instructionMemory = realloc(VirtualMachine.instructionMemory, (VirtualMachine.programCounter + INSTRUCTION_MEMORY_EXPANSION) * sizeof(Instruction)); //NEED TO HANDLE IF REALLOC FAILS (DO LATER)
             if(VirtualMachine.instructionMemory == NULL) {
                 printf("Memory allocation failure when expanding instruction memory\n");
                 return false;
@@ -590,14 +590,12 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
 
-            if(firstLabel == -1) {
-                firstLabel = i;
-            }
+
 
 
             if(i - firstLabel == labelDictionarySize) {
-                labelKey = realloc(labelKey, labelDictionarySize + (LABEL_EXPANSION * sizeof(char*)));
-                labelValue = realloc(labelValue, labelDictionarySize + (LABEL_EXPANSION * sizeof(size_t)));
+                labelKey = realloc(labelKey, (labelDictionarySize + LABEL_EXPANSION * sizeof(char*)));
+                labelValue = realloc(labelValue, (labelDictionarySize + LABEL_EXPANSION * sizeof(size_t)));
                 if(labelKey == NULL || labelValue == NULL) {
                     printf("Failed to allocate memory for label dictionary\n");
                     return false;
@@ -615,7 +613,9 @@ bool get_tokens_VM(char *IRfileName) {
             labelValue[labelDictionarySize] = i; //Assign to current insruction address
 
 
-
+            if(firstLabel == -1) {
+                firstLabel = i;
+            }
 
 
         } else if(strcmp(currentToken, "[A]") == 0) {
@@ -695,6 +695,7 @@ bool get_tokens_VM(char *IRfileName) {
     VirtualMachine.programCounter = 0;
     return true;
 }
+
 
 
 
