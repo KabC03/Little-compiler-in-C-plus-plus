@@ -1245,9 +1245,8 @@ bool run_VM(void) {
                 return false;
             }
 
-
             (VirtualMachine.registers[1]).intValue -= sizeof(int); //Move back by size of int in bytes
-            *((int*)(VirtualMachine.RAM + (VirtualMachine.registers[1]).intValue)) = i; //R1 has SP
+            ((VirtualMachine.RAM)[VirtualMachine.registers[1].intValue]).RAM = i;
             //Add byte offset, cast to int pointer then dereference
 
 
@@ -1271,7 +1270,7 @@ bool run_VM(void) {
 
 
 
-            i = *((int*)(VirtualMachine.RAM + (VirtualMachine.registers[1]).intValue)); //R1 has SP
+            i = ((VirtualMachine.RAM)[VirtualMachine.registers[1].intValue]).RAM; //R1 has sp
             (VirtualMachine.registers[1]).intValue += sizeof(int); //Move back by size of int in bytes
             //Add byte offset, cast to int pointer then dereference
 
