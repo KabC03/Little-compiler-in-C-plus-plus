@@ -878,7 +878,6 @@ bool run_VM(void) {
     size_t labelOut = 0;
     //size_t jumpAddress = -1;
     for(int i = 0; i < VirtualMachine.numInstructions; i++) {
-
         switch (current_instruction.opcode) {
 
 
@@ -1146,7 +1145,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).intValue == 
             (VirtualMachine.registers[current_instruction.reg1]).intValue) {
-                i = labelOut + 1; //Set the PC (i) to this value
+                i = labelOut - 1; //Set the PC (i) to this value
             }
 
 
@@ -1160,7 +1159,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).intValue < 
             (VirtualMachine.registers[current_instruction.reg1]).intValue) {
-                i = labelOut + 1; //Set the PC (i) to this value
+                i = labelOut - 1; //Set the PC (i) to this value
             }
 
 
@@ -1175,7 +1174,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).intValue <= 
             (VirtualMachine.registers[current_instruction.reg1]).intValue) {
-                i = labelOut + 1; //Set the PC (i) to this value
+                i = labelOut - 1; //Set the PC (i) to this value
             }
 
             break;
@@ -1189,7 +1188,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).floatValue < 
             (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
-                i = labelOut + 1; //Set the PC (i) to this value
+                i = labelOut - 1; //Set the PC (i) to this value
             }
 
 
@@ -1203,7 +1202,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).floatValue < 
             (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
-                i = labelOut + 1; //Set the PC (i) to this value
+                i = labelOut - 1; //Set the PC (i) to this value
             }
 
 
@@ -1217,7 +1216,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).floatValue <= 
             (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
-                i = labelOut + 1; //Set the PC (i) to this value
+                i = labelOut - 1; //Set the PC (i) to this value
             }
 
 
@@ -1228,8 +1227,7 @@ bool run_VM(void) {
             if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
                 return false;
             }
-
-            i = labelOut + 1; //Set the PC (i) to this value
+            i = labelOut - 1; //Set the PC (i) to this value
 
 
             break;
@@ -1256,7 +1254,7 @@ bool run_VM(void) {
             if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
                 return false;
             }
-            i = labelOut + 1; //Set the PC (i) to this value
+            i = labelOut - 1; //Set the PC (i) to this value
 
 
             break;
