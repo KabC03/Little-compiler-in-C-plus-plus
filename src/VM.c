@@ -1146,7 +1146,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).intValue == 
             (VirtualMachine.registers[current_instruction.reg1]).intValue) {
-                i = labelOut; //Set the PC (i) to this value
+                i = labelOut + 1; //Set the PC (i) to this value
             }
 
 
@@ -1160,7 +1160,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).intValue < 
             (VirtualMachine.registers[current_instruction.reg1]).intValue) {
-                i = labelOut; //Set the PC (i) to this value
+                i = labelOut + 1; //Set the PC (i) to this value
             }
 
 
@@ -1175,7 +1175,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).intValue <= 
             (VirtualMachine.registers[current_instruction.reg1]).intValue) {
-                i = labelOut; //Set the PC (i) to this value
+                i = labelOut + 1; //Set the PC (i) to this value
             }
 
             break;
@@ -1189,7 +1189,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).floatValue < 
             (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
-                i = labelOut; //Set the PC (i) to this value
+                i = labelOut + 1; //Set the PC (i) to this value
             }
 
 
@@ -1203,7 +1203,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).floatValue < 
             (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
-                i = labelOut; //Set the PC (i) to this value
+                i = labelOut + 1; //Set the PC (i) to this value
             }
 
 
@@ -1217,7 +1217,7 @@ bool run_VM(void) {
 
             if((VirtualMachine.registers[current_instruction.reg0]).floatValue <= 
             (VirtualMachine.registers[current_instruction.reg1]).floatValue) {
-                i = labelOut; //Set the PC (i) to this value
+                i = labelOut + 1; //Set the PC (i) to this value
             }
 
 
@@ -1229,7 +1229,7 @@ bool run_VM(void) {
                 return false;
             }
 
-            i = labelOut; //Set the PC (i) to this value
+            i = labelOut + 1; //Set the PC (i) to this value
 
 
             break;
@@ -1256,7 +1256,7 @@ bool run_VM(void) {
             if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
                 return false;
             }
-            i = labelOut; //Set the PC (i) to this value
+            i = labelOut + 1; //Set the PC (i) to this value
 
 
             break;
