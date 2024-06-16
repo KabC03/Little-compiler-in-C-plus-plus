@@ -115,16 +115,16 @@ typedef union RAMElement{
 
 struct VM {
 
-    size_t programCounter;             //Program counter index into instructionMemory
+    int programCounter;             //Program counter index into instructionMemory
 
     Registers *registers;              //Pointer to register array (NOTE - SP is considered to be to R0)
-    size_t registerSize;
+    int registerSize;
 
     Instruction *instructionMemory;    //Array of instructions
     size_t numInstructions;            //Size of instructionMemory
     RAMElement *RAM;                   //Array of RAM elements
-    size_t RAMSize;
-    size_t stackSize;
+    int RAMSize;
+    int stackSize;
 
 };
 
@@ -136,7 +136,7 @@ VM VirtualMachine; //Only ONE should exist
 char **labelKey = NULL;
 size_t *labelValue = NULL;
 size_t labelDictionarySize = 0;
-bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam, size_t stackSize) {
+bool initialise_VM(int numberOfRegisters, int sizeOfRam, int stackSize) {
 
     if(numberOfRegisters == 0 || sizeOfRam == 0) {
         printf("Number of registers or size of RAM cannot be zero\n");
@@ -157,8 +157,8 @@ bool initialise_VM(size_t numberOfRegisters, size_t sizeOfRam, size_t stackSize)
         printf("Unable to allocate space for registers or RAM\n");
         return false;
     }
-    (VirtualMachine.registers[1]).intValue = sizeOfRam - 1; //Set SP to end of heap
 
+    (VirtualMachine.registers[1]).intValue = sizeOfRam - 1; //Set SP to end of heap
     return true;
 }
 
@@ -186,7 +186,6 @@ bool destroy_VM(void) {
     }
     return true;
 }
-
 
 
 
@@ -1240,12 +1239,15 @@ bool run_VM(void) {
 
             //Push PC onto stack then jump to label
 
-            if(VirtualMachine.stackSize >= VirtualMachine.RAMSize - (VirtualMachine.registers[1]).intValue - sizeof(int)) {
+
+            (VirtualMachine.registers[1]).intValue -= sizeof(int); //Move back by size of int in bytes
+
+            if(VirtualMachine.stackSize < VirtualMachine.RAMSize - (VirtualMachine.registers[1]).intValue
+            || VirtualMachine.registers[1].intValue > VirtualMachine.RAMSize - 1) {
                 printf("Stack overflow\n");
                 return false;
             }
 
-            (VirtualMachine.registers[1]).intValue -= sizeof(int); //Move back by size of int in bytes
             ((VirtualMachine.RAM)[VirtualMachine.registers[1].intValue]).RAM = i;
             //Add byte offset, cast to int pointer then dereference
 
@@ -1262,16 +1264,15 @@ bool run_VM(void) {
             //Pop address from stack, set PC to it
 
 
-
-            if((VirtualMachine.registers[1]).intValue - sizeof(int) >= VirtualMachine.RAMSize) {
+            (VirtualMachine.registers[1]).intValue += sizeof(int); //Move back by size of int in bytes
+            if(VirtualMachine.stackSize < VirtualMachine.RAMSize - (VirtualMachine.registers[1]).intValue
+            || VirtualMachine.registers[1].intValue > VirtualMachine.RAMSize - 1) {
                 printf("Stack underflow\n");
                 return false;
             }
 
-
-
             i = ((VirtualMachine.RAM)[VirtualMachine.registers[1].intValue]).RAM; //R1 has sp
-            (VirtualMachine.registers[1]).intValue += sizeof(int); //Move back by size of int in bytes
+
             //Add byte offset, cast to int pointer then dereference
 
 
