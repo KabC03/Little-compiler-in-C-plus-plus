@@ -861,7 +861,12 @@ bool get_tokens_VM(char *IRfileName) {
 
 bool get_value_label_dict(char *label, size_t *valueOut) {
 
-    for(int i = 0; i < labelDictionarySize + 1; i++) {
+    if(label == NULL) {
+        printf("Label unexpectedly NULL\n");
+        return false;
+    }
+
+    for(int i = 0; i < labelDictionarySize; i++) {
 
         if(strcmp(labelKey[i], label) == 0) {
             *(valueOut) = labelValue[i];
@@ -1152,7 +1157,6 @@ bool run_VM(void) {
                 printf("Unrecognised label\n");
                 return false;
             }
-
 
             if((VirtualMachine.registers[current_instruction.reg0]).intValue == 
             (VirtualMachine.registers[current_instruction.reg1]).intValue) {
