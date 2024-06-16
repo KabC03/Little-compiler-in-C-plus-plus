@@ -103,6 +103,13 @@ typedef union Registers {
     float floatValue;
 
 } Registers;
+typedef union IOdata {
+
+    int intVal;
+    float floatVal;
+    char charVal;
+
+} IOdata;
 typedef union RAMElement{
 
     RAM_TYPE RAM;
@@ -1364,10 +1371,10 @@ bool run_VM(void) {
         case PRINT:
             if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
 
-                printf("%d ",VirtualMachine.registers[current_instruction.reg0].intValue);
+                printf("%d",VirtualMachine.registers[current_instruction.reg0].intValue);
 
             } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
-                printf("%f ",VirtualMachine.registers[current_instruction.reg0].floatValue);
+                printf("%f",VirtualMachine.registers[current_instruction.reg0].floatValue);
 
             } else {
                 printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
@@ -1375,17 +1382,31 @@ bool run_VM(void) {
             break;
         case INPUT:
 
+
+
+
+
             if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
 
-                int newDataInt = 0;
-                scanf("%d",&newDataInt);
-                VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt;
+                IOdata newDataInt;
+                newDataInt.intVal = 0;
+
+                if(VirtualMachine.registers[current_instruction.reg1].intValue == 0) { //If equal to zero then input as int
+
+                    scanf("%d",&(newDataInt.intVal));
+                    VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt.intVal;
+                } else {
+                    scanf("%c",&(newDataInt.charVal));
+                    VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt.charVal;
+                }
 
             } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
                 
-                float newDataFloat = 0;
-                scanf("%f",&newDataFloat);
-                VirtualMachine.registers[current_instruction.reg0].floatValue = newDataFloat;
+                IOdata newDataFloat;
+                newDataFloat.floatVal = 0;
+
+                scanf("%f",&(newDataFloat.floatVal));
+                VirtualMachine.registers[current_instruction.reg0].floatValue = newDataFloat.floatVal;
 
             } else {
                 printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
