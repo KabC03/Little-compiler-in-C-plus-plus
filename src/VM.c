@@ -1371,18 +1371,28 @@ bool run_VM(void) {
         case PRINT:
             if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
 
-                printf("%d",VirtualMachine.registers[current_instruction.reg0].intValue);
+                if(VirtualMachine.registers[current_instruction.reg1].intValue == 0) { //If equal to zero then input as int
+
+                    printf("%d",VirtualMachine.registers[current_instruction.reg0].intValue);
+                } else {
+                    printf("%c",VirtualMachine.registers[current_instruction.reg0].intValue);
+                }
+
 
             } else if(current_instruction.ARG3.abstractDatatype == FLOAT_TYPE) {
+
                 printf("%f",VirtualMachine.registers[current_instruction.reg0].floatValue);
 
             } else {
                 printf("Unrecognised datatype: '%d'\n",current_instruction.opcode);
+
             }
             break;
+
+
+
+
         case INPUT:
-
-
 
 
 
@@ -1437,4 +1447,3 @@ bool run_VM(void) {
 
 
 
- 
