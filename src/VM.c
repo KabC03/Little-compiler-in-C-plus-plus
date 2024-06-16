@@ -1407,10 +1407,10 @@ bool run_VM(void) {
 
                 if(VirtualMachine.registers[current_instruction.reg1].intValue == 0) { //If equal to zero then input as int
 
-                    scanf("%d",&(newDataInt.intVal));
+                    scanf("%d\n",&(newDataInt.intVal));
                     VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt.intVal;
                 } else {
-                    scanf("%c",&(newDataInt.charVal));
+                    scanf("%c\n",&(newDataInt.charVal));
                     VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt.charVal;
                 }
 
@@ -1419,7 +1419,7 @@ bool run_VM(void) {
                 IOdata newDataFloat;
                 newDataFloat.floatVal = 0;
 
-                scanf("%f",&(newDataFloat.floatVal));
+                scanf("%f\n",&(newDataFloat.floatVal));
                 VirtualMachine.registers[current_instruction.reg0].floatValue = newDataFloat.floatVal;
 
             } else {
