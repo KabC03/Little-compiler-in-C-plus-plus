@@ -1399,7 +1399,7 @@ bool run_VM(void) {
         case INPUT:
 
 
-
+            
             if(current_instruction.ARG3.abstractDatatype == INTEGER_TYPE) {
 
                 IOdata newDataInt;
@@ -1407,10 +1407,12 @@ bool run_VM(void) {
 
                 if(VirtualMachine.registers[current_instruction.reg1].intValue == 0) { //If equal to zero then input as int
 
-                    scanf("%d\n",&(newDataInt.intVal));
+                    scanf("%d",&(newDataInt.intVal));
+                    while(getchar() != '\n');
                     VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt.intVal;
                 } else {
-                    scanf("%c\n",&(newDataInt.charVal));
+                    scanf("%c ",&(newDataInt.charVal));
+                    while(getchar() != '\n');
                     VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt.charVal;
                 }
 
@@ -1419,7 +1421,8 @@ bool run_VM(void) {
                 IOdata newDataFloat;
                 newDataFloat.floatVal = 0;
 
-                scanf("%f\n",&(newDataFloat.floatVal));
+                scanf("%f ",&(newDataFloat.floatVal));
+                while(getchar() != '\n');
                 VirtualMachine.registers[current_instruction.reg0].floatValue = newDataFloat.floatVal;
 
             } else {
