@@ -1248,6 +1248,7 @@ bool run_VM(void) {
 
             if(VirtualMachine.stackSize < VirtualMachine.RAMSize - (VirtualMachine.registers[1]).intValue
             || VirtualMachine.registers[1].intValue > VirtualMachine.RAMSize - 1) {
+
                 printf("Stack overflow\n");
                 return false;
             }
