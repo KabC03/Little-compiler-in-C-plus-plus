@@ -1255,6 +1255,8 @@ bool run_VM(void) {
             if(get_value_label_dict(current_instruction.ARG3.label, &labelOut) == false) {
                 return false;
             }
+
+
             i = labelOut - 1; //Set the PC (i) to this value
 
 
@@ -1264,15 +1266,15 @@ bool run_VM(void) {
             //Pop address from stack, set PC to it
 
 
-            (VirtualMachine.registers[1]).intValue += sizeof(int); //Move back by size of int in bytes
-            if(VirtualMachine.stackSize < VirtualMachine.RAMSize - (VirtualMachine.registers[1]).intValue
-            || VirtualMachine.registers[1].intValue > VirtualMachine.RAMSize - 1) {
+
+            if(VirtualMachine.stackSize < VirtualMachine.RAMSize - (VirtualMachine.registers[1]).intValue + sizeof(int)
+            || VirtualMachine.registers[1].intValue + sizeof(int) > VirtualMachine.RAMSize - 1) {
                 printf("Stack underflow\n");
                 return false;
             }
 
             i = ((VirtualMachine.RAM)[VirtualMachine.registers[1].intValue]).RAM; //R1 has sp
-
+            (VirtualMachine.registers[1]).intValue += sizeof(int); //Move back by size of int in byte 
             //Add byte offset, cast to int pointer then dereference
 
 
@@ -1403,3 +1405,4 @@ bool run_VM(void) {
 
 
 
+ 
