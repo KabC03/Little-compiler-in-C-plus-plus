@@ -240,9 +240,13 @@ bool is_integer(char *str) {
 bool is_float_or_integer(char *str) {
 
     bool foundDecimal = false;
+    bool foundNegative = false;
     for(int i = 0; str[i] != '\0'; i++) {
 
-        if(str[i] =='.' && foundDecimal == false) {
+
+        if(str[i] == '-' && foundNegative == false) {
+            foundNegative = true;
+        } else if(str[i] =='.' && foundDecimal == false) {
             foundDecimal = true;
         } else if(isdigit(str[i]) == 0) {
             return false;
@@ -1405,4 +1409,3 @@ bool run_VM(void) {
 
 
 
- 
