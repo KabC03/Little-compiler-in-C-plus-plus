@@ -1,4 +1,5 @@
-#Prints the factorial of an input number
+#VM intepreter ASM
+#Prints the factorial of an input number via recursion
 
 
 
