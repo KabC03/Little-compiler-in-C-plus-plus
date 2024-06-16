@@ -1411,7 +1411,7 @@ bool run_VM(void) {
                     while(getchar() != '\n');
                     VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt.intVal;
                 } else {
-                    scanf("%c ",&(newDataInt.charVal));
+                    scanf("%c",&(newDataInt.charVal));
                     while(getchar() != '\n');
                     VirtualMachine.registers[current_instruction.reg0].intValue = newDataInt.charVal;
                 }
@@ -1421,7 +1421,7 @@ bool run_VM(void) {
                 IOdata newDataFloat;
                 newDataFloat.floatVal = 0;
 
-                scanf("%f ",&(newDataFloat.floatVal));
+                scanf("%f",&(newDataFloat.floatVal));
                 while(getchar() != '\n');
                 VirtualMachine.registers[current_instruction.reg0].floatValue = newDataFloat.floatVal;
 
