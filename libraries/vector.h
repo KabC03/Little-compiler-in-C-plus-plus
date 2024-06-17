@@ -24,7 +24,7 @@ size_t vector_get_length(const Vector *const vector);
 
 uint8_t* vector_get_index(Vector *const vector, size_t index);
 uint8_t* vector_insert_index(Vector *const vector, size_t index, void* data);
-uint8_t* vector_insert_index(Vector *const vector, size_t index);
+uint8_t* vector_delete_index(Vector *const vector, size_t index);
 
 
 
