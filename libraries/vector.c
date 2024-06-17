@@ -32,6 +32,35 @@ bool vector_initialise(Vector *const vector, size_t elementSize) {
 
 
 /**
+ * vector_print
+ * ===============================================
+ * Brief: Prints a vector of integers (Used for debugging)
+ * 
+ * Param: *vector - Pointer to the vector of interest
+ * Return: void
+ * 
+ */
+void vector_print(const Vector *const vector) {
+
+    printf("[");
+    if(vector == NULL) {
+
+    } else if(vector->data == NULL) {
+
+    } else {
+    
+        for(int i = 0; i < vector->top; i++) {
+            printf("%d ",(vector->data)[i]);
+        }
+    }
+    printf("]");
+    return;
+}
+
+
+
+
+/**
  * vector_get_size
  * ===============================================
  * Brief: Gets the size (in elements) of a vector
