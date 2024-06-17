@@ -21,8 +21,8 @@ bool vector_initialise(Vector *const vector, size_t elementSize) {
     } else {
 
         vector->data = NULL;
-        vector->elementSize = 0;
-        vector->size = elementSize;
+        vector->elementSize = elementSize;
+        vector->size = 0;
         vector->top = 0;
     }
 
