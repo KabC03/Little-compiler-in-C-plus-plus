@@ -38,7 +38,7 @@ typedef enum OPCODE {
     BLT_F,
     BLE_F,
 
-
+    HALT,
 
     JUM,
 
@@ -678,7 +678,12 @@ bool get_tokens_VM(char *IRfileName) {
                 printf("Expected opcode: '%s'\n",copyInstructionInputBuffer);
                 return false;
             }
+            
             if(strcmp(currentToken, "LABEL") == 0) {
+
+            } else if(strcmp(currentToken, "HLT") == 0) {
+                current_instruction.opcode = HALT;
+                current_instruction.opcodeDatatype = NONE;
 
             } else {
                 printf("Unrecognised L type instruction: '%s'\n",copyInstructionInputBuffer);
@@ -695,28 +700,34 @@ bool get_tokens_VM(char *IRfileName) {
             }
 
 
-            labelKey = realloc(labelKey, ((labelDictionarySize + 1) * sizeof(char*)));
-            labelValue = realloc(labelValue, ((labelDictionarySize + 1) * sizeof(size_t)));   
 
-            if(labelKey == NULL || labelValue == NULL) {
-                printf("Failed to allocate memory for label dictionary\n");
-                return false;
+            if(current_instruction.opcode == LABEL) {
+                labelKey = realloc(labelKey, ((labelDictionarySize + 1) * sizeof(char*)));
+                labelValue = realloc(labelValue, ((labelDictionarySize + 1) * sizeof(size_t)));   
+                if(labelKey == NULL || labelValue == NULL) {
+                    printf("Failed to allocate memory for label dictionary\n");
+                    return false;
+                }
+                labelKey[labelDictionarySize] = malloc((strlen(currentToken) + 1) * sizeof(char));
+
+
+                if(labelKey[labelDictionarySize] == NULL) {
+                    printf("Failed to allocate memory for label dictionary\n");
+                    return false;
+                }
+                strcpy(labelKey[labelDictionarySize], currentToken);
+                labelValue[labelDictionarySize] = i; //Assign to current insruction address
+
+                labelDictionarySize += 1; 
+                i--; //Do this because this instruction should not appear in memory
+            } else {
+                current_instruction.ARG3.label = malloc((strlen(currentToken) + 1) * sizeof(char));
+                strcpy(current_instruction.ARG3.label, currentToken);
             }
-            labelKey[labelDictionarySize] = malloc((strlen(currentToken) + 1) * sizeof(char));
-
-
-            if(labelKey[labelDictionarySize] == NULL) {
-                printf("Failed to allocate memory for label dictionary\n");
-                return false;
-            }
 
 
 
 
-            strcpy(labelKey[labelDictionarySize], currentToken);
-            labelValue[labelDictionarySize] = i; //Assign to current insruction address
-
-            labelDictionarySize += 1; 
 
             //printf("key: %s || value: %d\n",labelKey[labelDictionarySize], labelValue[labelDictionarySize]);
 
@@ -725,7 +736,7 @@ bool get_tokens_VM(char *IRfileName) {
                 return false;
             }
 
-            i--; //Do this because this instruction should not appear in memory
+
 
         } else if(strcmp(currentToken, "[A]") == 0) {
             current_instruction.instructionType = A; //Abstract
@@ -1433,6 +1444,22 @@ bool run_VM(void) {
 
             break;
 
+
+        case HALT:
+
+
+            if(current_instruction.ARG3.label == NULL) {
+                printf("HLT message unexpectedly NULL\n");
+                return false;
+            }
+            printf("\n\n%s\n\n",current_instruction.ARG3.label);
+
+
+
+            break;
+
+
+
         default:
             printf("Invalid instruction: '%d'\n",current_instruction.opcode);
             return false;
@@ -1447,6 +1474,13 @@ bool run_VM(void) {
 
     return true;
 }
+
+
+
+
+
+
+
 
 
 
