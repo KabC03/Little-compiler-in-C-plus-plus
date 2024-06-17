@@ -1,10 +1,12 @@
 # Vector
 
 
-__NOTE: 
+## NOTE: 
 - Vectors do NOT automatically resize, they must be MANUALLY resized before insertion and optionally after a deletion
-- Vectors may hold ANY datatype (including structs or unions)__
+- Vectors may hold ANY datatype (including structs or unions)
 
+
+## Functions:
 
 - Initialising a vector
 
