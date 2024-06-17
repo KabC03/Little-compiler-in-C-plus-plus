@@ -148,7 +148,19 @@ uint8_t* vector_delete_index(Vector *const vector, size_t index) {
 }
 
 
+/**
+ * vector_resize
+ * ===============================================
+ * Brief: Resize a vector by expanding or shrinking it (zero based indexing)
+ * 
+ * Param: *vector - Pointer to the vector of interest
+ *        newSize - New vector sizeof(datatype) * number of elements
+ * Return: bool - T/F depending on if deletion was successful
+ * 
+ */
+bool vector_resize(Vector *const vector, size_t newSize) {
 
+}
 
 
 
