@@ -240,11 +240,15 @@ bool vector_resize(Vector *const vector, int offsetSize) {
 
     if(vector == NULL) {
         return false;
-    } else if(vector->size <= offsetSize) {
-
-        return false;
-
     } else {
+
+        if(offsetSize <= 0) {
+            if(vector->size <= (-1) * offsetSize) {
+                return false;
+            }
+        }
+
+
 
         size_t tempSize = vector->size;
 
