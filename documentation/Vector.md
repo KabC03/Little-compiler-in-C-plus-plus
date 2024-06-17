@@ -1,7 +1,9 @@
 # Vector
 
 
-__NOTE: Vectors do NOT automatically resize, they must be MANUALLY resized before insertion and optionally after a deletion__
+__NOTE: 
+- Vectors do NOT automatically resize, they must be MANUALLY resized before insertion and optionally after a deletion
+- Vectors may hold ANY datatype (including structs or unions)__
 
 
 - Initialising a vector
