@@ -79,7 +79,7 @@ size_t vector_get_size(const Vector *const vector) {
 
     } else {
 
-        size = vector->size;
+        size = vector->size - 1;
 
     }
     return size;
