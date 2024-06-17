@@ -116,15 +116,60 @@ The code above:
 
 
 
+- Destroy a vector
+
+  Free all memory associated with a vector
+
+
+```c
+Vector vector;
+//Initialisation
+if(vector_destroy(&vector) == false) {
+  printf("Failed to destroy vector\n");
+}
+
+/*
+The code above:
+  - Attempts to free all memory associated with 'vector'
+  - Checks if the removal was successful
+*/
+```
 
 
 
+- Get the end index of a vector
+
+  Get the index of the last element in a vector
+
+
+```c
+Vector vector;
+//Initialisation
+printf("Length = %zu\n",vector_get_length(&vector));
+
+/*
+The code above:
+  - Prints the index of the last element in the vector 'vector'
+*/
+```
 
 
 
+- Get the size of a vector
+
+  Get the max number of elements that can fit in a vector
 
 
+```c
+Vector vector;
+//Initialisation
+printf("Length = %zu\n",vector_get_size(&vector));
 
+/*
+The code above:
+  - Prints the max capacity of the vector 'vector'
+*/
+```
 
 
 
