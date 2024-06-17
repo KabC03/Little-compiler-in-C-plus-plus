@@ -231,3 +231,8 @@ bool vector_resize(Vector *const vector, size_t offsetSize) {
     }
     return true;
 }
+
+
+
+
+
