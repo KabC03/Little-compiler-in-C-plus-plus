@@ -53,7 +53,7 @@ void vector_print(const Vector *const vector) {
             printf("%d ",(vector->data)[i]);
         }
     }
-    printf("]");
+    printf("]\n");
     return;
 }
 
@@ -260,6 +260,38 @@ bool vector_resize(Vector *const vector, size_t offsetSize) {
     }
     return true;
 }
+
+
+
+/**
+ * vector_destroy
+ * ===============================================
+ * Brief: Destroy a vector and associated memory
+ * 
+ * Param: *vector - Pointer to the vector of interest
+ * 
+ * Return: bool - T/F depending on if freeing was successful
+ * 
+ */
+bool vector_destroy(Vector *const vector) {
+    if(vector == NULL) {
+        return false;
+    } else if(vector->data == NULL) {
+        return false;
+    } else {
+
+        free(vector->data);
+
+    }
+    return true;
+}
+
+
+
+
+
+
+
 
 
 
