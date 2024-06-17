@@ -122,17 +122,30 @@ uint8_t* vector_get_index(Vector *const vector, size_t index) {
  */
 bool vector_insert_index(Vector *const vector, size_t index, void* data) {
 
-    if(vector == NULL) {
-        return NULL;
+    if(vector == NULL || data == NULL) {
+        return false;
     } else if(vector->data == NULL) {
-        return NULL;
+        return false;
     } else {
 
-        if(index > vector->top + 1) {
-            return NULL; //OOB error
-        }
-    }
 
+
+        if(index > vector->top + 1) {
+
+            return false; //OOB error
+            
+        } else {
+
+
+            for(int i = vector->top; i < index; i--) {
+                memcpy(&(vector->data)[(i * vector->elementSize) + 1], &(vector->data)[(i*vector->elementSize)], vector->elementSize);
+            }
+
+            memcpy(&(vector->data)[index * vector->elementSize], data, vector->elementSize);
+        }
+        vector->top++;
+    }
+    return true;
 }
 
 
@@ -152,7 +165,28 @@ bool vector_insert_index(Vector *const vector, size_t index, void* data) {
  */
 bool vector_delete_index(Vector *const vector, size_t index) {
 
+    if(vector == NULL) {
+        return false;
 
+    } else {
+
+
+
+        if(index > vector->top + 1) {
+
+            return false; //OOB error
+            
+        } else {
+
+
+            for(int i = 0; i < vector->top; i++) {
+                memcpy(&(vector->data)[(i * vector->elementSize)], &(vector->data)[(i*vector->elementSize) + 1], vector->elementSize);
+            }
+
+        }
+        vector->top--;
+    }
+    return true;
 }
 
 
@@ -169,6 +203,7 @@ bool vector_delete_index(Vector *const vector, size_t index) {
  */
 bool vector_resize(Vector *const vector, size_t newSize) {
 
+    return true;
 }
 
 
