@@ -139,11 +139,11 @@ bool vector_insert_index(Vector *const vector, size_t index, void* data) {
             return false; //OOB error
             
         } else {
-            for(int i = vector->top; i < index; i--) {
+            for(int i = vector->top; i <= index; i--) {
                 memcpy(&(vector->data)[(i + 1) * (vector->elementSize)], &(vector->data)[(i*vector->elementSize)], vector->elementSize);
             }
 
-            memcpy(&(vector->data)[index * vector->elementSize], data, vector->elementSize);
+            memcpy(&(vector ->data)[index * vector->elementSize], data, vector->elementSize);
         }
         vector->top++;
     }
@@ -185,7 +185,7 @@ bool vector_delete_index(Vector *const vector, size_t index) {
         } else {
 
 
-            for(int i = 0; i < vector->top; i++) {
+            for(int i = index; i < vector->top; i++) { //Dont need <= since last element holds junk data anyway
                 memcpy(&(vector->data)[(i * vector->elementSize)], &(vector->data)[(i*vector->elementSize) + 1], vector->elementSize);
             }
 
@@ -203,7 +203,7 @@ bool vector_delete_index(Vector *const vector, size_t index) {
  * Brief: Resize a vector by expanding or shrinking it (zero based indexing)
  * 
  * Param: *vector - Pointer to the vector of interest
- *        offsetSize - Offset of new size
+ *        offsetSize - Offset of new size (number of elements)
  * Return: bool - T/F depending on if resize was successful
  * 
  */
@@ -219,7 +219,7 @@ bool vector_resize(Vector *const vector, size_t offsetSize) {
 
         size_t tempSize = vector->size;
 
-        vector->size = (vector->size + offsetSize ) * vector->elementSize;
+        vector->size = (vector->size + offsetSize) * vector->elementSize;
         vector->data = realloc(vector->data, (vector->size + offsetSize ) * vector->elementSize);
 
 
