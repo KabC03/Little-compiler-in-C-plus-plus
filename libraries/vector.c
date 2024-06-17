@@ -215,7 +215,7 @@ bool vector_delete_index(Vector *const vector, size_t index) {
             
         } else {
 
-            for(int i = index; i < vector->top; i++) { //Dont need <= since last element holds junk data anyway
+            for(int i = index; i < vector->top - 1; i++) { //Dont need <= since last element holds junk data anyway
                 memcpy(&((vector->data)[(i * vector->elementSize)]), &((vector->data)[(i + 1) * vector->elementSize]), vector->elementSize);
             }
 
@@ -294,15 +294,3 @@ bool vector_destroy(Vector *const vector) {
     }
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
