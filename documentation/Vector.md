@@ -1,9 +1,14 @@
 # Vector
 
 
+
+- Initialising a vector
+
+  Must be done before usage
+
 ```c
 
-int
+
 
 ```
 
