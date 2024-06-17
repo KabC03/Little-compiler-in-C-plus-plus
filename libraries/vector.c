@@ -139,7 +139,7 @@ bool vector_insert_index(Vector *const vector, size_t index, void* data) {
             return false; //OOB error
             
         } else {
-            for(int i = vector->top; i <= index; i--) {
+            for(int i = vector->top; i >= index; i--) {
                 memcpy(&(vector->data)[(i + 1) * (vector->elementSize)], &(vector->data)[(i*vector->elementSize)], vector->elementSize);
             }
 
