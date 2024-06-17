@@ -1,6 +1,6 @@
 #include "vector.h"
 
-int main() {
+int main(void) {
     Vector vector;
     int data;
 
