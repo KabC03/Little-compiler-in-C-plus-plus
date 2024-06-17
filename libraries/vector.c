@@ -140,7 +140,7 @@ bool vector_insert_index(Vector *const vector, size_t index, void* data) {
             
         } else {
             for(int i = vector->top; i < index; i--) {
-                memcpy(&(vector->data)[(i * vector->elementSize) + 1], &(vector->data)[(i*vector->elementSize)], vector->elementSize);
+                memcpy(&(vector->data)[(i + 1) * (vector->elementSize)], &(vector->data)[(i*vector->elementSize)], vector->elementSize);
             }
 
             memcpy(&(vector->data)[index * vector->elementSize], data, vector->elementSize);
