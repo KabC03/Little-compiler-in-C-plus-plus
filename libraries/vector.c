@@ -178,16 +178,15 @@ bool vector_delete_index(Vector *const vector, size_t index) {
 
 
 
-        if(index > vector->top + 1 || vector->top + 1 > (vector->size)/(vector->elementSize)) { 
+        if(index > vector->top + 1) { 
             //top is the INDEX of the top element, size is the NUMBER OF BYTES in the array
 
             return false; //OOB error
             
         } else {
 
-
             for(int i = index; i < vector->top; i++) { //Dont need <= since last element holds junk data anyway
-                memcpy(&(vector->data)[(i * vector->elementSize)], &(vector->data)[(i*vector->elementSize) + 1], vector->elementSize);
+                memcpy(&(vector->data)[(i * vector->elementSize)], &(vector->data)[(i + 1) * vector->elementSize], vector->elementSize);
             }
 
         }
