@@ -79,7 +79,7 @@ size_t vector_get_size(const Vector *const vector) {
 
     } else {
 
-        size = (vector->size)/(vector->elementSize);
+        size = vector->size;
 
     }
     return size;
@@ -248,11 +248,11 @@ bool vector_resize(Vector *const vector, size_t offsetSize) {
 
         size_t tempSize = vector->size;
 
-        vector->size = (vector->size + offsetSize) * vector->elementSize;
-        vector->data = realloc(vector->data, (vector->size + offsetSize ) * vector->elementSize);
+        vector->size = vector->size + offsetSize;
+        vector->data = realloc(vector->data, (vector->size) * vector->elementSize);
 
 
-        if((vector->size)/(vector->elementSize) < (vector->top) + 1) { //If the top is beyond the size some elements were lost
+        if((vector->size) < (vector->top) + 1) { //If the top is beyond the size some elements were lost
             vector->top = vector->size;
         }
 
@@ -301,4 +301,3 @@ bool vector_destroy(Vector *const vector) {
 
 
 
- 
