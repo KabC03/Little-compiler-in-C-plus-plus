@@ -1,6 +1,8 @@
 # Vector
 
 
+__NOTE: Vectors do NOT automatically resize, they must be MANUALLY resized before insertion__
+
 
 - Initialising a vector
 
@@ -21,6 +23,9 @@ The code above:
 
 ```
 
+- Resizing a vector
+
+  Offsets the amount of items that can be held in the vector
 
 
 
