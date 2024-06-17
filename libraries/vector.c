@@ -251,12 +251,15 @@ bool vector_resize(Vector *const vector, size_t offsetSize) {
         vector->size = (vector->size + offsetSize) * vector->elementSize;
         vector->data = realloc(vector->data, (vector->size + offsetSize ) * vector->elementSize);
 
+        if(vector->size < (vector->top) + 1) { //If the top is beyond the size some elements were lost
+            vector->top = vector->size;
+        }
+
 
         if(vector->data == NULL) {
             vector->size = tempSize; //Set size back
             return false;
         }
-
     }
     return true;
 }
