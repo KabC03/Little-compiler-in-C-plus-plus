@@ -2,8 +2,6 @@
 
 
 
-
-
 /**
  * vector_get_size
  * ===============================================
@@ -122,8 +120,18 @@ uint8_t* vector_get_index(Vector *const vector, size_t index) {
  * Return: bool - T/F depending on if insertion was successful
  * 
  */
-uint8_t* vector_insert_index(Vector *const vector, size_t index, void* data) {
+bool vector_insert_index(Vector *const vector, size_t index, void* data) {
 
+    if(vector == NULL) {
+        return NULL;
+    } else if(vector->data == NULL) {
+        return NULL;
+    } else {
+
+        if(index > vector->top + 1) {
+            return NULL; //OOB error
+        }
+    }
 
 }
 
@@ -146,6 +154,7 @@ bool vector_delete_index(Vector *const vector, size_t index) {
 
 
 }
+
 
 
 /**
