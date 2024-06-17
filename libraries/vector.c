@@ -251,7 +251,8 @@ bool vector_resize(Vector *const vector, size_t offsetSize) {
         vector->size = (vector->size + offsetSize) * vector->elementSize;
         vector->data = realloc(vector->data, (vector->size + offsetSize ) * vector->elementSize);
 
-        if(vector->size < (vector->top) + 1) { //If the top is beyond the size some elements were lost
+
+        if((vector->size)/(vector->elementSize) < (vector->top) + 1) { //If the top is beyond the size some elements were lost
             vector->top = vector->size;
         }
 
@@ -300,3 +301,4 @@ bool vector_destroy(Vector *const vector) {
 
 
 
+ 
