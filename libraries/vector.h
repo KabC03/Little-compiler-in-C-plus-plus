@@ -5,6 +5,11 @@
 #include <stdint.h>
 
 
+
+#define Vector(type, name)\
+    Vector name;\
+    vector_initialise(&name, sizeof(type));\
+
 typedef struct Vector {
 
     size_t size;         //Memory of vector (num of bytes)
