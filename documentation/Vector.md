@@ -16,7 +16,7 @@ if(vector_initialise(&vector, sizeof(int)) == false) {
 The code above:
   - Instantiates a Vector named 'vector'
   - Initialises it to hold integers
-
+  - Checks to make sure initialisation was successful
 */
 
 ```
