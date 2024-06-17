@@ -47,7 +47,7 @@ The code above:
 */
 ```
 
-- Inserting into a veector
+- Inserting into a vector
 
   Inserts an item into a vector at any valid index (0 -> end)
 
@@ -70,9 +70,28 @@ The code above:
 ```
 
 
+- Getting an item from a vector
 
+  Get a pointer to some data in the vector
 
+```c
+Vector vector;
+//Initialisation
+int *value = (int*)(vector_get_index(0));
 
+if(value == NULL) {
+  printf("Failed to get value\n);
+} else {
+  printf("element: ",*(value));
+}
+
+/*
+The code above:
+  - Gets the integer in 'vector' of index '0'
+  - Checks if the pointer returned was NULL (indicating failure)
+  - If the pointer is valid, it prints the value
+*/
+```
 
 
 
