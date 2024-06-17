@@ -1,5 +1,8 @@
 //Generic vectors in C - uses uint8_t to index with bytes directly
 
+#ifndef VECTOR_H
+#define VECTOR_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -40,4 +43,4 @@ bool vector_resize(Vector *const vector, int offsetSize);
 bool vector_destroy(Vector *const vector);
 
 
-
+#endif // VECTOR_H
