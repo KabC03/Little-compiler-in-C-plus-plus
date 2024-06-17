@@ -11,7 +11,7 @@
   - VM tokenising. Make labels more efficient. Stop doing realloc every loop. Free VM memory upon failure. Make sure everything works
   - VM - make sure allocate/free work as well as RAM store/LOAD
   - Write syntax for IR
-  - Vector documentation
+  - Datastructures (stack, queue, LL, tree)
 
 
 
