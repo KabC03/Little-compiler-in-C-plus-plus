@@ -50,7 +50,7 @@ void vector_print(const Vector *const vector) {
     } else {
     
         for(int i = 0; i < vector->top; i++) {
-            printf("%d ",(vector->data)[i]);
+            printf("%d ",(vector->data)[i * (vector->elementSize)]);
         }
     }
     printf("]\n");
@@ -170,10 +170,10 @@ bool vector_insert_index(Vector *const vector, size_t index, void* data) {
         } else {
             for(size_t i = vector->top; i > index; i--) {
                 printf("Index = %zu\n",i);
-                memcpy(&(vector->data)[(i + 1) * (vector->elementSize)], &(vector->data)[(i*vector->elementSize)], vector->elementSize);
+                memcpy(&((vector->data)[(i + 1) * (vector->elementSize)]), &((vector->data)[(i*vector->elementSize)]), vector->elementSize);
             }
 
-            memcpy(&(vector ->data)[index * vector->elementSize], data, vector->elementSize);
+            memcpy(&((vector->data)[index * vector->elementSize]), data, vector->elementSize);
         }
         vector->top++;
     }
@@ -215,7 +215,7 @@ bool vector_delete_index(Vector *const vector, size_t index) {
         } else {
 
             for(int i = index; i < vector->top; i++) { //Dont need <= since last element holds junk data anyway
-                memcpy(&(vector->data)[(i * vector->elementSize)], &(vector->data)[(i + 1) * vector->elementSize], vector->elementSize);
+                memcpy(&((vector->data)[(i * vector->elementSize)]), &((vector->data)[(i + 1) * vector->elementSize]), vector->elementSize);
             }
 
         }
