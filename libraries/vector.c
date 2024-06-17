@@ -34,7 +34,7 @@ bool vector_initialise(Vector *const vector, size_t elementSize) {
 /**
  * vector_get_size
  * ===============================================
- * Brief: Gets the size (in bytes) of a vector
+ * Brief: Gets the size (in elements) of a vector
  * 
  * Param: *vector - Pointer to the vector of interest
  * Return: size_t - Size of a vector in bytes
@@ -50,7 +50,7 @@ size_t vector_get_size(const Vector *const vector) {
 
     } else {
 
-        size = vector->size;
+        size = (vector->size)/(vector->elementSize);
 
     }
     return size;
@@ -72,7 +72,7 @@ size_t vector_get_length(const Vector *const vector) {
     if(vector == NULL) {
         return 0;
     } else {
-        length = vector->top;
+        length = (vector->top);
     }
 
     return length;
