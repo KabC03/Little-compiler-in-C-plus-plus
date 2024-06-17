@@ -21,8 +21,8 @@ bool vector_initialise(Vector *const vector, size_t elementSize) {
     } else {
 
         vector->data = NULL;
-        vector->elementSize = 0;
-        vector->size = elementSize;
+        vector->elementSize = elementSize;
+        vector->size = 0;
         vector->top = 0;
     }
 
@@ -134,11 +134,11 @@ bool vector_insert_index(Vector *const vector, size_t index, void* data) {
 
 
         if(index > vector->top + 1 || vector->top + 1 > (vector->size)/(vector->elementSize)) { 
+
             //top is the INDEX of the top element, size is the NUMBER OF BYTES in the array
             return false; //OOB error
             
         } else {
-
             for(int i = vector->top; i < index; i--) {
                 memcpy(&(vector->data)[(i * vector->elementSize) + 1], &(vector->data)[(i*vector->elementSize)], vector->elementSize);
             }
@@ -217,10 +217,17 @@ bool vector_resize(Vector *const vector, size_t offsetSize) {
 
     } else {
 
+        size_t tempSize = vector->size;
+
+        vector->size = (vector->size + offsetSize ) * vector->elementSize;
         vector->data = realloc(vector->data, (vector->size + offsetSize ) * vector->elementSize);
+
+
         if(vector->data == NULL) {
+            vector->size = tempSize; //Set size back
             return false;
         }
+
     }
     return true;
 }
