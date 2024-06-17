@@ -89,7 +89,7 @@ size_t vector_get_size(const Vector *const vector) {
 /**
  * vector_get_len
  * ===============================================
- * Brief: Gets the length of the vector (zero based indexing)
+ * Brief: Gets the index of the last element in the vector
  * 
  * Param: *vector - Pointer to the vector of interest
  * Return: size_t - Size of a vector in bytes
@@ -101,7 +101,7 @@ size_t vector_get_length(const Vector *const vector) {
     if(vector == NULL) {
         return 0;
     } else {
-        length = (vector->top);
+        length = (vector->top) - 1;
     }
 
     return length;
