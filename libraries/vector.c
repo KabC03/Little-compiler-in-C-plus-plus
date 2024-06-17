@@ -133,7 +133,7 @@ bool vector_insert_index(Vector *const vector, size_t index, void* data) {
 
 
 
-        if(index > vector->top + 1 || vector->top + 1 > (vector->size)/(vector->elementSize)) { 
+        if(index > vector->top + 1 || vector->top + 1 > (vector->size)) { 
 
             //top is the INDEX of the top element, size is the NUMBER OF BYTES in the array
             return false; //OOB error
@@ -178,7 +178,7 @@ bool vector_delete_index(Vector *const vector, size_t index) {
 
 
 
-        if(index > vector->top + 1) { 
+        if(index > vector->top) { 
             //top is the INDEX of the top element, size is the NUMBER OF BYTES in the array
 
             return false; //OOB error
