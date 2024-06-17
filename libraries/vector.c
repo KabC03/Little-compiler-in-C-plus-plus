@@ -139,7 +139,8 @@ bool vector_insert_index(Vector *const vector, size_t index, void* data) {
             return false; //OOB error
             
         } else {
-            for(int i = vector->top; i >= index; i--) {
+            for(size_t i = vector->top; i > index; i--) {
+                printf("Index = %zu\n",i);
                 memcpy(&(vector->data)[(i + 1) * (vector->elementSize)], &(vector->data)[(i*vector->elementSize)], vector->elementSize);
             }
 
@@ -231,32 +232,3 @@ bool vector_resize(Vector *const vector, size_t offsetSize) {
     }
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
