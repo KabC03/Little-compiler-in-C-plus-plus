@@ -236,7 +236,7 @@ bool vector_delete_index(Vector *const vector, size_t index) {
  * Return: bool - T/F depending on if resize was successful
  * 
  */
-bool vector_resize(Vector *const vector, size_t offsetSize) {
+bool vector_resize(Vector *const vector, int offsetSize) {
 
     if(vector == NULL) {
         return false;
