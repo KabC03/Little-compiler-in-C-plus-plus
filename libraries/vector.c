@@ -128,8 +128,9 @@ uint8_t* vector_get_index(Vector *const vector, size_t index) {
         return NULL;
     } else {
 
-        if(index > vector->top || vector->data == NULL) {
+        if(index + 1 > vector->top || vector->data == NULL) {
             return NULL;
+
         } else {
 
             result = &((vector->data)[index * vector->elementSize]);
