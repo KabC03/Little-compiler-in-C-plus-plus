@@ -1,3 +1,5 @@
+//Generic vectors in C - uses uint8_t to index with bytes directly
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
