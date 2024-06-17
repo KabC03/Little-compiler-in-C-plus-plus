@@ -5,6 +5,7 @@
 - Vectors do NOT automatically resize, they must be MANUALLY resized before insertion and optionally after a deletion
 - Vectors may hold ANY datatype without any modification to the library (including structs or unions)
 
+- As an array structure, frequent insertions or deletions anywhere except the back of the vector are computationally costly
 
 ## Functions:
 
@@ -70,9 +71,9 @@ The code above:
 ```
 
 
-- Getting an item from a vector
+- Getting an item from a vector at an index
 
-  Get a pointer to some data in the vector
+  Get a pointer to some data in the vector at an index
 
 ```c
 Vector vector;
@@ -94,10 +95,24 @@ The code above:
 ```
 
 
+- Delete an item at an index in a vector
+
+  Delete an element in a vector
 
 
+```c
+Vector vector;
+//Initialisation
+if(vector_delete_index(&vector, 0) == false) {
+  printf("Failed to remove item from vector\n");
+}
 
-
+/*
+The code above:
+  - Removes an item from 'vector' at index '0'
+  - Checks if the removal was successful
+*/
+```
 
 
 
