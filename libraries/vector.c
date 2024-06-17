@@ -142,7 +142,7 @@ uint8_t* vector_insert_index(Vector *const vector, size_t index, void* data) {
  * Return: bool - T/F depending on if deletion was successful
  * 
  */
-uint8_t* vector_insert_index(Vector *const vector, size_t index) {
+uint8_t* vector_delete_index(Vector *const vector, size_t index) {
 
 
 }
