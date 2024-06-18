@@ -69,7 +69,7 @@ bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size
         return false;
     }
 
-    if(vector_resize((Vector*)&((map->mapNodes)), initialMapSize) == false) {
+    if(vector_resize(&((map->mapNodes)), initialMapSize) == false) {
         vector_destroy(&(map->mapNodes));
         return false;
     }
@@ -78,10 +78,10 @@ bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size
 
 
         if(vector_initialise((Vector*)vector_get_index(&(map->mapNodes), i), dataSize) == false) {
-
+            return false;
         }
         if(vector_resize((Vector*)vector_get_index(&(map->mapNodes), i), bucketSize) == false) {
-
+            return false;
         }
     }
 
