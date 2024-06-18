@@ -16,6 +16,8 @@ typedef struct Map {
     Vector mapNodes;        //Vector of mapnodes
 } Map;
 
+
+void map_print(Map *const map);
 bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size_t bucketSize);
 
 
