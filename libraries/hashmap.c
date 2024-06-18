@@ -22,7 +22,8 @@ void map_print(Map *const map) {
         return;
     }
 
-    for(int i = 0; i <= vector_get_length(&(map->mapNodes)); i++) {
+
+    for(size_t i = 0; i <= vector_get_length(&(map->mapNodes)); i++) {
 
         vector_print((Vector*)vector_get_index((Vector*)(&((map->mapNodes))), i));
     }
@@ -38,7 +39,7 @@ void cleanup(Map *map) {
         return;
     } else {
 
-        for(int i = 0; i <= vector_get_length(&(map->mapNodes)); i++) {
+        for(size_t i = 0; i <= vector_get_length(&(map->mapNodes)); i++) {
 
             vector_destroy((Vector*)vector_get_index((Vector*)(&((map->mapNodes))), i));
         }
