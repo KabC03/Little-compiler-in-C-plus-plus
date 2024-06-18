@@ -8,6 +8,30 @@ struct MapNode {
 };
 
 
+/**
+ * map_print
+ * =========================
+ * Brief: Prints a map of integers (used for debugging)
+ * Param: *map - Map to be printed
+ * 
+ * Return: void
+ */
+void map_print(Map *const map) {
+
+    if(map == NULL) {
+        return;
+    }
+
+    for(int i = 0; i <= vector_get_length(&(map->mapNodes)); i++) {
+
+        vector_print((Vector*)vector_get_index((Vector*)(&((map->mapNodes))), i));
+    }
+
+    return;
+}
+
+
+
 void cleanup(Map *map) {
 
     if(map == NULL) {
@@ -32,7 +56,7 @@ void cleanup(Map *map) {
  *      dataSize - Size of the data in the map (e.g sizeof(int))
  *      initialMapSize - Initial size of the map
  *      bucketSize - number of initial expected collisions
- * 
+ * Return: T/F depending on if initialisation was successful
  */
 bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size_t bucketSize) {
 
