@@ -16,15 +16,24 @@ void cleanup(Map *map) {
 
         for(int i = 0; i <= vector_get_length(&(map->mapNodes)); i++) {
 
-            vector_destroy(vector_get_index(&(map->mapNodes), i));
+            vector_destroy((Vector*)vector_get_index((Vector*)(&((map->mapNodes))), i));
         }
     }
-    vector_destroy(&(map->mapNodes));
+    vector_destroy((Vector*)(&((map->mapNodes))));
 
     return;
 }
 
-
+/**
+ * map_initialise
+ * =========================
+ * Brief: Initialises a map
+ * Param: *map - Map to be initialised
+ *      dataSize - Size of the data in the map (e.g sizeof(int))
+ *      initialMapSize - Initial size of the map
+ *      bucketSize - number of initial expected collisions
+ * 
+ */
 bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size_t bucketSize) {
 
     if(map == NULL || dataSize == 0 || initialMapSize == 0 || bucketSize == 0) {
@@ -35,7 +44,7 @@ bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size
         return false;
     }
 
-    if(vector_resize(&(map->mapNodes), initialMapSize) == false) {
+    if(vector_resize((Vector*)&((map->mapNodes)), initialMapSize) == false) {
         vector_destroy(&(map->mapNodes));
         return false;
     }
@@ -43,10 +52,10 @@ bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size
     for(int i = 0; i < initialMapSize; i++) {
 
 
-        if(vector_initialise(vector_get_index(&(map->mapNodes), i), dataSize) == false) {
+        if(vector_initialise((Vector*)vector_get_index(&(map->mapNodes), i), dataSize) == false) {
 
         }
-        if(vector_resize(vector_get_index(&(map->mapNodes), i), bucketSize) == false) {
+        if(vector_resize((Vector*)vector_get_index(&(map->mapNodes), i), bucketSize) == false) {
 
         }
     }
