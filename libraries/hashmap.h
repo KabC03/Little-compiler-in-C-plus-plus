@@ -16,6 +16,7 @@ typedef struct Map {
     Vector mapNodes;        //Vector of mapnodes
 } Map;
 
+bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size_t bucketSize);
 
 
 #endif // HASHMAP_H
