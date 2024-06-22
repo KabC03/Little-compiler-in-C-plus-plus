@@ -98,7 +98,6 @@ bool stack_push(Stack *const stack, void *data) {
  * Brief: Peak an item from the stack
  * 
  * Param: *stack - stack of interest
- *        *result - output pointer of where the result should be stored
  * Return: void* - pointer to result
  * 
  */
