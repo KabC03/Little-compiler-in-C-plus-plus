@@ -110,6 +110,38 @@ size_t vector_get_length(const Vector *const vector) {
 
 
 
+/**
+ * vector_set_index
+ * ===============================================
+ * Brief: Sets an index of the vector to data
+ * 
+ * Param: *vector - Pointer to the vector of interest
+ *        index - Index of interest
+ *        *data - data of interest
+ * Return: uint8_t - Pointer to data within the vector
+ * 
+ */
+bool vector_set_index(Vector *const vector, size_t index, void* data) {
+
+    if(vector == NULL || data == false) {
+        return false;
+    } else {
+
+        if(index + 1 > vector->top || vector->data == NULL) {
+            return false;
+
+        } else {
+
+            memcpy(&((vector->data)[index * vector->elementSize]),data, vector->elementSize);
+        }
+    }
+
+    return true;
+}
+
+
+
+
 
 /**
  * vector_get_index
@@ -144,7 +176,7 @@ uint8_t* vector_get_index(Vector *const vector, size_t index) {
 /**
  * vector_insert_index
  * ===============================================
- * Brief: Insert an item at an index in the vector (zero based indexing)
+ * Brief: Insert an item at an index in the vector (zero based indexing) - shifting elements
  * 
  * Param: *vector - Pointer to the vector of interest
  *        index - Index of interest
@@ -294,5 +326,3 @@ bool vector_destroy(Vector *const vector) {
     }
     return true;
 }
-
-
