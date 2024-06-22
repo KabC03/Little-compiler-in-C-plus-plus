@@ -12,6 +12,7 @@
   - VM - make sure allocate/free work as well as RAM store/LOAD
   - Write syntax for IR
   - Datastructures (stack, queue, LL, tree)
+  - Pool allocator
 
 
   - Vectors:
