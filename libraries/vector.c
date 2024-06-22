@@ -110,34 +110,7 @@ size_t vector_get_length(const Vector *const vector) {
 
 
 
-/**
- * vector_set_index
- * ===============================================
- * Brief: Sets an index of the vector to data
- * 
- * Param: *vector - Pointer to the vector of interest
- *        index - Index of interest
- *        *data - data of interest
- * Return: uint8_t - Pointer to data within the vector
- * 
- */
-bool vector_set_index(Vector *const vector, size_t index, void* data) {
 
-    if(vector == NULL || data == false) {
-        return false;
-    } else {
-
-        if(index + 1 > vector->top || vector->data == NULL) {
-            return false;
-
-        } else {
-
-            memcpy(&((vector->data)[index * vector->elementSize]),data, vector->elementSize);
-        }
-    }
-
-    return true;
-}
 
 
 
@@ -326,6 +299,72 @@ bool vector_destroy(Vector *const vector) {
     }
     return true;
 }
+
+
+
+
+
+
+
+// SAFE functions - easy to use due to automatic resizing but have a small performance cost
+
+
+
+/**
+ * vector_set_index
+ * ===============================================
+ * Brief: Sets an index of the vector to data
+ * 
+ * Param: *vector - Pointer to the vector of interest
+ *        index - Index of interest
+ *        *data - data of interest
+ * Return: uint8_t - Pointer to data within the vector
+ * 
+ */
+bool vector_set_index(Vector *const vector, size_t index, void* data) {
+
+    if(vector == NULL || data == false) {
+        return false;
+    } else {
+
+        if(index + 1 > vector->top || vector->data == NULL) {
+            return false;
+
+        } else {
+
+            memcpy(&((vector->data)[index * vector->elementSize]),data, vector->elementSize);
+        }
+    }
+
+    return true;
+}
+
+
+
+
+
+
+
+
+/*
+TODO:
+
+- vector_insert_end
+- vector_push_back
+- vector_pop_back
+- vector_clear
+- vector_shrink_to_fit
+- vector_set_size (set the size of the vector)
+*/
+
+
+
+
+
+
+
+
+
 
 
 
