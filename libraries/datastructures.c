@@ -94,17 +94,23 @@ bool stack_pop(Stack *const stack, void *result) {
         return false;
     } else {
 
-        memcpy(result, stack->head->data, stack->datatypeSize);
+        if(stack->head == NULL) {
+            result = NULL;
+            return false;
+
+
+        } else {
+            memcpy(result, stack->head->data, stack->datatypeSize);
+
+            Node *freePtr = stack->head;
+            free(stack->head->data);
 
 
 
-        Node *freePtr = stack->head;
-        free(stack->head->data);
+            stack->head = stack->head->next;
+            free(freePtr);
+        }
 
-
-
-        stack->head = stack->head->next;
-        free(freePtr);
     }
 
     return true;
