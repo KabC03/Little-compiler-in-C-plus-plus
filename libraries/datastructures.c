@@ -68,6 +68,7 @@ bool stack_push(Stack *const stack, void *data) {
         }
         memcpy(newNode->data, data, stack->datatypeSize);
 
+
         newNode->next = stack->head;
         stack->head = newNode;
     }
@@ -93,9 +94,14 @@ bool stack_pop(Stack *const stack, void *result) {
         return false;
     } else {
 
-        memcpy(result, stack->head, stack->datatypeSize);
+        memcpy(result, stack->head->data, stack->datatypeSize);
+
+
 
         Node *freePtr = stack->head;
+        free(stack->head->data);
+
+
 
         stack->head = stack->head->next;
         free(freePtr);
@@ -179,4 +185,3 @@ bool stack_pop(Stack *const stack, void *result) {
 
 
 
- 
