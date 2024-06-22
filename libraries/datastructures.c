@@ -164,7 +164,17 @@ bool stack_pop(Stack *const stack, void *result) {
 
 
 
+//Queue
 
+
+
+
+//Priority Queue
+
+
+
+
+//Linked list
 
 
 
