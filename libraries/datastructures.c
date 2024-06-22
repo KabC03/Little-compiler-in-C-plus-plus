@@ -1,6 +1,28 @@
 #include "datastructures.h"
 
 
+
+//Macro for initialisation
+#define initialise(datatype, dataSize)\
+    do {\
+        if(datatype == NULL || dataSize == 0) {\
+            return false;\
+        } else {\
+            (datatype)->head = NULL;\
+            (datatype)->datatypeSize = dataSize;\
+        }\
+        return true;\
+    } while(0)
+
+
+
+
+
+
+
+
+
+
 struct Node {
 
     uint8_t *data;
@@ -14,7 +36,6 @@ struct PriorityNode {
 
 
 //Stack
-
 /**
  * stack_initialise
  * ===============================================
@@ -27,15 +48,7 @@ struct PriorityNode {
  */
 bool stack_initialise(Stack *const stack, size_t dataSize) {
 
-    if(stack == NULL || dataSize == 0) {
-        return false;
-    } else {
-
-        stack->head = NULL;
-        stack->datatypeSize = dataSize;
-
-    }
-    return true;
+    initialise(stack, dataSize);
 }
 
 
@@ -78,6 +91,38 @@ bool stack_push(Stack *const stack, void *data) {
 
 
 
+
+/**
+ * stack_peak
+ * ===============================================
+ * Brief: Peak an item from the stack
+ * 
+ * Param: *stack - stack of interest
+ *        *result - output pointer of where the result should be stored
+ * Return: void* - pointer to result
+ * 
+ */
+const void* stack_peak(Stack *const stack) {
+
+    if(stack == NULL) {
+        return NULL;
+    } else {
+
+        if(stack->head == NULL) {
+            return NULL;
+        } else {
+            return stack->head->data;
+        }
+    }
+
+    return NULL;
+}
+
+
+
+
+
+
 /**
  * stack_pop
  * ===============================================
@@ -115,6 +160,8 @@ bool stack_pop(Stack *const stack, void *result) {
 
     return true;
 }
+
+
 
 
 
