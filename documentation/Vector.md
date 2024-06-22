@@ -71,6 +71,33 @@ The code above:
 ```
 
 
+
+- Set an index in a vector
+
+  Set the value of an index in a vector
+
+```c
+Vector vector;
+//Initialisation
+int data = 10;
+int *value = (int*)(vector_set_index(&vector, 0, &data));
+
+if(value == NULL) {
+  printf("Failed to get value\n);
+} else {
+  printf("element: ",*(value));
+}
+
+/*
+The code above:
+  - Sets the zero index of the vector 'vector' to data (10)
+  - Checks if the element was successfuly added
+  - If the pointer is valid, it prints the value
+*/
+```
+
+
+
 - Getting an item from a vector at an index
 
   Get a pointer to some data in the vector at an index
@@ -78,7 +105,7 @@ The code above:
 ```c
 Vector vector;
 //Initialisation
-int *value = (int*)(vector_get_index(0));
+int *value = (int*)(vector_get_index(&vector, 0));
 
 if(value == NULL) {
   printf("Failed to get value\n);
