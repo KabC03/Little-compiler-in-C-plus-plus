@@ -18,6 +18,7 @@ typedef struct LinkedList {
 
     size_t datatypeSize;
     struct Node *head;
+    struct Node *end; //End of the LL (just here for faster push_back)
 
 } LinkedList;
 typedef struct Stack {
@@ -41,6 +42,7 @@ typedef struct PriorityQueue {
 
 bool stack_initialise(Stack *const stack, size_t dataSize);
 bool stack_push(Stack *const stack, void *data);
+const void* stack_peak(Stack *const stack);
 bool stack_pop(Stack *const stack, void *result);
 
 
