@@ -126,7 +126,7 @@ size_t vector_get_length(const Vector *const vector) {
  * Return: uint8_t - Pointer to data within the vector
  * 
  */
-uint8_t* vector_get_index(Vector *const vector, size_t index) {
+const uint8_t* vector_get_index(Vector *const vector, size_t index) {
 
     uint8_t *result = NULL;
     if(vector == NULL) {
