@@ -36,6 +36,7 @@ size_t vector_get_size(const Vector *const vector);
 size_t vector_get_length(const Vector *const vector);
 
 
+bool vector_set_index(Vector *const vector, size_t index, void* data);
 uint8_t* vector_get_index(Vector *const vector, size_t index);
 bool vector_insert_index(Vector *const vector, size_t index, void* data);
 bool vector_delete_index(Vector *const vector, size_t index);
@@ -44,3 +45,5 @@ bool vector_destroy(Vector *const vector);
 
 
 #endif // VECTOR_H
+
+
