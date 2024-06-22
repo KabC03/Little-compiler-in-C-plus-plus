@@ -14,6 +14,14 @@
   - Datastructures (stack, queue, LL, tree)
 
 
+  - Vectors:
+  - vector_insert_end
+  - vector_push_back
+  - vector_pop_back
+  - vector_clear
+  - vector_shrink_to_fit
+  - vector_set_size (set the size of the vector)
+
 
 
 
