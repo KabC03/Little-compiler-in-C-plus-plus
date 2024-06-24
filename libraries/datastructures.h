@@ -11,14 +11,15 @@
 
 
 typedef struct Node Node;
+typedef struct ListNode ListNode;
 typedef struct PriorityNode PriorityNode;
 
 
-typedef struct LinkedList {
+typedef struct LinkedList { //Doubly linked list
 
     size_t datatypeSize;
-    struct Node *head;
-    struct Node *end; //End of the LL (just here for faster push_back)
+    struct ListNode *head;
+    struct ListNode *end; //End of the LL (just here for faster push_back)
 
 } LinkedList;
 typedef struct Stack {
@@ -41,11 +42,16 @@ typedef struct PriorityQueue {
 } PriorityQueue;
 
 bool stack_initialise(Stack *const stack, size_t dataSize);
+size_t stack_length(Stack *const stack);
 bool stack_push(Stack *const stack, void *data);
 const void* stack_peak(Stack *const stack);
 bool stack_pop(Stack *const stack, void *result);
 
-
+bool LL_print(LinkedList *const linkedList);
+bool LL_initialise(LinkedList *const linkedList, size_t dataSize);
+size_t LL_length(LinkedList *const linkedList);
+bool LL_push_front(LinkedList *const list, void *data);
+bool LL_delete_front(LinkedList *const list);
 
 
 #endif // DATASTRUCTURES_H
