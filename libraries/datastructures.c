@@ -2,7 +2,7 @@
 
 
 
-//Macro for initialisation
+//Macros
 #define initialise(datatype, dataSize)\
     do {\
         if(datatype == NULL || dataSize == 0) {\
@@ -15,14 +15,32 @@
     } while(0)
 
 
+#define size(datatype)\
+    do {\
+        size_t size = 0;\
+        if(datatype == NULL) { \
+            return 0;\
+        } else {\
+            Node *currentNode = datatype->head;\
+            while(currentNode != NULL) {\
+                size++;\
+                currentNode = currentNode->next;\
+            }\
+        }\
+        return size;\
+    } while(0)
 
 
 
 
 
 
+struct ListNode {
 
-
+    uint8_t *data;
+    struct Node *next;
+    struct Node *back;
+};
 struct Node {
 
     uint8_t *data;
@@ -32,6 +50,7 @@ struct PriorityNode {
 
     uint8_t *data;
     struct PriorityNode *next;
+    struct Node *back;
 };
 
 
@@ -52,7 +71,20 @@ bool stack_initialise(Stack *const stack, size_t dataSize) {
 }
 
 
+/**
+ * stack_size
+ * ===============================================
+ * Brief: Size of a stack
+ * 
+ * Param: *stack - stack of interest
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+size_t stack_length(Stack *const stack) {
 
+    size(stack);
+}
 
 /**
  * stack_push
@@ -178,6 +210,55 @@ bool stack_pop(Stack *const stack, void *result) {
 
 
 
+/**
+ * LL_initialise
+ * ===============================================
+ * Brief: Initialise a LL before use
+ * 
+ * Param: *linkedList - linkedList of interest
+ *        dataSize - size of the datatype to be stored in the linkedList
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool LL_initialise(LinkedList *const linkedList, size_t dataSize) {
+
+    initialise(linkedList, dataSize);
+}
+
+
+/**
+ * LL_size
+ * ===============================================
+ * Brief: Size of a LL (number of elements)
+ * 
+ * Param: *linkedList - linkedList of interest
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+size_t LL_length(LinkedList *const linkedList) {
+
+    size(linkedList);
+}
+
+
+
+
+
+/**
+ * LL_push_front
+ * ===============================================
+ * Brief: Insert at beggining of list
+ * 
+ * Param: *linkedList - linkedList of interest
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+size_t LL_length(LinkedList *const linkedList) {
+
+    size(linkedList);
+}
 
 
 
@@ -185,61 +266,11 @@ bool stack_pop(Stack *const stack, void *result) {
 
 
 
+/*
+TODO:
+Insert at index, delete at index, insert at end, delete at end, get item at index, get item at start, get item at end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 
