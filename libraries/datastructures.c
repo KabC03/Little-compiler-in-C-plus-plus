@@ -412,22 +412,6 @@ TODO:
 
 
 
-//Tree
-
-
-/*
-TODO:
-- Insert at end (Use end ptr)
-- Delete at end
-
-- Insert at index
-- Delete at index
-
-- Get item at index
-
-- Delete a linked list
-- Copy a linked list
-*/
 
 
 
