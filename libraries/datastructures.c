@@ -199,11 +199,29 @@ bool stack_pop(Stack *const stack, void *result) {
 //Queue
 
 
+/*
+TODO:
+- Initialise
+- Length
+- Enqueue (with priority)
+- Dequeue
+
+- Destroy queue
+*/
 
 
 //Priority Queue
 
 
+/*
+TODO:
+- Initialise
+- Length
+- Enqueue (with priority)
+- Dequeue
+
+- Destroy queue
+*/
 
 
 //Linked list
@@ -375,9 +393,45 @@ bool LL_delete_front(LinkedList *const list) {
 
 /*
 TODO:
-Insert at index, delete at index, insert at end, delete at end, get item at index, get item at start, get item at end
+- Insert at end (Use end ptr)
+- Delete at end
 
+- Insert at index
+- Delete at index
+
+- Get item at index
+
+- Delete a linked list
+- Copy a linked list
 */
+
+
+
+
+
+
+
+
+//Tree
+
+
+/*
+TODO:
+- Insert at end (Use end ptr)
+- Delete at end
+
+- Insert at index
+- Delete at index
+
+- Get item at index
+
+- Delete a linked list
+- Copy a linked list
+*/
+
+
+
+
 
 
 
