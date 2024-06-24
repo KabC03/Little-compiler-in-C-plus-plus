@@ -16,19 +16,9 @@
 
 
 #define size(datatype)\
-    do {\
-        size_t size = 0;\
-        if(datatype == NULL) { \
-            return 0;\
-        } else {\
-            Node *currentNode = datatype->head;\
-            while(currentNode != NULL) {\
-                size++;\
-                currentNode = currentNode->next;\
-            }\
-        }\
-        return size;\
-    } while(0)
+
+
+
 
 
 
@@ -38,8 +28,8 @@
 struct ListNode {
 
     uint8_t *data;
-    struct Node *next;
-    struct Node *back;
+    struct ListNode *next;
+    struct ListNode *back;
 };
 struct Node {
 
@@ -83,7 +73,17 @@ bool stack_initialise(Stack *const stack, size_t dataSize) {
  */
 size_t stack_length(Stack *const stack) {
 
-    size(stack);
+    size_t size = 0;
+    if(stack == NULL) { 
+        return 0;
+    } else {
+        Node *currentNode = stack->head;
+        while(currentNode != NULL) {
+            size++;
+            currentNode = currentNode->next;
+        }
+    }
+    return size;
 }
 
 /**
@@ -210,6 +210,42 @@ bool stack_pop(Stack *const stack, void *result) {
 
 
 
+
+/**
+ * LL_print
+ * ===============================================
+ * Brief: Print a LL
+ * 
+ * Param: *linkedList - linkedList of interest
+ * 
+ * Return: bool - T/F depending on if list exists
+ * 
+ */
+bool LL_print(LinkedList *const linkedList) {
+
+    if(linkedList == NULL) {
+        return false;
+    } else {
+
+        ListNode *currentNode = linkedList->head;
+
+        while(currentNode != NULL) {
+
+            printf("%d, ",*(int*)(currentNode->data));
+            currentNode = currentNode->next;
+        }
+
+
+    }
+
+    return true;
+}
+
+
+
+
+
+
 /**
  * LL_initialise
  * ===============================================
@@ -233,12 +269,22 @@ bool LL_initialise(LinkedList *const linkedList, size_t dataSize) {
  * 
  * Param: *linkedList - linkedList of interest
  * 
- * Return: bool - T/F depending on if initialisation was successful
+ * Return: size_t - Size of list
  * 
  */
 size_t LL_length(LinkedList *const linkedList) {
 
-    size(linkedList);
+    size_t size = 0;
+    if(linkedList == NULL) { 
+        return 0;
+    } else {
+        ListNode *currentNode = linkedList->head;
+        while(currentNode != NULL) {
+            size++;
+            currentNode = currentNode->next;
+        }
+    }
+    return size;
 }
 
 
@@ -255,10 +301,71 @@ size_t LL_length(LinkedList *const linkedList) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-size_t LL_length(LinkedList *const linkedList) {
+bool LL_push_front(LinkedList *const list, void *data) {
 
-    size(linkedList);
+    if(list == NULL || data == NULL) {
+        return false;
+    } else {
+
+        ListNode *newNode = malloc(sizeof(ListNode));
+        if(newNode == NULL) {
+            return false;
+        }
+        newNode->data = malloc(sizeof(uint8_t) * list->datatypeSize);
+        if(newNode->data == NULL) {
+            free(newNode);
+            return false;
+        }
+        memcpy(newNode->data, data, list->datatypeSize);
+
+
+        newNode->next = list->head;
+        newNode->back = NULL;
+        list->head = newNode;
+    }
+
+    return true;
 }
+
+
+
+/**
+ * LL_delete_front
+ * ===============================================
+ * Brief: Delete at beggining of list
+ * 
+ * Param: *linkedList - linkedList of interest
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool LL_delete_front(LinkedList *const list) {
+
+    if(list == NULL) {
+        return false;
+    } else {
+
+        if(list->head == NULL) {
+            return false;
+
+
+        } else {
+
+            ListNode *freePtr = list->head;
+            free(list->head->data);
+
+
+
+            list->head = list->head->next;
+            list->head->back = NULL;
+            free(freePtr);
+        }
+
+    }
+
+    return true;
+}
+
 
 
 
