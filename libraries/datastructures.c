@@ -653,6 +653,8 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
                 free(list->firstNode.key);
                 free(list->firstNode.value);
                 list->firstNode.next = NULL;
+                list->firstNode.key = NULL;
+                list->firstNode.value = NULL;
 
             } else {
                                 
@@ -665,7 +667,10 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
                 MapListNode *freeNode = list->firstNode.next;
 
                 list->firstNode.next = list->firstNode.next->next;
+                
                 free(freeNode);
+
+
             }            
             return true;
 
