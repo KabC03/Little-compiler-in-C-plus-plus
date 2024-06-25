@@ -707,7 +707,6 @@ const void *map_LL_get_value(MapList *const list, void *inputKey) {
     } else {
 
         if(memcmp(list->firstNode.key, inputKey, list->keySize) == 0) {
-            printf("%d\n",*(int*)list->firstNode.key);
             return list->firstNode.value; 
         }
 
@@ -716,7 +715,6 @@ const void *map_LL_get_value(MapList *const list, void *inputKey) {
         MapListNode *currentNode = list->firstNode.next;
         while(currentNode != NULL) {
             if(memcmp(currentNode->key, inputKey, list->keySize) == 0) {
-                printf("%d\n",*(int*)currentNode->key);
                 return currentNode->value;
             }
 
