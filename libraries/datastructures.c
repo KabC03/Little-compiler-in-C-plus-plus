@@ -642,16 +642,34 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
                 list->firstNode.next = list->firstNode.next->next;
                 free(freeNode);
             }            
+            return true;
 
 
-        } else {
+        } else { //Loop to find the other nodes
+
+            MapListNode *prevNode = &(list->firstNode);
+            MapListNode *currentNode = list->firstNode.next;
 
 
+            while(prevNode != NULL) {
+                
+                if(memcmp(currentNode->key, inputKey, list->valueSize) == 0) {
+                    //Delete the node
+                    prevNode->next = currentNode->next;
+                    free(currentNode->key);
+                    free(currentNode->value);
+                    free(currentNode);
+                    return true;
+                } else {
 
+                    prevNode = currentNode;
+                    currentNode = currentNode->next;
+                }
+            }
         }
     }
 
-    return true;
+    return false; //Key wasnt in the list
 }
 
 
