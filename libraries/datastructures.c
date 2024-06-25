@@ -439,7 +439,6 @@ bool LL_insert_back(LinkedList *const list, void *data) {
             list->head = newNode;
         } else {
 
-            printf("Data = %d\n",*(int*)data);
             list->end->next = newNode;
         }
 
@@ -476,7 +475,24 @@ bool LL_delete_back(LinkedList *const list) {
         }
 
         ListNode *freeNode = list->end;
-        list->end->back = NULL;
+        ListNode *currentNode = list->end->back;
+
+        if(currentNode != NULL) {
+            currentNode->next = NULL;
+
+
+        } else {
+
+            list->end = NULL;
+            list->head = NULL;
+
+        }
+
+
+
+
+
+        free(freeNode->data);
         free(freeNode);
     }
 
