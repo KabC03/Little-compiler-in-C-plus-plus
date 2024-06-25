@@ -17,11 +17,8 @@ typedef struct Map {
 } Map;
 
 
-void map_print(Map *const map);
-bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size_t bucketSize);
-
+bool hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t tableSize, size_t *const hashOut); 
 
 #endif // HASHMAP_H
-
 
 
