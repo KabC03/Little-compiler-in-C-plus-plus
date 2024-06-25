@@ -615,6 +615,44 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
 
 
 //Delete by a key
+bool map_LL_delete_key(MapList *const list, void *inputKey) {
+
+    if(list == NULL || inputKey == NULL) {
+        return false;
+    } else {
+
+        if(memcmp(list->firstNode.key, inputKey, list->keySize) == 0) {
+
+            if(list->firstNode.next == NULL) {
+
+                free(list->firstNode.key);
+                free(list->firstNode.value);
+                list->firstNode.next = NULL;
+
+            } else {
+                                
+                free(list->firstNode.key);
+                free(list->firstNode.value);
+
+                list->firstNode.key = list->firstNode.next->key;
+                list->firstNode.value = list->firstNode.next->value;
+
+                MapListNode *freeNode = list->firstNode.next;
+
+                list->firstNode.next = list->firstNode.next->next;
+                free(freeNode);
+            }            
+
+
+        } else {
+
+
+
+        }
+    }
+
+    return true;
+}
 
 
 
