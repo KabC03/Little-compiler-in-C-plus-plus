@@ -526,6 +526,8 @@ TODO:
 
 //Simple linked list - WARNING UNTESTED
 /*
+- First node is embedded allowing for quick access without dereference
+
 
 TODO
 - Mainly meant to be embedded in other libraries (e.g map)
