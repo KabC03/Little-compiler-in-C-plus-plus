@@ -402,7 +402,7 @@ bool LL_delete_front(LinkedList *const list) {
 
 
 /**
- * LL_insert_back
+ * LL_insert_back - WARNING DOES NOT WORK
  * ===============================================
  * Brief: Insert at back of list
  * 
