@@ -681,7 +681,7 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
             MapListNode *currentNode = list->firstNode.next;
 
 
-            while(prevNode != NULL) {
+            while(currentNode != NULL) {
                 
                 if(memcmp(currentNode->key, inputKey, list->keySize) == 0) {
                     //Delete the node
