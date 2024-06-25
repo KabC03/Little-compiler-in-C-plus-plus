@@ -593,11 +593,11 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
 
         if(list->firstNode.key == NULL) { //Insert at this node
 
-            list->firstNode.key = malloc(sizeof(list->keySize));
+            list->firstNode.key = malloc(list->keySize);
             if(list->firstNode.key == NULL) {
                 return false;
             }
-            list->firstNode.value = malloc(sizeof(list->valueSize));
+            list->firstNode.value = malloc(list->valueSize);
             if(list->firstNode.value == NULL) {
                 free(list->firstNode.key);
                 return false;
@@ -605,6 +605,7 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
 
             memcpy(list->firstNode.key, inputKey, list->keySize);
             memcpy(list->firstNode.value, inputValue, list->valueSize);
+
 
         } else { //Insert after first node
             
