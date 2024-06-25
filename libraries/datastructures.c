@@ -531,7 +531,7 @@ TODO:
 
 TODO
 - Mainly meant to be embedded in other libraries (e.g map)
-- Must pass the head NODE not a LL
+- Must pass the head NODE  Lnot aL
 - Singly linked list
 
 - Insert at front
@@ -571,7 +571,7 @@ bool map_LL_initialise(MapList *const list, size_t inputKeySize, size_t inputVal
     } else {
 
         list->keySize = inputKeySize;
-        list->keySize = inputValueSize;
+        list->valueSize = inputValueSize;
     
         list->firstNode.key = NULL;
         list->firstNode.value = NULL;
@@ -678,7 +678,7 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
 
             while(prevNode != NULL) {
                 
-                if(memcmp(currentNode->key, inputKey, list->valueSize) == 0) {
+                if(memcmp(currentNode->key, inputKey, list->keySize) == 0) {
                     //Delete the node
                     prevNode->next = currentNode->next;
                     free(currentNode->key);
@@ -750,6 +750,8 @@ bool map_LL_destroy(MapList *const list) {
 
         free(list->firstNode.key);
         free(list->firstNode.value);
+        list->firstNode.key = NULL;
+        list->firstNode.next = NULL;
     }
 
 
