@@ -27,4 +27,15 @@
 
 
 
+Plan:
+
+Goals in order (for this project):
+
+1. Hashmap
+2. Datastructures
+3. Tokeniser
+4. ...
+
+
+
 
