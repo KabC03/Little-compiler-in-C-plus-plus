@@ -23,8 +23,6 @@
 
 
 
-
-
 struct ListNode {
 
     uint8_t *data;
@@ -528,12 +526,108 @@ TODO:
 
 //Simple linked list
 /*
+
 TODO
 - Mainly meant to be embedded in other libraries (e.g map)
 - Must pass the head NODE not a LL
 - Singly linked list
 
+- Insert at front
+- Delete by key
+- Search for key
+
 */
+
+
+//Initialise
+bool map_LL_initialise(MapList *const list, size_t inputKeySize, size_t inputValueSize) {
+
+    if(list == NULL || inputKeySize == 0 || inputValueSize == 0) {
+        return false;
+    } else {
+
+        list->keySize = inputKeySize;
+        list->keySize = inputValueSize;
+    
+        list->firstNode.key = NULL;
+        list->firstNode.value = NULL;
+        list->firstNode.next = NULL;
+
+    }
+
+
+    return true;
+}
+
+
+//Insert after first node at the front
+bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) {
+
+    if(list == NULL || inputKey == NULL || inputValue == NULL) {
+        return false;
+    } else {
+
+        if(list->firstNode.next == NULL) { //Insert at this node
+
+            list->firstNode.key = malloc(sizeof(list->keySize));
+            if(list->firstNode.key == NULL) {
+                return false;
+            }
+            list->firstNode.value = malloc(sizeof(list->valueSize));
+            if(list->firstNode.value == NULL) {
+                free(list->firstNode.key);
+                return false;
+            }
+
+            memcpy(list->firstNode.key, inputKey, list->keySize);
+            memcpy(list->firstNode.value, inputValue, list->valueSize);
+
+        } else { //Insert after first node
+            
+            MapListNode *newNode = malloc(sizeof(MapListNode));
+            newNode->next = list->firstNode.next;
+
+            newNode->key = malloc(sizeof(list->keySize));
+            if(list->firstNode.key == NULL) {
+                free(newNode);
+                return false;
+            }
+            list->firstNode.value = malloc(sizeof(list->valueSize));
+            if(list->firstNode.value == NULL) {
+                free(newNode->key);
+                free(newNode);
+                return false;
+            }
+
+
+            memcpy(newNode->key, inputKey, list->keySize);
+            memcpy(newNode->value, inputValue, list->valueSize);
+
+            list->firstNode.next = newNode;
+        }
+    }
+
+
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
