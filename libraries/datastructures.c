@@ -591,7 +591,7 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
         return false;
     } else {
 
-        if(list->firstNode.next == NULL) { //Insert at this node
+        if(list->firstNode.key == NULL) { //Insert at this node
 
             list->firstNode.key = malloc(sizeof(list->keySize));
             if(list->firstNode.key == NULL) {
