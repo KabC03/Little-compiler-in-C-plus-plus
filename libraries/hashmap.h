@@ -10,11 +10,13 @@
 #include <stdint.h>
 #include "vector.h"
 
-typedef struct MapNode MapNode;
 
-typedef struct Map {
-    Vector mapNodes;        //Vector of mapnodes
-} Map;
+
+typedef struct HashMap {
+
+    Vector mapListNodes;
+
+} HashMap;
 
 
 bool hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t tableSize, size_t *const hashOut); 
