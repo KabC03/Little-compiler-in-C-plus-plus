@@ -319,7 +319,7 @@ size_t LL_length(LinkedList *const linkedList) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool LL_push_front(LinkedList *const list, void *data) {
+bool LL_insert_front(LinkedList *const list, void *data) {
 
     if(list == NULL || data == NULL) {
         return false;
@@ -335,6 +335,10 @@ bool LL_push_front(LinkedList *const list, void *data) {
             return false;
         }
         memcpy(newNode->data, data, list->datatypeSize);
+
+        if(list->head = NULL) {
+            list->end = newNode;
+        }
 
 
         newNode->next = list->head;
@@ -375,6 +379,11 @@ bool LL_delete_front(LinkedList *const list) {
 
 
             list->head = list->head->next;
+
+            if(list->head == NULL) {
+                list->end = NULL;
+            }
+
             list->head->back = NULL;
             free(freePtr);
         }
@@ -385,16 +394,79 @@ bool LL_delete_front(LinkedList *const list) {
 }
 
 
+/**
+ * LL_insert_back
+ * ===============================================
+ * Brief: Insert at back of list
+ * 
+ * Param: *linkedList - linkedList of interest
+ *        *data - data to be added
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool LL_insert_back(LinkedList *const list, void *data) {
+
+    if(list == NULL) {
+        return false;
+    } else {
+
+        if(list->end == NULL) {
+            return false;
+        }
+
+        ListNode *newNode = malloc(sizeof(newNode));
+        if(newNode == NULL) {
+            return false;
+        }
+        newNode->next = NULL;
+        newNode->back = list->end;
+
+        list->end->next = newNode;
+
+    }
+
+
+    return true;
+}
 
 
 
+
+
+/**
+ * LL_delete_back
+ * ===============================================
+ * Brief: Delete at back of list
+ * 
+ * Param: *linkedList - linkedList of interest
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool LL_delete_back(LinkedList *const list) {
+
+    if(list == NULL) {
+        return false;
+    } else {
+
+        if(list->end == NULL) {
+            return false;
+        }
+
+        ListNode *freeNode = list->end;
+        list->end->back = NULL;
+        free(freeNode);
+    }
+
+
+    return true;
+}
 
 
 
 /*
 TODO:
-- Insert at end (Use end ptr)
-- Delete at end
 
 - Insert at index
 - Delete at index
@@ -409,17 +481,14 @@ TODO:
 
 
 
+//Simple linked list
+/*
+TODO
+- Mainly meant to be embedded in other libraries (e.g map)
+- Must pass the head NODE not a LL
+- Singly linked list
 
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 
