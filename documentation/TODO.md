@@ -22,6 +22,7 @@
   - vector_clear
   - vector_shrink_to_fit
   - vector_set_size (set the size of the vector)
+  - Datastructures - Queues (with/without priority, doubly linked lists)
 
 
 
