@@ -479,7 +479,7 @@ bool LL_delete_back(LinkedList *const list) {
 
         if(currentNode != NULL) {
             currentNode->next = NULL;
-
+            list->end = currentNode;
 
         } else {
 
@@ -493,6 +493,7 @@ bool LL_delete_back(LinkedList *const list) {
 
 
         free(freeNode->data);
+
         free(freeNode);
     }
 
