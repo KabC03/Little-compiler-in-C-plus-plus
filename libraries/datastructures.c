@@ -675,18 +675,26 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
 
 
 
-//Get value from a key
-bool map_LL_get_value(MapList *const list, void *inputKey) {
+//Get value from a key - return pointer to value
+const void *map_LL_get_value(MapList *const list, void *inputKey) {
 
     if(list == NULL || inputKey == NULL) {
-        return false;
+        return NULL;
     } else {
 
+        MapListNode *currentNode = &(list->firstNode);
 
-        
+        while(currentNode != NULL) {
+
+            if(memcmp(currentNode->key, inputKey, list->keySize) == 0) {
+                return currentNode->value;
+            }
+
+            currentNode = currentNode->next;
+        }
     }
 
-    return true;
+    return NULL;
 }
 
 
