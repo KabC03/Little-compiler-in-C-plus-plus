@@ -336,7 +336,7 @@ bool LL_insert_front(LinkedList *const list, void *data) {
         }
         memcpy(newNode->data, data, list->datatypeSize);
 
-        if(list->head = NULL) {
+        if(list->head == NULL) {
             list->end = newNode;
         }
 
@@ -415,10 +415,18 @@ bool LL_insert_back(LinkedList *const list, void *data) {
             return false;
         }
 
-        ListNode *newNode = malloc(sizeof(newNode));
+        ListNode *newNode = malloc(sizeof(ListNode));
         if(newNode == NULL) {
             return false;
         }
+
+        newNode->data = malloc(sizeof(uint8_t) * list->datatypeSize);
+        if(newNode->data == NULL) {
+            free(newNode);
+            return false;
+        }
+        memcpy(newNode->data, data, list->datatypeSize);
+
         newNode->next = NULL;
         newNode->back = list->end;
 
@@ -462,6 +470,13 @@ bool LL_delete_back(LinkedList *const list) {
 
     return true;
 }
+
+
+
+
+
+
+
 
 
 
