@@ -547,10 +547,12 @@ bool map_LL_print(MapList *const list) {
 
         MapListNode *currentNode = &(list->firstNode);
 
+        int count = 0;
         while(currentNode != NULL) {
-            
-            printf("%d, ",*(int*)(currentNode->key));
+
+            printf("%d || %d, ",count, *(int*)(currentNode->key));
             currentNode = currentNode->next;
+            count++;
         }        
     }
 
