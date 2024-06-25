@@ -50,11 +50,15 @@ bool stack_pop(Stack *const stack, void *result);
 bool LL_print(LinkedList *const linkedList);
 bool LL_initialise(LinkedList *const linkedList, size_t dataSize);
 size_t LL_length(LinkedList *const linkedList);
-bool LL_push_front(LinkedList *const list, void *data);
+bool LL_insert_front(LinkedList *const list, void *data);
 bool LL_delete_front(LinkedList *const list);
-
+bool LL_insert_back(LinkedList *const list, void *data);
+bool LL_delete_back(LinkedList *const list);
 
 #endif // DATASTRUCTURES_H
+
+
+
 
 
 
