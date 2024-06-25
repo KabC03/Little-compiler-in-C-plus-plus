@@ -276,7 +276,14 @@ bool LL_print(LinkedList *const linkedList) {
  */
 bool LL_initialise(LinkedList *const linkedList, size_t dataSize) {
 
-    initialise(linkedList, dataSize);
+    if(linkedList == NULL || dataSize == 0) {
+        return false;
+    } else {
+        linkedList->head = NULL;
+        linkedList->end = NULL;
+        linkedList->datatypeSize = dataSize;
+    }
+    return true;
 }
 
 
@@ -432,6 +439,7 @@ bool LL_insert_back(LinkedList *const list, void *data) {
             list->head = newNode;
         } else {
 
+            printf("Data = %d\n",*(int*)data);
             list->end->next = newNode;
         }
 
