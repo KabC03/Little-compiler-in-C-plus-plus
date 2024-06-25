@@ -676,7 +676,18 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
 
 
 //Get value from a key
+bool map_LL_get_value(MapList *const list, void *inputKey) {
 
+    if(list == NULL || inputKey == NULL) {
+        return false;
+    } else {
+
+
+        
+    }
+
+    return true;
+}
 
 
 
