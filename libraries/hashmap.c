@@ -1,116 +1,25 @@
 #include "hashmap.h"
 
+#define DJB2_CONSTANT 5381
 
 
-struct MapNode {
+bool hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t tableSize, size_t *const hashOut) {
 
-    Vector value;
-};
-
-
-/**
- * map_print
- * =========================
- * Brief: Prints a map of integers (used for debugging)
- * Param: *map - Map to be printed
- * 
- * Return: void
- */
-void map_print(Map *const map) {
-
-    if(map == NULL) {
-        return;
-    }
-
-
-    for(size_t i = 0; i <= vector_get_length(&(map->mapNodes)); i++) {
-
-        vector_print((Vector*)vector_get_index((Vector*)(&((map->mapNodes))), i));
-    }
-
-    return;
-}
-
-
-
-void cleanup(Map *map) {
-
-    if(map == NULL) {
-        return;
+    size_t hash= DJB2_CONSTANT;
+    if(data == NULL || dataSize == 0) {
+        return false;
     } else {
 
-        for(size_t i = 0; i <= vector_get_length(&(map->mapNodes)); i++) {
+        for(size_t i = 0; i < dataSize; i++) {
+            
+            hash = (hash << 5) + hash + data[i];
 
-            vector_destroy((Vector*)vector_get_index((Vector*)(&((map->mapNodes))), i));
-        }
+        }    
+        hash %= tableSize;
+        *hashOut = hash;
     }
-    vector_destroy((Vector*)(&((map->mapNodes))));
-
-    return;
-}
-
-/**
- * map_initialise
- * =========================
- * Brief: Initialises a map
- * Param: *map - Map to be initialised
- *      dataSize - Size of the data in the map (e.g sizeof(int))
- *      initialMapSize - Initial size of the map
- *      bucketSize - number of initial expected collisions
- * Return: T/F depending on if initialisation was successful
- */
-bool map_initialise(Map *const map, size_t dataSize, size_t initialMapSize, size_t bucketSize) {
-
-    if(map == NULL || dataSize == 0 || initialMapSize == 0 || bucketSize == 0) {
-        return false;
-    }
-    
-    if(vector_initialise(&(map->mapNodes), sizeof(MapNode)) == false) {
-        return false;
-    }
-
-    if(vector_resize(&((map->mapNodes)), initialMapSize) == false) {
-        vector_destroy(&(map->mapNodes));
-        return false;
-    }
-    
-    for(int i = 0; i < initialMapSize; i++) {
-
-
-        if(vector_initialise((Vector*)vector_get_index(&(map->mapNodes), i), dataSize) == false) {
-            return false;
-        }
-        if(vector_resize((Vector*)vector_get_index(&(map->mapNodes), i), bucketSize) == false) {
-            return false;
-        }
-    }
-
-
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
