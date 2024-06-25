@@ -524,7 +524,7 @@ TODO:
 
 
 
-//Simple linked list
+//Simple linked list - WARNING UNTESTED
 /*
 
 TODO
