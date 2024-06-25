@@ -47,7 +47,7 @@ TODO:
 */
 
 /**
- * hashmap_initiahlise 
+ * hashmap_initiahlise - DOESNT WORK 
  * ===============================================
  * Brief: Initialise a hash table 
  * 
