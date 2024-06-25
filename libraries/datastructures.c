@@ -613,12 +613,12 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
             newNode->next = list->firstNode.next;
 
             newNode->key = malloc(list->keySize);
-            if(list->firstNode.key == NULL) {
+            if(newNode->key == NULL) {
                 free(newNode);
                 return false;
             }
-            list->firstNode.value = malloc(list->valueSize);
-            if(list->firstNode.value == NULL) {
+            newNode->value = malloc(list->valueSize);
+            if(newNode->value == NULL) {
                 free(newNode->key);
                 free(newNode);
                 return false;
