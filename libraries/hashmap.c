@@ -4,7 +4,7 @@
 
 
 /**
- * hashmap+hash_djb2
+ * hashmap_hash_djb2
  * ===============================================
  * Brief: Perform a djb2 hash
  * 
@@ -33,6 +33,12 @@ bool hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t tableS
     }
     return true;
 }
+
+
+
+
+
+
 
 
 
