@@ -411,9 +411,7 @@ bool LL_insert_back(LinkedList *const list, void *data) {
         return false;
     } else {
 
-        if(list->end == NULL) {
-            return false;
-        }
+
 
         ListNode *newNode = malloc(sizeof(ListNode));
         if(newNode == NULL) {
@@ -427,11 +425,18 @@ bool LL_insert_back(LinkedList *const list, void *data) {
         }
         memcpy(newNode->data, data, list->datatypeSize);
 
+
+        if(list->end == NULL) {
+
+            list->end = newNode;
+            list->head = newNode;
+        } else {
+
+            list->end->next = newNode;
+        }
+
         newNode->next = NULL;
         newNode->back = list->end;
-
-        list->end->next = newNode;
-
     }
 
 
