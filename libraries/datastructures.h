@@ -10,11 +10,29 @@
 #include <stdint.h>
 
 
+
+
+typedef struct MapListNode {
+
+    uint8_t *key;
+    uint8_t *value;
+    struct MapListNode *next;
+
+} MapListNode;
+
 typedef struct Node Node;
 typedef struct ListNode ListNode;
 typedef struct PriorityNode PriorityNode;
 
 
+
+typedef struct MapList{ //Small Singly linked LL (first node stored in list itself)
+
+    size_t keySize;
+    size_t valueSize;
+    struct MapListNode firstNode;
+
+} MapList;
 typedef struct LinkedList { //Doubly linked list
 
     size_t datatypeSize;
@@ -56,6 +74,8 @@ bool LL_insert_back(LinkedList *const list, void *data);
 bool LL_delete_back(LinkedList *const list);
 
 #endif // DATASTRUCTURES_H
+
+
 
 
 
