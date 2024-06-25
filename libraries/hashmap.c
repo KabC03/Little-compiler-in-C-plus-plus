@@ -36,6 +36,17 @@ bool hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t tableS
 
 
 
+/*
+TODO:
+
+- Initialise hashmap
+- Add to hashmap
+- Remove from hashmap
+- Get value
+- Destroy hashmap
+*/
+
+
 
 
 
