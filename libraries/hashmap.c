@@ -8,10 +8,10 @@
  * ===============================================
  * Brief: Perform a djb2 hash
  * 
- * Param: *data - data to hash
- *        dataSize - size of data to hash
- *        tableSize - size of the table
- *        *hashOut - hash output
+ * Param: *data - Data to hash
+ *        dataSize - Size of data to hash
+ *        tableSize - Size of the table
+ *        *hashOut - Hash output
  * 
  * Return: bool - T/F depending on if freeing was successful
  * 
@@ -45,6 +45,45 @@ TODO:
 - Get value
 - Destroy hashmap
 */
+
+/**
+ * hashmap_initiahlise 
+ * ===============================================
+ * Brief: Initialise a hash table 
+ * 
+ * Param: *hashmap - Hashmap of interest 
+ *        keySize - Size of keys
+ *        initialTableSize - Initial table size
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize, size_t initialTableSize) {
+
+    if(hashmap == NULL || keySize == 0 || valueSize == 0 || initialTableSize == 0) {
+        return false;
+    } else {
+
+        if(vector_initialise(&(hashmap->mapListNodes), sizeof(MapList)) == false) {
+            return false;
+        }
+        
+        if(vector_resize(&(hashmap->mapListNodes), initialTableSize) == false) {
+            return false;
+        }
+
+        for(size_t i = 0; i < initialTableSize; i++) {
+            //vector_get_index can return null ptr but map_LL will notice it
+            if(map_LL_initialise((MapList*)vector_get_index(&(hashmap->mapListNodes), i), keySize, valueSize) == false) {
+                return false;
+            }
+
+        }
+
+    }
+
+    return true;
+}
 
 
 
