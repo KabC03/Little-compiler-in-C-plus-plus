@@ -539,6 +539,24 @@ TODO
 - Search for key
 
 */
+bool map_LL_print(MapList *const list) {
+
+    if(list == NULL) {
+        return false;
+    } else {
+
+        MapListNode *currentNode = &(list->firstNode);
+
+        while(currentNode != NULL) {
+            
+            printf("%d, ",*(int*)(currentNode->key));
+            currentNode = currentNode->next;
+        }        
+    }
+
+    return true;
+}
+
 
 
 //Initialise
@@ -728,23 +746,6 @@ bool map_LL_destroy(MapList *const list) {
 
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
