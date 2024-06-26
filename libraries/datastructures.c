@@ -564,15 +564,12 @@ bool map_LL_print(MapList *const list) {
 
 
 //Initialise
-bool map_LL_initialise(MapList *const list, size_t inputKeySize, size_t inputValueSize) {
+bool map_LL_initialise(MapList *const list) {
 
-    if(list == NULL || inputKeySize == 0 || inputValueSize == 0) {
+    if(list == NULL) {
         return false;
     } else {
 
-        list->keySize = inputKeySize;
-        list->valueSize = inputValueSize;
-    
         list->firstNode.key = NULL;
         list->firstNode.value = NULL;
         list->firstNode.next = NULL;
@@ -585,7 +582,7 @@ bool map_LL_initialise(MapList *const list, size_t inputKeySize, size_t inputVal
 
 
 //Insert after first node at the front
-bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) {
+bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue, size_t keySize, size_t valueSize) {
 
     if(list == NULL || inputKey == NULL || inputValue == NULL) {
         return false;
@@ -593,18 +590,18 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
 
         if(list->firstNode.key == NULL) { //Insert at this node
 
-            list->firstNode.key = malloc(list->keySize);
+            list->firstNode.key = malloc(keySize);
             if(list->firstNode.key == NULL) {
                 return false;
             }
-            list->firstNode.value = malloc(list->valueSize);
+            list->firstNode.value = malloc(valueSize);
             if(list->firstNode.value == NULL) {
                 free(list->firstNode.key);
                 return false;
             }
 
-            memcpy(list->firstNode.key, inputKey, list->keySize);
-            memcpy(list->firstNode.value, inputValue, list->valueSize);
+            memcpy(list->firstNode.key, inputKey, keySize);
+            memcpy(list->firstNode.value, inputValue, valueSize);
 
 
         } else { //Insert after first node
@@ -612,12 +609,12 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
             MapListNode *newNode = malloc(sizeof(MapListNode));
             newNode->next = list->firstNode.next;
 
-            newNode->key = malloc(list->keySize);
+            newNode->key = malloc(keySize);
             if(newNode->key == NULL) {
                 free(newNode);
                 return false;
             }
-            newNode->value = malloc(list->valueSize);
+            newNode->value = malloc(valueSize);
             if(newNode->value == NULL) {
                 free(newNode->key);
                 free(newNode);
@@ -625,8 +622,8 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
             }
 
 
-            memcpy(newNode->key, inputKey, list->keySize);
-            memcpy(newNode->value, inputValue, list->valueSize);
+            memcpy(newNode->key, inputKey, keySize);
+            memcpy(newNode->value, inputValue, valueSize);
 
             list->firstNode.next = newNode;
         }
@@ -640,13 +637,13 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue) 
 
 
 //Delete by a key
-bool map_LL_delete_key(MapList *const list, void *inputKey) {
+bool map_LL_delete_key(MapList *const list, void *inputKey, size_t keySize) {
 
-    if(list == NULL || inputKey == NULL) {
+    if(list == NULL || inputKey == NULL || keySize == 0) {
         return false;
     } else {
 
-        if(memcmp(list->firstNode.key, inputKey, list->keySize) == 0) {
+        if(memcmp(list->firstNode.key, inputKey, keySize) == 0) {
 
             if(list->firstNode.next == NULL) {
 
@@ -685,7 +682,7 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
 
             while(currentNode != NULL) {
                 
-                if(memcmp(currentNode->key, inputKey, list->keySize) == 0) {
+                if(memcmp(currentNode->key, inputKey, keySize) == 0) {
                     //Delete the node
                     prevNode->next = currentNode->next;
                     free(currentNode->key);
@@ -708,13 +705,13 @@ bool map_LL_delete_key(MapList *const list, void *inputKey) {
 
 
 //Get value from a key - return pointer to value
-const void *map_LL_get_value(MapList *const list, void *inputKey) {
+const void *map_LL_get_value(MapList *const list, void *inputKey, size_t keySize) {
 
-    if(list == NULL || inputKey == NULL) {
+    if(list == NULL || inputKey == NULL || keySize == 0) {
         return NULL;
     } else {
 
-        if(memcmp(list->firstNode.key, inputKey, list->keySize) == 0) {
+        if(memcmp(list->firstNode.key, inputKey, keySize) == 0) {
             return list->firstNode.value; 
         }
 
@@ -722,7 +719,7 @@ const void *map_LL_get_value(MapList *const list, void *inputKey) {
 
         MapListNode *currentNode = list->firstNode.next;
         while(currentNode != NULL) {
-            if(memcmp(currentNode->key, inputKey, list->keySize) == 0) {
+            if(memcmp(currentNode->key, inputKey, keySize) == 0) {
                 return currentNode->value;
             }
 
@@ -765,8 +762,3 @@ bool map_LL_destroy(MapList *const list) {
 
     return true;
 }
-
-
-
-
-
