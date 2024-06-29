@@ -1,7 +1,4 @@
-#include "compiler data.h"
-#include "datastructures.h"
-#include "hashmap.h"
-#include "vector.h"
+#include "tokenise.h"
 
 
 int main(void) {
