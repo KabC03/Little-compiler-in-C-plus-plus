@@ -14,6 +14,8 @@
 
 #define MAX_KEYWORD_SIZE 100
 #define MAX_LINE_LENGTH 100
+#define array_length(array) sizeof(array)/sizeof(array[0])
+
 
 extern const char KeyWords[][MAX_KEYWORD_SIZE];
 
