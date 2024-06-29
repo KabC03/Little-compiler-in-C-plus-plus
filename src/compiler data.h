@@ -13,7 +13,7 @@
 #include "hashmap.h"
 
 #define MAX_KEYWORD_SIZE 100
-
+#define MAX_LINE_LENGTH 100
 
 extern const char KeyWords[][MAX_KEYWORD_SIZE];
 
