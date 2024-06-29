@@ -29,20 +29,16 @@ __Note: Whitespace (including indentation) is ignored__
 | integer        | int         |
 | IEEE754 float  | float       |
 | UTF8 character | char        |
+| pointer        | @           |
 
-| Datatype modifiers | Syntax      | Extra                                                             |
-|--------------------|-------------|-------------------------------------------------------------------|
-| array              | [n]         | static array holding n of the base datatype, zero base indexing   |
-| pointer            | n@          | pointer with indirection level n, dereference with @              |
-| constant           | %           | a constant, unchanging value                                      |
 
 
 ##### Example
 
     $data$              # Data section specifies variable declarations are made here
     
-      int: x |2@;       # A double pointer named 'x' that points to an integer
-      char: abc |[20];  # An array of 20 characters
+      int @@: x;        # A double pointer named 'x' that points to an integer
+      char: abc;        # An array of 20 characters
       float: number|;   #A float named 'number'
     
     $program$           # Rest of the program is below
@@ -177,7 +173,7 @@ __Note: Whitespace (including indentation) is ignored__
         # Something
       $function$
   
-        my_function(int x |@, int y |, char z |, ...) -> int |@:
+        my_function(int x, int y, char @@ z, ...) -> int @:
             $data$
               # Data here
             $program$
