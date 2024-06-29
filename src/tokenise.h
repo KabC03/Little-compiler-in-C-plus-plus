@@ -10,6 +10,7 @@
 #include "vector.h"
 
 
+bool tokenise(char *line, Vector tokensOut);
 
 
 
