@@ -36,14 +36,12 @@ size_t vector_get_size(const Vector *const vector);
 size_t vector_get_length(const Vector *const vector);
 
 
-bool vector_set_index(Vector *const vector, size_t index, void* data);
+bool vector_set_index(Vector *const vector, size_t index, const void *const data);
 const uint8_t* vector_get_index(Vector *const vector, size_t index);
-bool vector_insert_index(Vector *const vector, size_t index, void* data);
+bool vector_insert_index(Vector *const vector, size_t index, const void *const data);
 bool vector_delete_index(Vector *const vector, size_t index);
 bool vector_resize(Vector *const vector, int offsetSize);
 bool vector_destroy(Vector *const vector);
-
+bool vector_quick_append(Vector *const vector, const void *const data, size_t amountOfData);
 
 #endif // VECTOR_H
-
-
