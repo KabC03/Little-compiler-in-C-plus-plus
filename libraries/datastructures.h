@@ -59,18 +59,18 @@ typedef struct PriorityQueue {
 
 bool stack_initialise(Stack *const stack, size_t dataSize);
 size_t stack_length(Stack *const stack);
-bool stack_push(Stack *const stack, void *data);
+bool stack_push(Stack *const stack, const void *const data);
 const void* stack_peak(Stack *const stack);
 bool stack_pop(Stack *const stack, void *result);
 
 bool LL_print(LinkedList *const linkedList);
 bool LL_initialise(LinkedList *const linkedList, size_t dataSize);
 size_t LL_length(LinkedList *const linkedList);
-bool LL_insert_front(LinkedList *const list, void *data);
+bool LL_insert_front(LinkedList *const list, const void *const data);
 bool LL_delete_front(LinkedList *const list);
-bool LL_insert_back(LinkedList *const list, void *data);
+bool LL_insert_back(LinkedList *const list, const void *const data);
 bool LL_delete_back(LinkedList *const list);
-
+bool LL_insert_index(LinkedList *const list, size_t index,const void *const data);
 
 
 
@@ -80,13 +80,11 @@ bool LL_delete_back(LinkedList *const list);
 
 bool map_LL_print(MapList *const list);
 bool map_LL_initialise(MapList *const list); 
-bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue, size_t keySize, size_t valueSize);
-bool map_LL_delete_key(MapList *const list, void *inputKey, size_t keySize);
-const void *map_LL_get_value(MapList *const list, void *inputKey, size_t keySize);
+bool map_LL_insert_front(MapList *const list, const void *const inputKey, const void *const inputValue, size_t keySize, size_t valueSize);
+bool map_LL_delete_key(MapList *const list, const void *const inputKey, size_t keySize);
+const void *map_LL_get_value(MapList *const list, const void *const inputKey, size_t keySize);
 bool map_LL_destroy(MapList *const list);
 
 
 
 #endif // DATASTRUCTURES_H
-
-
