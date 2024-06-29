@@ -173,7 +173,7 @@ __Note: Whitespace (including indentation) is ignored__
         # Something
       $function$
   
-        my_function(int x, int y, char @@ z, ...) -> int @:
+        decl my_function(int x, int y, char @@ z, ...) -> int @:
             $data$
               # Data here
             $program$
