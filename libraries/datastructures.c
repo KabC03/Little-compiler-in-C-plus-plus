@@ -94,7 +94,7 @@ size_t stack_length(Stack *const stack) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool stack_push(Stack *const stack, void *data) {
+bool stack_push(Stack *const stack, const void *const data) {
 
     if(stack == NULL || data == NULL) {
         return false;
@@ -324,7 +324,7 @@ size_t LL_length(LinkedList *const linkedList) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool LL_insert_front(LinkedList *const list, void *data) {
+bool LL_insert_front(LinkedList *const list, const void *const data) {
 
     if(list == NULL || data == NULL) {
         return false;
@@ -400,7 +400,7 @@ bool LL_delete_front(LinkedList *const list) {
 
 
 /**
- * LL_insert_back - WARNING DOES NOT WORK
+ * LL_insert_back
  * ===============================================
  * Brief: Insert at back of list
  * 
@@ -410,38 +410,37 @@ bool LL_delete_front(LinkedList *const list) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool LL_insert_back(LinkedList *const list, void *data) {
+bool LL_insert_back(LinkedList *const list, const void *const data) {
 
-    if(list == NULL) {
+    if(list == NULL || data == NULL) {
         return false;
     } else {
-
-
 
         ListNode *newNode = malloc(sizeof(ListNode));
         if(newNode == NULL) {
             return false;
         }
-
-        newNode->data = malloc(sizeof(uint8_t) * list->datatypeSize);
+        newNode->data = malloc(list->datatypeSize);
         if(newNode->data == NULL) {
-            free(newNode);
             return false;
         }
+        newNode->back = NULL;
+        newNode->next = NULL;
+
+
         memcpy(newNode->data, data, list->datatypeSize);
-
-
-        if(list->end == NULL) {
-
+        if(list->end != NULL) {
+            
+            newNode->back = list->end;
+            list->end->next = newNode;
             list->end = newNode;
-            list->head = newNode;
+
         } else {
 
-            list->end->next = newNode;
-        }
+            list->head = newNode;
+            list->end = newNode;
 
-        newNode->next = NULL;
-        newNode->back = list->end;
+        }
     }
 
 
@@ -502,9 +501,30 @@ bool LL_delete_back(LinkedList *const list) {
 
 
 
+/**
+ * LL_insert_index - WARNING DOES NOT WORK
+ * ===============================================
+ * Brief: Insert at an index into the LL 
+ * 
+ * Param: *linkedList - LinkedList of interest
+ *        *data - Data to insert
+ *        index - Index to insert
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool LL_insert_index(LinkedList *const list, size_t index,const void *const data) {
+
+    if(list == NULL || data == NULL) {
+        return false;
+    } else {
 
 
+    
+    }
 
+    return true;
+}
 
 
 
@@ -515,6 +535,8 @@ TODO:
 - Delete at index
 
 - Get item at index
+- Get item from start
+- Get item from end
 
 - Delete a linked list
 - Copy a linked list
@@ -542,20 +564,34 @@ TODO
 bool map_LL_print(MapList *const list) {
 
     if(list == NULL) {
+        printf("Invalid map\n");
         return false;
     } else {
+        printf("Index    || Key || Value\n");
+
+        if(list->firstNode.key != NULL) {
+
+            printf("       0 || %d   || %d \n", *(int*)(list->firstNode.key),*(int*)(list->firstNode.value));
+        } else{
+            printf("NULL\n");
+        }
 
 
-        printf("0 || %d, ", *(int*)(list->firstNode.key));
         MapListNode *currentNode = list->firstNode.next;
 
         int count = 1;
         while(currentNode != NULL) {
 
-            printf("%d || %d, ",count, *(int*)(currentNode->key));
-            currentNode = currentNode->next;
-            count++;
-        }        
+            if(list->firstNode.key != NULL) {
+                printf("       %d || %d   || %d \n", count,*(int*)(currentNode->key),*(int*)(currentNode->value)); 
+                    currentNode = currentNode->next;
+                    count++;
+            } else {
+                printf("NULL\n");
+            }
+
+        }     
+        printf("\n\n");   
     }
 
     return true;
@@ -582,7 +618,7 @@ bool map_LL_initialise(MapList *const list) {
 
 
 //Insert after first node at the front
-bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue, size_t keySize, size_t valueSize) {
+bool map_LL_insert_front(MapList *const list, const void *const inputKey, const void *const inputValue, size_t keySize, size_t valueSize) {
 
     if(list == NULL || inputKey == NULL || inputValue == NULL) {
         return false;
@@ -637,7 +673,7 @@ bool map_LL_insert_front(MapList *const list, void *inputKey, void *inputValue, 
 
 
 //Delete by a key
-bool map_LL_delete_key(MapList *const list, void *inputKey, size_t keySize) {
+bool map_LL_delete_key(MapList *const list, const void *const inputKey, size_t keySize) {
 
     if(list == NULL || inputKey == NULL || keySize == 0) {
         return false;
@@ -705,7 +741,7 @@ bool map_LL_delete_key(MapList *const list, void *inputKey, size_t keySize) {
 
 
 //Get value from a key - return pointer to value
-const void *map_LL_get_value(MapList *const list, void *inputKey, size_t keySize) {
+const void *map_LL_get_value(MapList *const list, const void *const inputKey, size_t keySize) {
 
     if(list == NULL || inputKey == NULL || keySize == 0) {
         return NULL;
