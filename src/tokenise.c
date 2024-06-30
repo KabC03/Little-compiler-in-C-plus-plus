@@ -1,42 +1,61 @@
 #include "tokenise.h"
 
+HashMap keywordHashmap; //Set this to global since only one should exist
 
-int main(void) {
+/**
+ * tokenise 
+ * ===============================================
+ * Brief: Tokenise a line of characters 
+ * 
+ * Param: *line - Line to tokenise 
+ *        tokensOut - Vector of output tokens
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool initialise_keyword_hashmap(void) {
 
-    FILE *sourceFilePtr = fopen("src.txt", "r");
-    if(sourceFilePtr == NULL) {
-        return -1;;
+    for(size_t i = 0; i < ; i++) {
+        
+        printf("i = %d\n",i);
     }
 
 
-    Vector tokenVector;
-    if(vector_initialise(&tokenVector, sizeof(Token)) == false) {
-        return -1;
-    }
-    char lineBuffer[MAX_LINE_LENGTH];
-
-
-
-    bool containsSymbols = false;
-    bool containsNumbers = false;
-    bool containsLetters = false; 
-    while(fgets(lineBuffer, sizeof(lineBuffer)/sizeof(lineBuffer[0]), sourceFilePtr)) {
-
-        //Add tokens to a buffer then hash
-        //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
-
-            
-
-    }
-
-
-
-
-    fclose(sourceFilePtr);
-
-    return 0;
+    return true;
 }
 
 
 
+/**
+ * tokenise 
+ * ===============================================
+ * Brief: Tokenise a line of characters 
+ * 
+ * Param: *line - Line to tokenise 
+ *        tokensOut - Vector of output tokens
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool tokenise(char *line, Vector tokensOut) {
+
+    if(line == NULL) {
+        return false;
+    }
+
+
+    char currentLine[MAX_LINE_LENGTH] = '\0';
+    
+    //Add tokens to a buffer then hash
+    //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
+
+    for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
+
+
+    }
+
+
+
+    return true;
+}
 
