@@ -11,7 +11,7 @@
 #include "vector.h"
 
 
-bool initialise_compiler_hashmaps (void);
+bool initialise_compiler_hashmaps(void);
 bool tokenise(char *line, Vector *const tokensOut);
 
 
