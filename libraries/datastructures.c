@@ -571,7 +571,7 @@ bool map_LL_print(MapList *const list) {
 
         if(list->firstNode.key != NULL) {
 
-            printf("       0 || %d   || %d \n", *(int*)(list->firstNode.key),*(int*)(list->firstNode.value));
+            printf("       0 || %s   || %d \n", (char*)(list->firstNode.key),*(int*)(list->firstNode.value));
         } else{
             printf("NULL\n");
         }
@@ -583,7 +583,7 @@ bool map_LL_print(MapList *const list) {
         while(currentNode != NULL) {
 
             if(list->firstNode.key != NULL) {
-                printf("       %d || %d   || %d \n", count,*(int*)(currentNode->key),*(int*)(currentNode->value)); 
+                printf("       %d || %s   || %d \n", count,(char*)(currentNode->key),*(int*)(currentNode->value)); 
                     currentNode = currentNode->next;
                     count++;
             } else {
@@ -798,3 +798,9 @@ bool map_LL_destroy(MapList *const list) {
 
     return true;
 }
+
+
+
+
+
+
