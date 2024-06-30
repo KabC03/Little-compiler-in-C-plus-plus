@@ -15,69 +15,74 @@
 #define MAX_KEYWORD_SIZE 100
 #define MAX_LINE_LENGTH 100
 
-#define NUM_KEYWORDS 14
+#define NUM_KEYWORDS 35 //Number of items in TOKEN_TYPE and KEYWORDS
 #define array_length(array) sizeof(array)/sizeof(array[0])
 
 
-extern const char KeyWords[][MAX_KEYWORD_SIZE];
+extern const char validTokens[][MAX_KEYWORD_SIZE];
 
-typedef enum TOKEN_TYPE {
+
+
+
+typedef enum TOKEN_TYPE { //NOTE - ORDER CORROSPONDS TO DATA IN COMPILER DATA.c
 
 
     //Declarations    
-    DATATYPE,                     //int, float, char
-    EQUALS_ASSIGNMENT,            //=
+    INT = 0,                           //int
+    FLOAT = 1,                         //float
+    CHAR = 2,                          //char
+    EQUALS_ASSIGNMENT = 3,             //=
 
     //Conditional statements
-    IF,                           //if
-    ELIF,                         //elif
-    ELSE,                         //else
+    IF = 4,                            //if
+    ELIF = 5,                          //elif
+    ELSE = 6,                          //else
 
-    WHILE,                        //while
-    FOR,                          //for
+    WHILE = 7,                         //while
+    FOR = 8,                           //for
 
-    EQ,                           //==
-    NEQ,                          //!=
+    EQ = 9,                            //==
+    NEQ = 10,                          //!=
     
-    LES,                          //<
-    GRE,                          //>
-    LTE,                          //<=
-    GTE,                          //>=
+    LES = 11,                          //<
+    GRE = 12,                          //>
+    LTE = 13,                          //<=
+    GTE = 14,                          //>=
 
 
     //Functions
-    DECL,                         //delc (declare function)
+    DECL = 15,                         //delc (declare function)
 
     //Organisation
-    DATA,                         //$data$
-    FUNCTION,                     //$function$
-    PROGRAM,                      //$program$
-    COMMENT,                      //#
+    DATA = 16,                         //$data$
+    FUNCTION = 17,                     //$function$
+    PROGRAM = 18,                      //$program$
+    COMMENT = 19,                      //#
 
     //Inbuilt functions
-    ALLOCATE,                     //allocate()
-    FREE,                         //free()
-    SIZEOF,                       //sizeof()
+    ALLOCATE = 20,                     //allocate()
+    FREE = 21,                         //free()
+    SIZEOF = 22,                       //sizeof()
 
 
 
     //Misc symbols
-    SEMICOLEN,                    //;
+    SEMICOLEN = 23,                    //;
     
-    ADD,                          //+
-    SUB,                          //-
-    MUL,                          //*
-    DIV,                          ///
-    MOD,                          //%
+    ADD = 24,                          //+
+    SUB = 25,                          //-
+    MUL = 26,                          //*
+    DIV = 27,                          ///
+    MOD = 28,                          //%
 
-    OPEN_BRACE,                   //(
-    CLOSE_BRACE,                  //)
-    OPEN_SQUARE,                  //[
-    CLOSE_SQUARE,                 //]
-    OPEN_CURLY,                   //{
-    CLOSE_CURLY,                  //}
+    OPEN_BRACE = 29,                   //(
+    CLOSE_BRACE = 30,                  //)
+    OPEN_SQUARE = 31,                  //[
+    CLOSE_SQUARE = 32,                 //]
+    OPEN_CURLY = 33,                   //{
+    CLOSE_CURLY = 34,                  //}
 
-    COMMA,                        //,
+    COMMA = 35,                        //,
 
 } TOKEN_TYPE;
 
