@@ -15,6 +15,7 @@
 #define MAX_KEYWORD_SIZE 100
 #define MAX_LINE_LENGTH 100
 
+#define MAX_TOKEN_LENGTH 11 //Size of the largest token
 #define NUM_KEYWORDS 35 //Number of items in TOKEN_TYPE and KEYWORDS
 #define array_length(array) sizeof(array)/sizeof(array[0])
 
