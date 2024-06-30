@@ -15,9 +15,17 @@ int main(void) {
     }
     char lineBuffer[MAX_LINE_LENGTH];
 
+
+
+    bool containsSymbols = false;
+    bool containsNumbers = false;
+    bool containsLetters = false; 
     while(fgets(lineBuffer, sizeof(lineBuffer)/sizeof(lineBuffer[0]), sourceFilePtr)) {
 
-        
+        //Add tokens to a buffer then hash
+        //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
+
+            
 
     }
 
@@ -28,4 +36,7 @@ int main(void) {
 
     return 0;
 }
+
+
+
 
