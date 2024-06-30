@@ -16,6 +16,8 @@ bool is_misc_symbol(char character) {
     case '}': 
     case ',': 
     case ';': 
+    case ' ':
+    case '\0': 
         return true;
     default:
         return false;
@@ -78,12 +80,12 @@ bool tokenise(char *line, Vector *const tokensOut) {
     }
 
 
-    char currentToken[MAX_LINE_LENGTH] = "\0";
+    char currentTokenLine[MAX_LINE_LENGTH] = "\0";
     
     if(vector_initialise(tokensOut, sizeof(Token)) == false) {
         return false;
     }
-
+    Token currentToken;
 
     bool containsChar = false;
     bool containsArithmaticSymbols = false;
@@ -94,7 +96,11 @@ bool tokenise(char *line, Vector *const tokensOut) {
     bool completeToken = false;
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
 
-        if(isalpha(line[i]) == 0) {
+        if(line[i] == ' ') {
+            continue; //Should only happen if first character is whitespace
+
+        } else if(isalpha(line[i]) == 0) {
+    
             //is a character            
             containsChar = true;
 
@@ -114,7 +120,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
                 containsArithmaticSymbols = true;
             }
         }
-        currentToken[j] = line[i];
+        currentTokenLine[j] = line[i];
         //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
 
 
@@ -134,8 +140,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
         //Char's must be of length one and adjacent to a symbol or whitespace 
 
 
-
-
+        //Check stuff here - then if token is complete set completeToken = true otherwise set it false and move on 
 
 
 
@@ -144,7 +149,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
         if(completeToken == true) {
             const void *hashmapValueOut = NULL;
 
-            if(hashmap_get_value(&validTokenHashmap, currentToken, &hashmapValueOut) == false) {
+            if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &hashmapValueOut) == false) {
                 vector_destroy(tokensOut);
                 return false;
             }
@@ -152,12 +157,13 @@ bool tokenise(char *line, Vector *const tokensOut) {
             if(hashmapValueOut != NULL) {
                 //Valid token - append it to vector of tokens
 
-                if(vector_quick_append(tokensOut, currentToken, 1) == false) {
+                if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
                     vector_destroy(tokensOut);
                     return false;
                 }
             } else {
                 vector_destroy(tokensOut);
+                printf("Unrecognised token '%s'\n",currentTokenLine);
                 return false; //Unrecognised token - syntax error
             }
         } else {
