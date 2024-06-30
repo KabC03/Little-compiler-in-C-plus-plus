@@ -1,6 +1,6 @@
 #include "tokenise.h"
 
-HashMap keywordHashmap; //Set this to global since only one should exist
+HashMap validTokenHashmap; //Set this to global since only one should exist
 
 /**
  * tokenise 
@@ -13,13 +13,21 @@ HashMap keywordHashmap; //Set this to global since only one should exist
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool initialise_keyword_hashmap(void) {
+bool initialise_valid_token_hashmap(void) {
 
-    for(size_t i = 0; i < ; i++) {
+    if(hashmap_initialise(&validTokenHashmap, sizeof(char) * MAX_TOKEN_LENGTH, sizeof(TOKEN_TYPE), NUM_KEYWORDS) == false) {
+        return false;
+    }
+    
+    for(size_t i = 0; i < NUM_KEYWORDS; i++) {
         
-        printf("i = %d\n",i);
+        //Add tokens to a buffer then hash
+        
+        //printf("Inserting key: %s\n",validTokens[i]);
+        hashmap_insert(&validTokenHashmap, (void*)(validTokens[i]), &i); //Cannot loop over enum so enum and tokens must just align
     }
 
+    hashmap_print(&validTokenHashmap);
 
     return true;
 }
@@ -44,16 +52,17 @@ bool tokenise(char *line, Vector tokensOut) {
     }
 
 
-    char currentLine[MAX_LINE_LENGTH] = '\0';
+    char currentLine[MAX_LINE_LENGTH] = "\0";
     
-    //Add tokens to a buffer then hash
-    //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
 
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
 
 
-    }
+        currentLine[j] = line[i];
 
+        //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
+
+    }
 
 
     return true;
