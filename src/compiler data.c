@@ -3,30 +3,35 @@
 
 
 //Put these into a hashmap in main
-const char KeyWords[][MAX_KEYWORD_SIZE] = {
+const char validTokens[][MAX_KEYWORD_SIZE] = {
 
-    "INT", "FLOAT", "CHAR",
+    //Declarations
+    "int", "float", "char", 
+    "=",
 
-    "$DATA$", "$PROGRAM$", "$FUNCTION$"
 
-    "if", "elif", "else",
-    "while", "for",
+    //Conditional statements
+    "if", "elif", "else", "while", "for",
+    "==", "!=", ">=", "<=",
 
-    "decl", "return",
+    //Functions
+    "decl", "return", 
 
-    "allocate", "free",
+    //Organisation
+    "$data$", "$function$", "$program$", "//",
+
+
+    //Inbuilt functions
+    "allocate", "free", "sizeof",
+
+
+    //Misc symbols
+    ";", "+", "-", "*", "/", "%%",
+
+    "(", ")", "[", "]", "{", "}", ","
+
 
 };
-
-
-
-
-
-
-
-
-
-
 
 
 
