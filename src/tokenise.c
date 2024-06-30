@@ -89,7 +89,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
     bool containsArithmaticSymbols = false;
     bool containsMiscSymbols = false;
     bool containsNumbers = false;
-
+    size_t numberOfDecimals = 0;
 
     bool completeToken = false;
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
@@ -102,6 +102,9 @@ bool tokenise(char *line, Vector *const tokensOut) {
             //Is a digit
             containsNumbers = true;
 
+        } else if(line[i] != '.') {
+            //Contains a decimal point 
+            numberOfDecimals++;
 
         } else {
             //Is a symbol
@@ -125,10 +128,12 @@ bool tokenise(char *line, Vector *const tokensOut) {
         //Misc symbols are ALWAYS considered as one token - basically anything that is not arithmatic
         //Braces, commas, semicolens
 
-        
+
+        //Variables contain letters and can contain numbers - NOTE cannot distinguish from function name at this stage - do in parser
+        //Numbers must contain numbers and at max one decimal point
+        //Char's must be of length one and adjacent to a symbol or whitespace 
 
 
-        //PLACEHOLDER
 
 
 
