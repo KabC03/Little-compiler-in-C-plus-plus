@@ -78,9 +78,9 @@ bool tokenise(char *line, Vector *const tokensOut) {
     }
 
 
-    char currentLine[MAX_LINE_LENGTH] = "\0";
+    char currentToken[MAX_LINE_LENGTH] = "\0";
     
-    if(vector_initialise(&tokensOut, sizeof(Token)) == false) {
+    if(vector_initialise(tokensOut, sizeof(Token)) == false) {
         return false;
     }
 
@@ -89,6 +89,9 @@ bool tokenise(char *line, Vector *const tokensOut) {
     bool containsArithmaticSymbols = false;
     bool containsMiscSymbols = false;
     bool containsNumbers = false;
+
+
+    bool completeToken = false;
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
 
         if(isalpha(line[i]) == 0) {
@@ -108,7 +111,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
                 containsArithmaticSymbols = true;
             }
         }
-        currentLine[j] = line[i];
+        currentToken[j] = line[i];
         //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
 
 
@@ -122,15 +125,42 @@ bool tokenise(char *line, Vector *const tokensOut) {
         //Misc symbols are ALWAYS considered as one token - basically anything that is not arithmatic
         //Braces, commas, semicolens
 
+        
+
+
+        //PLACEHOLDER
 
 
 
 
 
-        if(vector_quick_append(&tokensOut, currentLine, 1) == false) {
-            vector_destroy(&tokensOut);
-            return false;
+
+        //Check if token is valid - if so append it to the vector of tokens
+        if(completeToken == true) {
+            const void *hashmapValueOut = NULL;
+
+            if(hashmap_get_value(&validTokenHashmap, currentToken, &hashmapValueOut) == false) {
+                vector_destroy(tokensOut);
+                return false;
+            }
+
+            if(hashmapValueOut != NULL) {
+                //Valid token - append it to vector of tokens
+
+                if(vector_quick_append(tokensOut, currentToken, 1) == false) {
+                    vector_destroy(tokensOut);
+                    return false;
+                }
+            } else {
+                vector_destroy(tokensOut);
+                return false; //Unrecognised token - syntax error
+            }
+        } else {
+
+            //Keep adding to the token array - token is not complete yet
+            continue;
         }
+
     }
 
 
