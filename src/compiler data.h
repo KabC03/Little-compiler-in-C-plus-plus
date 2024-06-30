@@ -15,8 +15,8 @@
 #define MAX_KEYWORD_SIZE 100
 #define MAX_LINE_LENGTH 100
 
-#define MAX_TOKEN_LENGTH 11 //Size of the largest token
-#define NUM_KEYWORDS 35 //Number of items in TOKEN_TYPE and KEYWORDS
+#define MAX_TOKEN_LENGTH 15 //Size of the largest token
+#define NUM_KEYWORDS 39 //Number of items in TOKEN_TYPE and KEYWORDS
 #define array_length(array) sizeof(array)/sizeof(array[0])
 
 
@@ -84,6 +84,15 @@ typedef enum TOKEN_TYPE { //NOTE - ORDER CORROSPONDS TO DATA IN COMPILER DATA.c
     CLOSE_CURLY = 34,                  //}
 
     COMMA = 35,                        //,
+
+    
+
+    //Data
+    INT_IMMEDIATE = 36,                //10
+    FLOAT_IMMEDIATE = 37,              //10.2
+    CHAR_IMMEDIATE = 38,               //'a'
+    VARIABLE = 39,                     //var1
+
 
 } TOKEN_TYPE;
 
