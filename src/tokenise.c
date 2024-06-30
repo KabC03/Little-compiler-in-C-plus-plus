@@ -2,7 +2,6 @@
 
 HashMap validTokenHashmap; //Set this to global since only one should exist
 
-
 //Checks if a character is a misc symbol
 bool is_misc_symbol(char character) {
 
@@ -27,19 +26,23 @@ bool is_misc_symbol(char character) {
 
 
 /**
- * initialise_valid_token_hashmap
+ * initialise_compiler_hashmaps 
  * ===============================================
- * Brief: Initialise the hashmap of valid tokens 
+ * Brief: Initialise the hashmap of valid tokens and variable names 
  * 
  * Param: 
  * 
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool initialise_valid_token_hashmap(void) {
+bool initialise_compiler_hashmaps (void) {
 
     if(hashmap_initialise(&validTokenHashmap, sizeof(char) * MAX_TOKEN_LENGTH, sizeof(TOKEN_TYPE), NUM_KEYWORDS) == false) {
         return false;
+
+
+
+    //NOTE - VARIABLE SIZE IS TEMPORAY
     }
     
     for(size_t i = 0; i < NUM_KEYWORDS; i++) {
@@ -219,7 +222,8 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
                 if(maybeVariable == true) {
                     //It was a variable and not a keyword so not a syntax error
-                    //NOTE: STORE IN HASHMAP FOR VARIABLES - DO THIS LATER
+
+                    //DO THIS
 
                 } else {
 
@@ -229,6 +233,14 @@ bool tokenise(char *line, Vector *const tokensOut) {
                 }
 
             }
+
+            containsChar = false;
+            containsArithmaticSymbols = false;
+            containsMiscSymbols = false;
+            containsNumbers = false;
+            numberOfDecimals = 0;
+            maybeVariable = false;
+
         } else {
 
             //Keep adding to the token array - token is not complete yet
