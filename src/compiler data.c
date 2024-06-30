@@ -12,7 +12,7 @@ const char KeyWords[][MAX_KEYWORD_SIZE] = {
     "if", "elif", "else",
     "while", "for",
 
-    "return",
+    "func", "return",
 
     "allocate", "free",
 
