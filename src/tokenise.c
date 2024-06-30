@@ -3,7 +3,6 @@
 HashMap validTokenHashmap; //Set this to global since only one should exist
 
 
-
 //Checks if a character is a misc symbol
 bool is_misc_symbol(char character) {
 
@@ -93,9 +92,13 @@ bool tokenise(char *line, Vector *const tokensOut) {
     bool containsNumbers = false;
     size_t numberOfDecimals = 0;
 
-    bool completeToken = false;
+    bool maybeVariable = false;
+
+    bool completeToken = true;
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
 
+        completeToken = true;
+        maybeVariable = false;
         if(line[i] == ' ') {
             continue; //Should only happen if first character is whitespace
 
@@ -142,17 +145,66 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
         //Check stuff here - then if token is complete set completeToken = true otherwise set it false and move on 
 
+        
+
+        //Check for keywords - note variables will also pass this filter - need to handle accordingly
+        if((containsChar == true && containsArithmaticSymbols == false && containsNumbers == false && containsMiscSymbols == false)
+        && (is_misc_symbol(line[i + 1]) == true)) {
+
+            maybeVariable = true; //Use this flag to indicate that the current item might be a variable or char - see outcome of hashing
+            //Do nothing, no assignment needed
+
+        //Check for arithmatic symbols
+        } else if((containsChar == false && containsNumbers == false) && (containsArithmaticSymbols == true)) {
+
+            //Do nothing
+
+        //Check for misc symbols
+        //j == 0 checks if length == 0
+        } else if(containsMiscSymbols == true && j == 0) {
+
+            //If the length is 1 and it contains these tokens its already complete
+
+        //Check for decimals and integers
+        } else if(containsNumbers == true && containsChar == false && numberOfDecimals <= 1) {
+            
+            //Decide if its an int or float
+            if(numberOfDecimals == 0) {
+                //Set it as an integer (it can adjusted later in parser)
+                currentToken.intImmediate = atoi(currentTokenLine);
+            
+            } else {
+                currentToken.floatImmediate = atof(currentTokenLine);
+            }
+
+
+        //Check for character immediate (e.g c' <- note ' at the end indicating its a char immediate not a var)
+        } else if(containsChar == true && j == 0 && currentTokenLine[i + 1] == '\'') {
+
+            currentToken.charImmediate = currentTokenLine[i];
+
+        } else {
+
+            completeToken = false;
+        }
 
 
 
         //Check if token is valid - if so append it to the vector of tokens
         if(completeToken == true) {
+            j = 0; //Get ready to load the next tokens into the array
             const void *hashmapValueOut = NULL;
 
+
             if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &hashmapValueOut) == false) {
+
                 vector_destroy(tokensOut);
                 return false;
             }
+
+
+
+
 
             if(hashmapValueOut != NULL) {
                 //Valid token - append it to vector of tokens
@@ -162,9 +214,20 @@ bool tokenise(char *line, Vector *const tokensOut) {
                     return false;
                 }
             } else {
-                vector_destroy(tokensOut);
-                printf("Unrecognised token '%s'\n",currentTokenLine);
-                return false; //Unrecognised token - syntax error
+
+
+
+                if(maybeVariable == true) {
+                    //It was a variable and not a keyword so not a syntax error
+                    //NOTE: STORE IN HASHMAP FOR VARIABLES - DO THIS LATER
+
+                } else {
+
+                    vector_destroy(tokensOut);
+                    printf("Unrecognised token '%s'\n",currentTokenLine);
+                    return false; //Unrecognised token - syntax error
+                }
+
             }
         } else {
 
