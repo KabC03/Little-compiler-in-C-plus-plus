@@ -2,13 +2,35 @@
 
 HashMap validTokenHashmap; //Set this to global since only one should exist
 
+
+
+//Checks if a character is a misc symbol
+bool is_misc_symbol(char character) {
+
+    switch (character) {
+    case '(': 
+    case ')': 
+    case '[': 
+    case ']': 
+    case '{': 
+    case '}': 
+    case ',': 
+    case ';': 
+        return true;
+    default:
+        return false;
+    }
+    return true;
+}
+
+
+
 /**
- * tokenise 
+ * initialise_valid_token_hashmap
  * ===============================================
- * Brief: Tokenise a line of characters 
+ * Brief: Initialise the hashmap of valid tokens 
  * 
- * Param: *line - Line to tokenise 
- *        tokensOut - Vector of output tokens
+ * Param: 
  * 
  * Return: bool - T/F depending on if initialisation was successful
  * 
@@ -24,10 +46,14 @@ bool initialise_valid_token_hashmap(void) {
         //Add tokens to a buffer then hash
         
         //printf("Inserting key: %s\n",validTokens[i]);
-        hashmap_insert(&validTokenHashmap, (void*)(validTokens[i]), &i); //Cannot loop over enum so enum and tokens must just align
+        if(hashmap_insert(&validTokenHashmap, (void*)(validTokens[i]), &i) == false) {
+            //Cannot loop over enum so enum and tokens must just align
+            hashmap_destroy(&validTokenHashmap);
+            return false;
+        }
     }
 
-    hashmap_print(&validTokenHashmap);
+    //hashmap_print(&validTokenHashmap); //Idealy hash table shouldnt have any collisions
 
     return true;
 }
@@ -45,7 +71,7 @@ bool initialise_valid_token_hashmap(void) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool tokenise(char *line, Vector tokensOut) {
+bool tokenise(char *line, Vector *const tokensOut) {
 
     if(line == NULL) {
         return false;
@@ -54,14 +80,57 @@ bool tokenise(char *line, Vector tokensOut) {
 
     char currentLine[MAX_LINE_LENGTH] = "\0";
     
+    if(vector_initialise(&tokensOut, sizeof(Token)) == false) {
+        return false;
+    }
 
+
+    bool containsChar = false;
+    bool containsArithmaticSymbols = false;
+    bool containsMiscSymbols = false;
+    bool containsNumbers = false;
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
 
+        if(isalpha(line[i]) == 0) {
+            //is a character            
+            containsChar = true;
 
+        } else if(isdigit(line[i]) != 0) {
+            //Is a digit
+            containsNumbers = true;
+
+
+        } else {
+            //Is a symbol
+            if(is_misc_symbol(line[i]) == true) {
+                containsMiscSymbols = true;
+            } else {
+                containsArithmaticSymbols = true;
+            }
+        }
         currentLine[j] = line[i];
-
         //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
 
+
+        //Tokens end when:        
+        //Words should be followed by a symbol or whitespace
+        //while(1)
+
+        //Arithmatic operators should be followed by non-artithmatic operator (arithmatic operator is anything thats not a brace)
+        //4 * (3+2) != 3
+
+        //Misc symbols are ALWAYS considered as one token - basically anything that is not arithmatic
+        //Braces, commas, semicolens
+
+
+
+
+
+
+        if(vector_quick_append(&tokensOut, currentLine, 1) == false) {
+            vector_destroy(&tokensOut);
+            return false;
+        }
     }
 
 
