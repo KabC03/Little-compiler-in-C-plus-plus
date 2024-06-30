@@ -16,7 +16,7 @@
 #define MAX_LINE_LENGTH 100
 
 #define MAX_TOKEN_LENGTH 15 //Size of the largest token
-#define NUM_KEYWORDS 39 //Number of items in TOKEN_TYPE and KEYWORDS
+#define NUM_KEYWORDS 35 //Number of items in TOKEN_TYPE and KEYWORDS (EXCLUDING DATA)
 #define array_length(array) sizeof(array)/sizeof(array[0])
 
 
@@ -87,7 +87,8 @@ typedef enum TOKEN_TYPE { //NOTE - ORDER CORROSPONDS TO DATA IN COMPILER DATA.c
 
     
 
-    //Data
+    //DO NOT INCLUDE IN COUNT FOR NUMBER OF WORDS
+    //Data - since doesnt have a hashable form - push these down everytime a new hashable word is entered
     INT_IMMEDIATE = 36,                //10
     FLOAT_IMMEDIATE = 37,              //10.2
     CHAR_IMMEDIATE = 38,               //'a'
