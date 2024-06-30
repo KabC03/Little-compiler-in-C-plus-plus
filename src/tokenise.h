@@ -10,6 +10,7 @@
 #include "vector.h"
 
 
+bool initialise_valid_token_hashmap(void);
 bool tokenise(char *line, Vector tokensOut);
 
 
