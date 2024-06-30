@@ -17,7 +17,10 @@
 
 #define MAX_TOKEN_LENGTH 15 //Size of the largest token
 #define NUM_KEYWORDS 36 //Number of items in TOKEN_TYPE and KEYWORDS (EXCLUDING DATA)
+#define VARIABLE_HASHMAP_SIZE 100 //Size of array hashmap initially
 #define array_length(array) sizeof(array)/sizeof(array[0])
+
+
 
 
 extern const char validTokens[][MAX_KEYWORD_SIZE];
