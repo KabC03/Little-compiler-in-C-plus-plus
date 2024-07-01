@@ -193,59 +193,73 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
 
+
+        //If the token is not complete just continue
+        if(completeToken == false) {
+            continue;
+        }
+
+
+
+
+
+
+
+
         //Check if token is valid - if so append it to the vector of tokens
-        if(completeToken == true) {
-            j = 0; //Get ready to load the next tokens into the array
-            const void *hashmapValueOut = NULL;
+        j = 0; //Get ready to load the next tokens into the array
+        const void *hashmapValueOut = NULL;
 
 
-            if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &hashmapValueOut) == false) {
+        //Hash the token
+        if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &hashmapValueOut) == false) {
 
+            vector_destroy(tokensOut);
+            return false;
+        }
+
+
+
+
+        //Check token validity
+        if(hashmapValueOut != NULL) {
+            //Valid token - append it to vector of tokens
+
+            if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
                 vector_destroy(tokensOut);
                 return false;
             }
 
 
+        //Check for variable before printing syntax error
+        } else {
 
 
 
-            if(hashmapValueOut != NULL) {
-                //Valid token - append it to vector of tokens
+            if(maybeVariable == true) {
+                //It was a variable and not a keyword so not a syntax error
 
-                if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
+                if(vector_quick_append(tokensOut, currentTokenLine, strlen(currentTokenLine)) == false) {
                     vector_destroy(tokensOut);
                     return false;
                 }
+
+
             } else {
 
-
-
-                if(maybeVariable == true) {
-                    //It was a variable and not a keyword so not a syntax error
-
-                    //DO THIS
-
-                } else {
-
-                    vector_destroy(tokensOut);
-                    printf("Unrecognised token '%s'\n",currentTokenLine);
-                    return false; //Unrecognised token - syntax error
-                }
-
+                vector_destroy(tokensOut);
+                printf("Unrecognised token '%s'\n",currentTokenLine);
+                return false; //Unrecognised token - syntax error
             }
 
-            containsChar = false;
-            containsArithmaticSymbols = false;
-            containsMiscSymbols = false;
-            containsNumbers = false;
-            numberOfDecimals = 0;
-            maybeVariable = false;
-
-        } else {
-
-            //Keep adding to the token array - token is not complete yet
-            continue;
         }
+
+        containsChar = false;
+        containsArithmaticSymbols = false;
+        containsMiscSymbols = false;
+        containsNumbers = false;
+        numberOfDecimals = 0;
+        maybeVariable = false;
 
     }
 
