@@ -1,4 +1,4 @@
-#include "hashmap.h"
+#include "static hashmap.h"
 
 #define DJB2_CONSTANT 5381
 #define hashmap_hash_djb2 hashmap_hash //Do this to select the current hash algorithm
@@ -139,11 +139,13 @@ bool hashmap_initialise(HashMap *const hashmap, size_t keySize, size_t valueSize
 /**
  * hashmap_insert
  * ===============================================
- * Brief: Insert into a hashtable 
+ * Brief: Insert into a hashtable or reset a value
  * 
  * Param: *hashmap - Hashmap of interest 
  *        *key - key of interest to insert
  *        *value - Corrosponding value to insert
+ *        keySize - keySize (0 to use default)
+ *        valueSize - valueSize (0 to use default)
  * 
  * Return: bool - T/F depending on if initialisation was successful
  * 
@@ -162,8 +164,8 @@ bool hashmap_insert(HashMap *const hashmap, void *const key, void *const value) 
         }
         if(hashmap_hash(key, hashmap->keySize, tableSize, &hash) == false) {
             return false;
-        }
-
+        } 
+        
         if(map_LL_insert_front((MapList*)vector_get_index(&(hashmap->mapListNodes), hash), key, value, hashmap->keySize, hashmap->valueSize) == false) {
             return false;
         }
@@ -291,3 +293,4 @@ bool hashmap_destroy(HashMap *const hashmap) {
 
     return true;
 }
+
