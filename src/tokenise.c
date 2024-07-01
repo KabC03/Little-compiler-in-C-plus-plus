@@ -13,6 +13,7 @@ bool is_misc_symbol(char character) {
     case '{': 
     case '}': 
     case ',': 
+    case '|': 
     case ';': 
     case ' ':
     case '\0': 
@@ -110,13 +111,13 @@ bool tokenise(char *line, Vector *const tokensOut) {
     bool maybeVariable = false;
 
     bool completeToken = true;
-    printf("Recieved: '%s'", line);
+    printf("Recieved: '%s'\n", line);
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
         completeToken = true;
         maybeVariable = false;
         
-        
         if(line[i] == ' ') {
+            j--; //Increment downwards to preserve array
             continue; //Should only happen if first character is whitespace
 
         } else if(isalpha(line[i]) != 0) {
@@ -167,7 +168,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
         //Check for keywords - note variables will also pass this filter - need to handle accordingly
 
         if((containsChar == true && containsArithmaticSymbols == false && containsMiscSymbols == false)
-        && (is_misc_symbol(line[i + 1]) == true)) {
+        && (is_misc_symbol(line[i + 1]) == true) && line[i+1] != '|' && numberOfDecimals == 0) {
 
             printf("'%s' could be a variable\n",currentTokenLine);
             maybeVariable = true; //Use this flag to indicate that the current item might be a variable or char - see outcome of hashing
@@ -181,14 +182,13 @@ bool tokenise(char *line, Vector *const tokensOut) {
             printf("'%s' is a arithmatic symbol\n",currentTokenLine);
         //Check for misc symbols
         //j == 0 checks if length == 0
-        } else if(containsMiscSymbols == true && j == 0) {
+        } else if(containsMiscSymbols == true && j == 0 && line[i+1] != '|') {
 
             printf("'%s' is a misc symbol\n",currentTokenLine);
             //If the length is 1 and it contains these tokens its already complete
 
         //Check for decimals and integers
-        } else if(containsNumbers == true && containsChar == false && numberOfDecimals <= 1) {
-            
+        } else if(containsNumbers == true && containsChar == false && numberOfDecimals <= 1 && is_misc_symbol(line[i+1]) == true && line[i+1] != '|') {
             //Decide if its an int or float
             if(numberOfDecimals == 0) {
                 //Set it as an integer (it can adjusted later in parser)
@@ -204,24 +204,25 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
         //Check for character immediate (e.g c' <- note ' at the end indicating its a char immediate not a var)
-        } else if(containsChar == true && j == 0 && currentTokenLine[i + 1] == '\'') {
+        } else if(j == 0 && line[i + 1] == '|') {
 
             
-            printf("'%s' is a float\n",currentTokenLine);
+            printf("'%s' is a char\n",currentTokenLine);
             currentToken.charImmediate = currentTokenLine[i];
 
         } else {
-            
             completeToken = false;
         }
-
-
-
+        //printf("Contains char: %d, j = %zu, line[i+1] = %c, buffer: %s\n",containsChar, j, line[i+1], currentTokenLine);
 
         //If the token is not complete just continue
         if(completeToken == false) {
             continue;
         }
+
+        //Add a '\0' to indicate end of string
+     
+        currentTokenLine[j + 1] = '\0';
 
         printf("Attempting to hash '%s'\n", currentTokenLine);
 
@@ -231,19 +232,21 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
         //Check if token is valid - if so append it to the vector of tokens
-        j = 0; //Get ready to load the next tokens into the array
+        j = -1; //Get ready to load the next tokens into the array (set to -1 since j gets incremented)
         const void *hashmapValueOut = NULL;
 
 
         //Hash the token
 
         if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &hashmapValueOut) == false) {
-
+            
+            goto temp; //TEMPORARY
             vector_destroy(tokensOut);
             
             //Unrecognised token - didnt even hash properly
             printf("Unrecognised token '%s'\n",currentTokenLine);
             return false;
+        
         }
 
 
@@ -254,7 +257,9 @@ bool tokenise(char *line, Vector *const tokensOut) {
             if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
                 vector_destroy(tokensOut);
                 return false;
+                
             }
+
 
 
 
@@ -274,6 +279,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
             } else {
 
+                goto temp;
                 vector_destroy(tokensOut);
                 printf("Unrecognised token '%s'\n",currentTokenLine);
                 return false; //Unrecognised token - syntax error
@@ -281,6 +287,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
         }
 
+temp:
         containsChar = false;
         containsArithmaticSymbols = false;
         containsMiscSymbols = false;
@@ -290,7 +297,8 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
     }
 
-
+    printf("Leftover: %s\n",currentTokenLine);
     return true;
 }
+
 
