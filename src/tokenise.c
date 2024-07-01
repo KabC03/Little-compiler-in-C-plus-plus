@@ -88,8 +88,8 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
     //Remove any \n
-    if(line[strlen(line)] == '\n') {
-        line[strlen(line)] = '\0';
+    if(line[strlen(line) - 1] == '\n') {
+        line[strlen(line) - 1] = '\0';
     }
 
 
@@ -109,6 +109,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
     bool maybeVariable = false;
 
     bool completeToken = true;
+    printf("Recieved: '%s'", line);
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
 
         completeToken = true;
