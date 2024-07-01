@@ -76,6 +76,7 @@ bool initialise_compiler_hashmaps (void) {
  */
 bool tokenise(char *line, Vector *const tokensOut) {
 
+    
     if(line == NULL) {
         return false;
     }
@@ -111,14 +112,14 @@ bool tokenise(char *line, Vector *const tokensOut) {
     bool completeToken = true;
     printf("Recieved: '%s'", line);
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
-
         completeToken = true;
         maybeVariable = false;
+        
+        
         if(line[i] == ' ') {
             continue; //Should only happen if first character is whitespace
 
-        } else if(isalpha(line[i]) == 0) {
-    
+        } else if(isalpha(line[i]) != 0) {
             //is a character            
             containsChar = true;
 
@@ -126,8 +127,9 @@ bool tokenise(char *line, Vector *const tokensOut) {
             //Is a digit
             containsNumbers = true;
 
-        } else if(line[i] != '.') {
+        } else if(line[i] == '.') {
             //Contains a decimal point 
+            
             numberOfDecimals++;
 
         } else {
@@ -163,7 +165,8 @@ bool tokenise(char *line, Vector *const tokensOut) {
         
 
         //Check for keywords - note variables will also pass this filter - need to handle accordingly
-        if((containsChar == true && containsArithmaticSymbols == false && containsNumbers == false && containsMiscSymbols == false)
+
+        if((containsChar == true && containsArithmaticSymbols == false && containsMiscSymbols == false)
         && (is_misc_symbol(line[i + 1]) == true)) {
 
             printf("'%s' could be a variable\n",currentTokenLine);
@@ -220,7 +223,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
             continue;
         }
 
-
+        printf("Attempting to hash '%s'\n", currentTokenLine);
 
 
 
@@ -252,6 +255,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
                 vector_destroy(tokensOut);
                 return false;
             }
+
 
 
         //Check for variable before printing syntax error
