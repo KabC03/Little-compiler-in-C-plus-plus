@@ -747,14 +747,22 @@ const void *map_LL_get_value(MapList *const list, const void *const inputKey, si
         return NULL;
     } else {
 
+        if(list->firstNode.key == NULL) {
+            return NULL; //Return NULL ptr if not in list
+        }
         if(memcmp(list->firstNode.key, inputKey, keySize) == 0) {
             return list->firstNode.value; 
         }
 
 
-
         MapListNode *currentNode = list->firstNode.next;
         while(currentNode != NULL) {
+
+
+            if(currentNode->key == NULL) {
+                return NULL; //Return NULL ptr if not in list
+            }
+
             if(memcmp(currentNode->key, inputKey, keySize) == 0) {
                 return currentNode->value;
             }
