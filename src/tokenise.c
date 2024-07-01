@@ -57,7 +57,6 @@ bool initialise_compiler_hashmaps (void) {
         }
     }
 
-    //hashmap_print(&validTokenHashmap); //Idealy hash table shouldnt have any collisions
 
     return true;
 }
@@ -79,6 +78,18 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
     if(line == NULL) {
         return false;
+    }
+
+    if(strlen(line) == 1 && line[0] == '\n') {
+        
+        //Only contains newlines
+        return true;
+    }
+
+
+    //Remove any \n
+    if(line[strlen(line)] == '\n') {
+        line[strlen(line)] = '\0';
     }
 
 
@@ -154,6 +165,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
         if((containsChar == true && containsArithmaticSymbols == false && containsNumbers == false && containsMiscSymbols == false)
         && (is_misc_symbol(line[i + 1]) == true)) {
 
+            printf("'%s' could be a variable\n",currentTokenLine);
             maybeVariable = true; //Use this flag to indicate that the current item might be a variable or char - see outcome of hashing
             //Do nothing, no assignment needed
 
@@ -162,10 +174,12 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
             //Do nothing
 
+            printf("'%s' is a arithmatic symbol\n",currentTokenLine);
         //Check for misc symbols
         //j == 0 checks if length == 0
         } else if(containsMiscSymbols == true && j == 0) {
 
+            printf("'%s' is a misc symbol\n",currentTokenLine);
             //If the length is 1 and it contains these tokens its already complete
 
         //Check for decimals and integers
@@ -174,9 +188,13 @@ bool tokenise(char *line, Vector *const tokensOut) {
             //Decide if its an int or float
             if(numberOfDecimals == 0) {
                 //Set it as an integer (it can adjusted later in parser)
+
+                printf("'%s' is a integer\n",currentTokenLine);
                 currentToken.intImmediate = atoi(currentTokenLine);
             
             } else {
+                
+                printf("'%s' is a float\n",currentTokenLine);
                 currentToken.floatImmediate = atof(currentTokenLine);
             }
 
@@ -184,10 +202,12 @@ bool tokenise(char *line, Vector *const tokensOut) {
         //Check for character immediate (e.g c' <- note ' at the end indicating its a char immediate not a var)
         } else if(containsChar == true && j == 0 && currentTokenLine[i + 1] == '\'') {
 
+            
+            printf("'%s' is a float\n",currentTokenLine);
             currentToken.charImmediate = currentTokenLine[i];
 
         } else {
-
+            
             completeToken = false;
         }
 
@@ -212,13 +232,15 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
         //Hash the token
+
         if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &hashmapValueOut) == false) {
 
             vector_destroy(tokensOut);
+            
+            //Unrecognised token - didnt even hash properly
+            printf("Unrecognised token '%s'\n",currentTokenLine);
             return false;
         }
-
-
 
 
         //Check token validity
