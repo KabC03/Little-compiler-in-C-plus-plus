@@ -141,21 +141,33 @@ bool set_token_parameters(char *currentTokenLine, char currentChar, size_t *j) {
 }
 
 
-bool is_complete_token(char nextChar) {
+bool is_complete_token(size_t *j, char nextChar) {
 
-
-    if(tokenTypeData.containsChar == false && tokenTypeData.containsNumbers == false 
-    && tokenTypeData.isOwnToken == false && tokenTypeData.containsArithmaticSymbols == true) {
-        //Arithmatic symbol encountered, to split off next token needs to be non arithmatic
-        if(is_arithmatic_symbol(nextChar) == false) {
-            return true;
-        }
+    if(j == NULL) {
+        return false;
     } else {
-        //All other tokens are split by whitespace, or ANY type of symbol
-        if(is_own_token_symbol(nextChar) == true || 
-        is_arithmatic_symbol(nextChar) == true || nextChar == SPACE) {
+
+        if(tokenTypeData.containsChar == false && tokenTypeData.containsNumbers == false 
+        && tokenTypeData.isOwnToken == false && tokenTypeData.containsArithmaticSymbols == true) {
+            //Arithmatic symbol encountered, to split off next token needs to be non arithmatic
+            if(is_arithmatic_symbol(nextChar) == false) {
+                return true;
+            }
+
+        } else if(tokenTypeData.isOwnToken == true && *j == 0) {    
+
             return true;
+
+
+        } else {
+            //All other tokens are split by whitespace, or ANY type of symbol
+            if(is_own_token_symbol(nextChar) == true || 
+            is_arithmatic_symbol(nextChar) == true || nextChar == SPACE) {
+
+                return true;
+            }
         }
+
     }
 
     return false;
@@ -333,11 +345,12 @@ bool tokenise(char *line, Vector *const tokensOut) {
         }
         
         //Decide if token is complete
-        if(is_complete_token(line[i+1]) == false) {
+        if(is_complete_token(&j, line[i+1]) == false) {
             continue;
         }
 
-
+        //Token is complete so null terminate it
+        currentTokenLine[j + 1] = '\0';
 
 
         //First pass tokenisation
