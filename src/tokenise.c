@@ -328,7 +328,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
     if(currentTokenLine == NULL) {
         return false;
     }
-    
+
     if(vector_initialise(tokensOut, sizeof(Token)) == false) {
         return false;
     }
@@ -361,19 +361,25 @@ bool tokenise(char *line, Vector *const tokensOut) {
         if(first_pass_token_definition(currentTokenLine, &currentToken) == true) {
             //If first pass was not enough do a second pass (hashing)
 
-
-            const void *hashOutToken = second_pass_token_definition(currentTokenLine);
-            if(hashOutToken == NULL) {
-                //Variable encountered
-                
-                currentToken.Token = USER_VARIABLE_STRING;
-                //TODO: ADD VARIABLE TO A HASHMAP AND STORE ITS ID HERE
-
+            if(currentToken.Token != USER_STRING) {
 
             } else {
+                //Second hash is only required if the token is still unknown
 
-                currentToken.Token = *(TOKEN_TYPE*)(hashOutToken);
 
+                const void *hashOutToken = second_pass_token_definition(currentTokenLine);
+                if(hashOutToken == NULL) {
+                    //Variable encountered
+                    
+                    currentToken.Token = USER_VARIABLE_STRING;
+                    //TODO: ADD VARIABLE TO A HASHMAP AND STORE ITS ID HERE
+
+
+                } else {
+
+                    currentToken.Token = *(TOKEN_TYPE*)(hashOutToken);
+
+                }
             }
 
             j = -1;
