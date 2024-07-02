@@ -178,6 +178,7 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
         //Test for user string (or keyword)
         if(tokenTypeData.containsChar == true && token_type_data_contains_no_delimeter_symbols == true) {
 
+            printf("USER_STRING: %s\n", currentTokenLine);
             currentToken->Token = USER_STRING; //Note - includes operators like +,-,>=,etc
 
         //Test for float immediate
@@ -185,6 +186,7 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
         && tokenTypeData.numberOfDecimals == 1 && tokenTypeData.containsNumbers == true) {
 
 
+            printf("FLOAT_IMMEDIATE: %s\n", currentTokenLine);
             currentToken->floatImmediate = atof(currentTokenLine);
             currentToken->Token = FLOAT_IMMEDIATE;
 
@@ -192,18 +194,23 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
         } else if(tokenTypeData.containsChar == false && token_type_data_contains_no_delimeter_symbols == true 
         && tokenTypeData.numberOfDecimals == 0 && tokenTypeData.containsNumbers == true) {
 
+
+            printf("INT_IMMEDIATE: %s\n", currentTokenLine);
             currentToken->floatImmediate = atoi(currentTokenLine);
             currentToken->Token = INT_IMMEDIATE;
 
         //Test for char immediate
         } else if(tokenTypeData.containsChar == true && tokenTypeData.numberOfSingleQuotes == 2 && strlen(currentTokenLine) == CHAR_IMMEDIATE_LINE_SIZE) {
 
+
+            printf("INT_IMMEDIATE: %s\n", currentTokenLine);
             currentToken->floatImmediate = currentTokenLine[1]; 
             currentToken->Token = CHAR_IMMEDIATE;
 
         } else {
 
-            tokenTypeData.completeToken = false;
+
+            printf("UNKNOWN TOKEN: %s\n\n", currentTokenLine);
             
             
             return false;
@@ -211,7 +218,7 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
     }
 
 
-
+    printf("\n");
     return true;
 }
 
@@ -335,7 +342,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
         //First pass tokenisation
-        if(first_pass_token_definition(currentTokenLine, &currentToken) == false) {
+        if(first_pass_token_definition(currentTokenLine, &currentToken) == true) {
             //If first pass was not enough do a second pass (hashing)
 
 
@@ -352,6 +359,13 @@ bool tokenise(char *line, Vector *const tokensOut) {
                 currentToken.Token = *(TOKEN_TYPE*)(hashOutToken);
 
             }
+
+            j = 0;
+        } else {
+            //First pass tokenisation should ALWAYS pass for valid tokens
+
+            printf("Unrecognised token: '%s'\n",currentTokenLine);
+            return false;
         }
 
         //Add token to array of tokens
