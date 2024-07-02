@@ -94,13 +94,14 @@ bool is_own_token_symbol(char character) {
 //Takes in the current token line and the current char in the line and adjusts the token type data and j accordingly
 bool set_token_parameters(char *currentTokenLine, char currentChar, size_t *j) {
 
+
     if(currentTokenLine == NULL || j == NULL) {
         return false;
     } else {
         
         if(currentChar == ' ') {
             (*j)--; //Increment downwards to preserve array
-
+            return true;
         } else if(isalpha(currentChar) != 0) {
             //is a character            
             tokenTypeData.containsChar = true;
@@ -132,7 +133,7 @@ bool set_token_parameters(char *currentTokenLine, char currentChar, size_t *j) {
             //Unknown symbol
             return false;
         }
-        currentTokenLine[*j] = currentChar;
+        currentTokenLine[(*j)] = currentChar;
         
     }
 
@@ -325,7 +326,6 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
 
-        printf("j = %zu\n",j);
         //Set token parameters
         if(set_token_parameters(currentTokenLine, line[i], &j) == false) {
             printf("Unexpected symbol '%c'\n",line[i]);
