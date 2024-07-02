@@ -80,6 +80,8 @@ bool is_own_token_symbol(char character) {
     case '{':
     case '}':
     case ',':
+    case ';':
+
         return true;
     default:
         return false;
