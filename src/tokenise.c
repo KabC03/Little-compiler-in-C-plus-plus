@@ -133,6 +133,7 @@ bool set_token_parameters(char *currentTokenLine, char currentChar, size_t *j) {
             return false;
         }
         currentTokenLine[*j] = currentChar;
+        
     }
 
     return true;
@@ -175,14 +176,9 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
 
         tokenTypeData.completeToken = true;
 
-        //Test for user string (or keyword)
-        if(tokenTypeData.containsChar == true && token_type_data_contains_no_delimeter_symbols == true) {
-
-            printf("USER_STRING: %s\n", currentTokenLine);
-            currentToken->Token = USER_STRING; //Note - includes operators like +,-,>=,etc
 
         //Test for float immediate
-        } else if(tokenTypeData.containsChar == false && token_type_data_contains_no_delimeter_symbols == true 
+        if(tokenTypeData.containsChar == false && token_type_data_contains_no_delimeter_symbols == true 
         && tokenTypeData.numberOfDecimals == 1 && tokenTypeData.containsNumbers == true) {
 
 
@@ -207,8 +203,10 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
             currentToken->floatImmediate = currentTokenLine[1]; 
             currentToken->Token = CHAR_IMMEDIATE;
 
+
         } else {
-            return false;
+            printf("FIRST PASS CANNOT DETERMINE TYPE: %s\n",currentTokenLine);
+            currentToken->Token = USER_STRING; //Contains symbols, keywords, variables - figure out on second pass
         }
     }
 
@@ -226,8 +224,11 @@ const void *second_pass_token_definition(char *currentTokenLine) {
         return NULL;
     } else {
 
+
+        printf("SECOND PASS IS HASHING: %s\n",currentTokenLine);
+        return NULL;
+
         if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &data) == false) {
-            
             return NULL; //Make this better later on
         }
     }
@@ -321,7 +322,10 @@ bool tokenise(char *line, Vector *const tokensOut) {
     printf("Recieved: '%s'\n", line);
     //Main loop
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
-    
+
+
+
+        printf("j = %zu\n",j);
         //Set token parameters
         if(set_token_parameters(currentTokenLine, line[i], &j) == false) {
             printf("Unexpected symbol '%c'\n",line[i]);
