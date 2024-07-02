@@ -120,7 +120,7 @@ bool set_token_parameters(char *currentTokenLine, char currentChar, size_t *j) {
             
             tokenTypeData.numberOfDecimals++;
 
-        } else if(currentChar == DECIMAL_CHAR) {
+        } else if(currentChar == SINGLE_QUOTE) {
             //Contains single quote
 
             tokenTypeData.numberOfSingleQuotes++;  
@@ -211,8 +211,7 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
 
         //Test for integer immediate
         } else if(tokenTypeData.containsChar == false && token_type_data_contains_no_delimeter_symbols == true 
-        && tokenTypeData.numberOfDecimals == 0 && tokenTypeData.containsNumbers == true) {
-
+        && tokenTypeData.numberOfDecimals == 0 && tokenTypeData.containsNumbers == true && tokenTypeData.numberOfSingleQuotes == 0) {
 
             printf("INT_IMMEDIATE: %s\n", currentTokenLine);
             currentToken->floatImmediate = atoi(currentTokenLine);
@@ -222,7 +221,7 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
         } else if(tokenTypeData.containsChar == true && tokenTypeData.numberOfSingleQuotes == 2 && strlen(currentTokenLine) == CHAR_IMMEDIATE_LINE_SIZE) {
 
 
-            printf("INT_IMMEDIATE: %s\n", currentTokenLine);
+            printf("CHAR_IMMEDIATE: %s\n", currentTokenLine);
             currentToken->floatImmediate = currentTokenLine[1]; 
             currentToken->Token = CHAR_IMMEDIATE;
 
@@ -350,11 +349,13 @@ bool tokenise(char *line, Vector *const tokensOut) {
     //Main loop
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
 
+
         //Set token parameters
         if(set_token_parameters(currentTokenLine, line[i], &j) == false) {
             printf("Unexpected symbol '%c'\n",line[i]);
             return false;
         }
+
         
         //Decide if token is complete
         if(is_complete_token(&j, line[i+1]) == false) {
@@ -363,8 +364,9 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
         //Token is complete so null terminate it
         currentTokenLine[j + 1] = '\0';
-
-
+        if(strlen(currentTokenLine) == 0) { //Prevent whitespace getting through
+            continue;
+        }
         //First pass tokenisation
         if(first_pass_token_definition(currentTokenLine, &currentToken) == true) {
             //If first pass was not enough do a second pass (hashing)
