@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include "vector.h"
 #include "datastructures.h"
-#include "hashmap.h"
+#include "static hashmap.h"
 
 #define MAX_KEYWORD_SIZE 100
 #define MAX_LINE_LENGTH 100
@@ -30,6 +30,8 @@ extern const char validTokens[][MAX_KEYWORD_SIZE];
 
 typedef enum TOKEN_TYPE { //NOTE - ORDER CORROSPONDS TO DATA IN COMPILER DATA.c
 
+    USER_STRING = -2,                  //User string (could be keyword, function name or variable name)    
+    INVALID = -1,                      //invalid token
 
     //Declarations    
     INT = 0,                           //int
@@ -95,7 +97,7 @@ typedef enum TOKEN_TYPE { //NOTE - ORDER CORROSPONDS TO DATA IN COMPILER DATA.c
     INT_IMMEDIATE = 37,                //10
     FLOAT_IMMEDIATE = 38,              //10.2
     CHAR_IMMEDIATE = 39,               //'a'
-    VARIABLE = 40,                     //var1
+    USER_VARIABLE_STRING = 40,         //var1, function names
 
 
 } TOKEN_TYPE;
