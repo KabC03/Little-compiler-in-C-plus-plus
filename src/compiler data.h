@@ -23,8 +23,8 @@
 
 
 
+//Tokenser structures
 extern const char validTokens[][MAX_KEYWORD_SIZE];
-
 
 
 
@@ -118,6 +118,67 @@ typedef struct Token {
 
 
 } Token;
+
+
+
+//Parser structures
+
+
+typedef struct ExpressionTreeNode {
+
+    Token left;
+    Token operator;
+    Token right;
+
+} ExpressionTreeNode;
+
+
+typedef struct DeclarationTree {
+
+    Token datatype;                          //e.g int, float, char
+    Token variableName;                      //e.g x, var1
+    Token equals;                            //=
+    ExpressionTreeNode assignedExpression;   //e.g 1 + 2 + (3+2) (NOTE: x == 1 IS AN EXPRESSION THAT RETURNS A VALUE)
+
+} DeclarationTree;
+
+
+typedef struct IfTree { //Also used for elif, else
+
+    ExpressionTreeNode *expression;          //Pointer to array of expressions
+    Token *operator;                         //Corrosponds to above statements (||, &&, etc)
+
+} IfTree;
+
+
+typedef struct WhileTree { 
+
+    IfTree ifTree;                           //Same as an if tree but with a jump
+
+} WhileTree;
+
+
+typedef struct ForTree { 
+
+    Token varName;                           //x
+    ExpressionTreeNode start;                //0
+    ExpressionTreeNode end;                  //10
+    ExpressionTreeNode increment;            //1
+    IfTree ifTree;                           //Same as an if tree but with a jump
+
+} ForTree;
+
+
+typedef struct FunctionDeclarationTree { 
+
+    Token functionName;                      //add
+
+    Token returnType;                        //int*
+    
+    Token *dataType;                         //Array of datatypes (corrospond with variable names)
+    Token *varName;                          //Input names
+
+} FunctionDeclarationTree;
 
 
 
