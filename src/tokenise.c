@@ -1,5 +1,7 @@
 #include "tokenise.h"
 
+
+#define NULL_CHARACTER '\0'
 #define DECIMAL_CHAR '.'
 #define SINGLE_QUOTE '\''
 #define SPACE ' '
@@ -155,9 +157,14 @@ bool is_complete_token(size_t *j, char nextChar) {
             }
 
         } else if(tokenTypeData.isOwnToken == true && *j == 0) {    
+            //Single length tokens (e.g brackets, commas, etc)
 
             return true;
 
+
+        } else if(nextChar == NULL_CHARACTER) {    
+            //If its the NULL character then token must be complete
+            return true;
 
         } else {
             //All other tokens are split by whitespace, or ANY type of symbol
@@ -340,8 +347,6 @@ bool tokenise(char *line, Vector *const tokensOut) {
     //Main loop
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
 
-
-
         //Set token parameters
         if(set_token_parameters(currentTokenLine, line[i], &j) == false) {
             printf("Unexpected symbol '%c'\n",line[i]);
@@ -400,6 +405,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
         //Reset the token data and get ready for another token
         reset_token_data();
     }
+    printf("Returning true\n");
     return true;
 }
 
