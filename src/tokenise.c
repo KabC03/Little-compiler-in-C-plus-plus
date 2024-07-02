@@ -1,28 +1,236 @@
 #include "tokenise.h"
 
-HashMap validTokenHashmap; //Set this to global since only one should exist
+#define DECIMAL_CHAR '.'
+#define SINGLE_QUOTE '\''
+#define SPACE ' '
+#define CHAR_IMMEDIATE_LINE_SIZE 3
+#define token_type_data_contains_no_delimeter_symbols (tokenTypeData.containsArithmaticSymbols == false && tokenTypeData.isOwnToken == false)
 
-//Checks if a character is a misc symbol
-bool is_misc_symbol(char character) {
+
+typedef struct TokenTypeData {
+
+    bool containsChar;
+    bool containsArithmaticSymbols;
+    bool containsNumbers;
+    bool isOwnToken;
+    size_t numberOfDecimals;
+    size_t numberOfSingleQuotes; //For char immediate
+
+
+    bool completeToken;
+    TOKEN_TYPE tokenType;
+
+} TokenTypeData;
+
+
+
+HashMap validTokenHashmap; //Set this to global since only one should exist
+TokenTypeData tokenTypeData; //Only one should exist for tokenisation
+
+//Reset token data
+void reset_token_data(void) {
+    
+    tokenTypeData.completeToken = true;
+    tokenTypeData.containsArithmaticSymbols = false;
+    tokenTypeData.containsChar = false;
+    tokenTypeData.containsNumbers = false;
+    tokenTypeData.isOwnToken = false;
+    tokenTypeData.numberOfDecimals = 0;
+    tokenTypeData.numberOfSingleQuotes = 0;    
+
+    tokenTypeData.tokenType = INVALID;
+    
+    return;
+}
+
+
+//Determines is a character is arithmatic (+,-,*,/, etc)
+bool is_arithmatic_symbol(char character) {
 
     switch (character) {
-    case '(': 
-    case ')': 
-    case '[': 
-    case ']': 
-    case '{': 
-    case '}': 
-    case ',': 
-    case '|': 
-    case ';': 
-    case ' ':
-    case '\0': 
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '%':
+    case '=':
+    case '>':
+    case '<':
+    case '!':
+    
         return true;
     default:
         return false;
     }
+    
+    return false;
+}
+
+
+//Determines if a token is garunteed to be a single char in length (therefore ALWAYS consider the token complete)
+bool is_own_token_symbol(char character) {
+
+    switch (character) {
+    case '(':
+    case ')':
+    case '[':
+    case ']':
+    case '{':
+    case '}':
+    case ',':
+        return true;
+    default:
+        return false;
+    }
+    
+    return false;
+}
+
+
+
+
+
+
+//Takes in the current token line and the current char in the line and adjusts the token type data and j accordingly
+bool set_token_parameters(char *currentTokenLine, char currentChar, size_t *j) {
+
+    if(currentTokenLine == NULL || j == NULL) {
+        return false;
+    } else {
+        
+        if(currentChar == ' ') {
+            (*j)--; //Increment downwards to preserve array
+
+        } else if(isalpha(currentChar) != 0) {
+            //is a character            
+            tokenTypeData.containsChar = true;
+
+        } else if(isdigit(currentChar) != 0) {
+            //Is a digit
+            tokenTypeData.containsNumbers = true;
+
+        } else if(currentChar == DECIMAL_CHAR) {
+            //Contains a decimal point 
+            
+            tokenTypeData.numberOfDecimals++;
+
+        } else if(currentChar == DECIMAL_CHAR) {
+            //Contains single quote
+
+            tokenTypeData.numberOfSingleQuotes++;  
+
+        } else if(is_arithmatic_symbol(currentChar) == true) {
+
+            tokenTypeData.containsArithmaticSymbols = true;
+
+
+        } else if(is_own_token_symbol(currentChar) == true) {
+
+            tokenTypeData.isOwnToken = true;
+
+        } else {
+            //Unknown symbol
+            return false;
+        }
+        currentTokenLine[*j] = currentChar;
+    }
+
     return true;
 }
+
+
+bool is_complete_token(char nextChar) {
+
+
+    if(tokenTypeData.containsChar == false && tokenTypeData.containsNumbers == false 
+    && tokenTypeData.isOwnToken == false && tokenTypeData.containsArithmaticSymbols == true) {
+        //Arithmatic symbol encountered, to split off next token needs to be non arithmatic
+        if(is_arithmatic_symbol(nextChar) == false) {
+            return true;
+        }
+    } else {
+        //All other tokens are split by whitespace, or ANY type of symbol
+        if(is_own_token_symbol(nextChar) == true || 
+        is_arithmatic_symbol(nextChar) == true || nextChar == SPACE) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+
+
+
+
+
+//First pass for tokens - can determine if its an immediate or not, second pass needed to distinguish variable from keyword
+bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
+
+
+    if(currentTokenLine == NULL || currentToken == NULL) {
+        return false;
+    } else {
+
+        tokenTypeData.completeToken = true;
+
+        //Test for user string (or keyword)
+        if(tokenTypeData.containsChar == true && token_type_data_contains_no_delimeter_symbols == true) {
+
+            currentToken->Token = USER_STRING; //Note - includes operators like +,-,>=,etc
+
+        //Test for float immediate
+        } else if(tokenTypeData.containsChar == false && token_type_data_contains_no_delimeter_symbols == true 
+        && tokenTypeData.numberOfDecimals == 1 && tokenTypeData.containsNumbers == true) {
+
+
+            currentToken->floatImmediate = atof(currentTokenLine);
+            currentToken->Token = FLOAT_IMMEDIATE;
+
+        //Test for integer immediate
+        } else if(tokenTypeData.containsChar == false && token_type_data_contains_no_delimeter_symbols == true 
+        && tokenTypeData.numberOfDecimals == 0 && tokenTypeData.containsNumbers == true) {
+
+            currentToken->floatImmediate = atoi(currentTokenLine);
+            currentToken->Token = INT_IMMEDIATE;
+
+        //Test for char immediate
+        } else if(tokenTypeData.containsChar == true && tokenTypeData.numberOfSingleQuotes == 2 && strlen(currentToken) == CHAR_IMMEDIATE_LINE_SIZE) {
+
+            currentToken->floatImmediate = currentTokenLine[1]; 
+            currentToken->Token = CHAR_IMMEDIATE;
+
+        } else {
+
+            tokenTypeData.completeToken = false;
+            
+            
+            return false;
+        }
+    }
+
+
+
+    return true;
+}
+
+
+
+bool second_pass_token_definition() {
+
+
+
+
+
+
+    return true;
+}
+
+
+
+
+
 
 
 
@@ -77,227 +285,71 @@ bool initialise_compiler_hashmaps (void) {
  */
 bool tokenise(char *line, Vector *const tokensOut) {
 
-    
+
+    //Preprocessing
     if(line == NULL) {
         return false;
     }
-
     if(strlen(line) == 1 && line[0] == '\n') {
         
         //Only contains newlines
         return true;
     }
-
-
     //Remove any \n
     if(line[strlen(line) - 1] == '\n') {
         line[strlen(line) - 1] = '\0';
     }
 
 
+
+    //Tokenisation intialisation
     char currentTokenLine[MAX_LINE_LENGTH] = "\0";
-    
     if(vector_initialise(tokensOut, sizeof(Token)) == false) {
         return false;
     }
-    Token currentToken;
-
-    bool containsChar = false;
-    bool containsArithmaticSymbols = false;
-    bool containsMiscSymbols = false;
-    bool containsNumbers = false;
-    size_t numberOfDecimals = 0;
-
-    bool maybeVariable = false;
-
-    bool completeToken = true;
+    Token currentToken;          //Only one exists
+    TokenTypeData tokenTypeData; //Only one exists
+    //Initialise token data
+    reset_token_data();
     printf("Recieved: '%s'\n", line);
+    //Main loop
     for(size_t i = 0, j = 0; i < strlen(line); i++, j++) {
-        completeToken = true;
-        maybeVariable = false;
-        
-        if(line[i] == ' ') {
-            j--; //Increment downwards to preserve array
-            continue; //Should only happen if first character is whitespace
-
-        } else if(isalpha(line[i]) != 0) {
-            //is a character            
-            containsChar = true;
-
-        } else if(isdigit(line[i]) != 0) {
-            //Is a digit
-            containsNumbers = true;
-
-        } else if(line[i] == '.') {
-            //Contains a decimal point 
-            
-            numberOfDecimals++;
-
-        } else {
-            //Is a symbol
-            if(is_misc_symbol(line[i]) == true) {
-                containsMiscSymbols = true;
-            } else {
-                containsArithmaticSymbols = true;
-            }
+    
+        //Set token parameters
+        if(set_token_parameters(currentTokenLine, line[i], &j) == false) {
+            printf("Unexpected symbol '%c'\n",line[i]);
+            return false;
         }
-        currentTokenLine[j] = line[i];
-        //Depending on next character  and if token contains symbols, numbers, letters (e.g ' ') decide if the token is complete so move onto the next
-
-
-        //Tokens end when:        
-        //Words should be followed by a symbol or whitespace
-        //while(1)
-
-        //Arithmatic operators should be followed by non-artithmatic operator (arithmatic operator is anything thats not a brace)
-        //4 * (3+2) != 3
-
-        //Misc symbols are ALWAYS considered as one token - basically anything that is not arithmatic
-        //Braces, commas, semicolens
-
-
-        //Variables contain letters and can contain numbers - NOTE cannot distinguish from function name at this stage - do in parser
-        //Numbers must contain numbers and at max one decimal point
-        //Char's must be of length one and adjacent to a symbol or whitespace 
-
-
-        //Check stuff here - then if token is complete set completeToken = true otherwise set it false and move on 
-
         
-
-        //Check for keywords - note variables will also pass this filter - need to handle accordingly
-
-        if((containsChar == true && containsArithmaticSymbols == false && containsMiscSymbols == false)
-        && (is_misc_symbol(line[i + 1]) == true) && line[i+1] != '|' && numberOfDecimals == 0) {
-
-            printf("'%s' could be a variable\n",currentTokenLine);
-            maybeVariable = true; //Use this flag to indicate that the current item might be a variable or char - see outcome of hashing
-            //Do nothing, no assignment needed
-
-        //Check for arithmatic symbols
-        } else if((containsChar == false && containsNumbers == false) && (containsArithmaticSymbols == true)) {
-
-            //Do nothing
-
-            printf("'%s' is a arithmatic symbol\n",currentTokenLine);
-        //Check for misc symbols
-        //j == 0 checks if length == 0
-        } else if(containsMiscSymbols == true && j == 0 && line[i+1] != '|') {
-
-            printf("'%s' is a misc symbol\n",currentTokenLine);
-            //If the length is 1 and it contains these tokens its already complete
-
-        //Check for decimals and integers
-        } else if(containsNumbers == true && containsChar == false && numberOfDecimals <= 1 && is_misc_symbol(line[i+1]) == true && line[i+1] != '|') {
-            //Decide if its an int or float
-            if(numberOfDecimals == 0) {
-                //Set it as an integer (it can adjusted later in parser)
-
-                printf("'%s' is a integer\n",currentTokenLine);
-                currentToken.intImmediate = atoi(currentTokenLine);
-            
-            } else {
-                
-                printf("'%s' is a float\n",currentTokenLine);
-                currentToken.floatImmediate = atof(currentTokenLine);
-            }
-
-
-        //Check for character immediate (e.g c' <- note ' at the end indicating its a char immediate not a var)
-        } else if(j == 0 && line[i + 1] == '|') {
-
-            
-            printf("'%s' is a char\n",currentTokenLine);
-            currentToken.charImmediate = currentTokenLine[i];
-
-        } else {
-            completeToken = false;
-        }
-        //printf("Contains char: %d, j = %zu, line[i+1] = %c, buffer: %s\n",containsChar, j, line[i+1], currentTokenLine);
-
-        //If the token is not complete just continue
-        if(completeToken == false) {
+        //Decide if token is complete
+        if(is_complete_token(line[i+1]) == false) {
             continue;
         }
 
-        //Add a '\0' to indicate end of string
-     
-        currentTokenLine[j + 1] = '\0';
-
-        printf("Attempting to hash '%s'\n", currentTokenLine);
 
 
 
-
-
-
-        //Check if token is valid - if so append it to the vector of tokens
-        j = -1; //Get ready to load the next tokens into the array (set to -1 since j gets incremented)
-        const void *hashmapValueOut = NULL;
-
-
-        //Hash the token
-
-        if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &hashmapValueOut) == false) {
-            
-            goto temp; //TEMPORARY
-            vector_destroy(tokensOut);
-            
-            //Unrecognised token - didnt even hash properly
-            printf("Unrecognised token '%s'\n",currentTokenLine);
-            return false;
-        
-        }
-
-
-        //Check token validity
-        if(hashmapValueOut != NULL) {
-            //Valid token - append it to vector of tokens
-
-            if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
+        //First pass tokenisation
+        if(first_pass_token_definition(currentTokenLine, &currentToken) == false) {
+            //If first pass was not enough do a second pass (hashing)
+            if(second_pass_token_definition() == false) {
+                
+                printf("Unrecognised token '%s'\n",currentTokenLine);
                 vector_destroy(tokensOut);
                 return false;
-                
             }
-
-
-
-
-        //Check for variable before printing syntax error
-        } else {
-
-
-
-            if(maybeVariable == true) {
-                //It was a variable and not a keyword so not a syntax error
-
-                if(vector_quick_append(tokensOut, currentTokenLine, strlen(currentTokenLine)) == false) {
-                    vector_destroy(tokensOut);
-                    return false;
-                }
-
-
-            } else {
-
-                goto temp;
-                vector_destroy(tokensOut);
-                printf("Unrecognised token '%s'\n",currentTokenLine);
-                return false; //Unrecognised token - syntax error
-            }
-
         }
 
-temp:
-        containsChar = false;
-        containsArithmaticSymbols = false;
-        containsMiscSymbols = false;
-        containsNumbers = false;
-        numberOfDecimals = 0;
-        maybeVariable = false;
+        //Add token to array of tokens
+        if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
+            vector_destroy(tokensOut);
+            return false;
+        }
 
+
+        //Reset the token data and get ready for another token
+        reset_token_data();
     }
-
-    printf("Leftover: %s\n",currentTokenLine);
     return true;
 }
 
