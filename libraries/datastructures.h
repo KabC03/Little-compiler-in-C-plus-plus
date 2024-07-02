@@ -19,6 +19,18 @@ typedef struct MapListNode {
     struct MapListNode *next;
 
 } MapListNode;
+typedef struct StringMapListNode {
+
+    size_t keySize;
+    size_t valueSize;
+
+
+    uint8_t *key;
+    uint8_t *value;
+    struct StringMapListNode *next;
+
+} StringMapListNode;
+
 
 typedef struct Node Node;
 typedef struct ListNode ListNode;
@@ -31,6 +43,14 @@ typedef struct MapList{ //Small Singly linked LL (first node stored in list itse
     struct MapListNode firstNode;
 
 } MapList;
+typedef struct StringMapList {
+
+    struct StringMapListNode *firstNode; //First node not embeded (for now)
+
+} StringMapList;
+
+
+
 typedef struct LinkedList { //Doubly linked list
 
     size_t datatypeSize;
@@ -87,4 +107,19 @@ bool map_LL_destroy(MapList *const list);
 
 
 
+
+bool string_map_LL_initilise(StringMapList *const list);
+bool string_map_LL_set(StringMapList *const list, const void *const inputKey, const void *const inputValue, size_t inputKeySize, size_t inputValueSize);
+const void *string_map_LL_get_value(StringMapList *const list, const void *const inputKey, size_t inputKeySize);
+bool string_map_LL_delete_key(StringMapList *const list, const void *const inputKey, size_t inputKeySize);
+bool string_map_LL_destroy(StringMapList *const list);
+
 #endif // DATASTRUCTURES_H
+
+
+
+
+
+
+
+
