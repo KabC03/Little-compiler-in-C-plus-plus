@@ -196,7 +196,7 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
             currentToken->Token = INT_IMMEDIATE;
 
         //Test for char immediate
-        } else if(tokenTypeData.containsChar == true && tokenTypeData.numberOfSingleQuotes == 2 && strlen(currentToken) == CHAR_IMMEDIATE_LINE_SIZE) {
+        } else if(tokenTypeData.containsChar == true && tokenTypeData.numberOfSingleQuotes == 2 && strlen(currentTokenLine) == CHAR_IMMEDIATE_LINE_SIZE) {
 
             currentToken->floatImmediate = currentTokenLine[1]; 
             currentToken->Token = CHAR_IMMEDIATE;
@@ -217,9 +217,9 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
 
 
 //Hash the token to get the reserved word
-void *second_pass_token_definition(char *currentTokenLine) {
+const void *second_pass_token_definition(char *currentTokenLine) {
 
-    void *data = NULL;
+    const void *data = NULL;
     if(currentTokenLine == NULL) {
         return NULL;
     } else {
@@ -339,14 +339,14 @@ bool tokenise(char *line, Vector *const tokensOut) {
             //If first pass was not enough do a second pass (hashing)
 
 
-            void *hashOutToken = second_pass_token_definition(currentTokenLine);
+            const void *hashOutToken = second_pass_token_definition(currentTokenLine);
             if(hashOutToken == NULL) {
                 //Variable encountered
                 
                 currentToken.Token = USER_VARIABLE_STRING;
                 //TODO: ADD VARIABLE TO A HASHMAP AND STORE ITS ID HERE
 
-                
+
             } else {
 
                 currentToken.Token = *(TOKEN_TYPE*)(hashOutToken);
