@@ -80,6 +80,7 @@ bool is_own_token_symbol(char character) {
     case '{':
     case '}':
     case ',':
+    case '@': //Pointer is treated as its own token (even @@)
     case ';':
 
         return true;
@@ -227,7 +228,7 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
 
 
         } else {
-            printf("FIRST PASS CANNOT DETERMINE TYPE: %s\n",currentTokenLine);
+            printf("FIRST PASS CANNOT DETERMINE TYPE: '%s'\n",currentTokenLine);
             currentToken->Token = USER_STRING; //Contains symbols, keywords, variables - figure out on second pass
         }
     }
