@@ -216,15 +216,21 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
 }
 
 
+//Hash the token to get the reserved word
+void *second_pass_token_definition(char *currentTokenLine) {
 
-bool second_pass_token_definition() {
+    void *data = NULL;
+    if(currentTokenLine == NULL) {
+        return NULL;
+    } else {
 
+        if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &data) == false) {
+            
+            return NULL; //Make this better later on
+        }
+    }
 
-
-
-
-
-    return true;
+    return data;
 }
 
 
@@ -251,7 +257,6 @@ bool initialise_compiler_hashmaps (void) {
 
 
 
-    //NOTE - VARIABLE SIZE IS TEMPORAY
     }
     
     for(size_t i = 0; i < NUM_KEYWORDS; i++) {
@@ -332,11 +337,20 @@ bool tokenise(char *line, Vector *const tokensOut) {
         //First pass tokenisation
         if(first_pass_token_definition(currentTokenLine, &currentToken) == false) {
             //If first pass was not enough do a second pass (hashing)
-            if(second_pass_token_definition() == false) {
+
+
+            void *hashOutToken = second_pass_token_definition(currentTokenLine);
+            if(hashOutToken == NULL) {
+                //Variable encountered
                 
-                printf("Unrecognised token '%s'\n",currentTokenLine);
-                vector_destroy(tokensOut);
-                return false;
+                currentToken.Token = USER_VARIABLE_STRING;
+                //TODO: ADD VARIABLE TO A HASHMAP AND STORE ITS ID HERE
+
+                
+            } else {
+
+                currentToken.Token = *(TOKEN_TYPE*)(hashOutToken);
+
             }
         }
 
