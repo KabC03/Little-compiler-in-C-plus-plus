@@ -2,8 +2,6 @@
 
 HashMap validTokenHashmap; //Set this to global since only one should exist
 
-//NOTE: This string does not work properly: for(int i=0,i<10,i++)
-
 //Checks if a character is a misc symbol
 bool is_misc_symbol(char character) {
 
@@ -302,5 +300,4 @@ temp:
     printf("Leftover: %s\n",currentTokenLine);
     return true;
 }
-
 
