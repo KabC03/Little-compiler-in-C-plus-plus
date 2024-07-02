@@ -810,5 +810,193 @@ bool map_LL_destroy(MapList *const list) {
 
 
 
+//Initialise, Set key/value, get value from key, delete value with key, delete full map
+
+
+
+//Initialise first node
+bool string_map_LL_initilise(StringMapList *const list) {
+
+    if(list == NULL) {
+        return false;
+    } else {
+
+        list->firstNode = NULL;
+    }
+
+    return true;
+}
+
+
+
+//Set key and value pair (insert at front) - note using size_t instead of strlen for saftey
+bool string_map_LL_set(StringMapList *const list, const void *const inputKey, const void *const inputValue, size_t inputKeySize, size_t inputValueSize) {
+
+    if(list == NULL || inputKey == NULL || inputValue == NULL || inputKeySize == 0 || inputValueSize == 0) {
+
+        return false;
+        
+    } else {
+
+        //Search entire LL first before adding new node
+
+        StringMapListNode *currentNode = list->firstNode;
+        while(currentNode != NULL) {
+
+            //First check if key size is the same (if its different then they are different)
+            if(currentNode->keySize == inputKeySize) {
+
+                if(memcmp(currentNode->key, inputKey, inputKeySize) == 0) {
+                    //Found the same key - replace it
+                    break;
+                }
+            }
+
+            currentNode = currentNode->next;
+        }
+
+
+        //Check if actually found a node or skiped the while loop
+        if(currentNode == NULL) {
+
+            currentNode = malloc(sizeof(StringMapListNode));
+            if(currentNode == NULL) {
+                return false;
+            }
+            
+            currentNode->next = list->firstNode; //Set to the head
+            currentNode->key = malloc(inputKeySize * sizeof(char));
+            currentNode->value = malloc(inputValueSize * sizeof(char));
+
+        } else {
+            //Found a node so update it
+
+            currentNode->key = realloc(currentNode->key, inputKeySize * sizeof(char));
+            currentNode->value = realloc(currentNode->value, inputValueSize * sizeof(char));
+
+        }
+
+
+        currentNode->keySize = inputKeySize;
+        currentNode->valueSize = inputValueSize;
+
+
+        if(currentNode->key == NULL || currentNode->value == NULL) {
+            return false;
+        }
+        
+        memcpy(currentNode->key, inputKey, inputKeySize);
+        memcpy(currentNode->value, inputValue, inputValueSize);
+        list->firstNode = currentNode;
+        return true;
+
+
+    }
+
+    return true;
+}
+
+
+
+//Get a value from a key (could use strlen - but size_t keeps it more generic)
+const void *string_map_LL_get_value(StringMapList *const list, const void *const inputKey, size_t inputKeySize) {
+
+
+    if(list == NULL || inputKey == NULL || inputKeySize == 0) {
+        return NULL;
+    } else {
+
+        StringMapListNode *currentNode = list->firstNode;
+        while(currentNode != NULL) {
+
+            //First check if key size is the same (if its different then they are different)
+            if(currentNode->keySize == inputKeySize) {
+
+                if(memcmp(currentNode->key, inputKey, inputKeySize) == 0) {
+                
+                    return currentNode->value;
+                }
+            }
+
+            currentNode = currentNode->next;
+        
+        
+        
+        }
+    }
+    
+    return NULL;
+}
+
+
+
+
+bool string_map_LL_delete_key(StringMapList *const list, const void *const inputKey, size_t inputKeySize) {
+
+    if(list == NULL || inputKey == NULL || inputKeySize == 0) {
+
+        return false;
+        
+    } else {
+
+
+        StringMapListNode *currentNode = list->firstNode;
+        StringMapListNode *prevNode = list->firstNode;
+        while(currentNode != NULL) {
+
+            //First check if key size is the same (if its different then they are different)
+            if(currentNode->keySize == inputKeySize) {
+
+                if(memcmp(currentNode->key, inputKey, inputKeySize) == 0) {
+
+                    prevNode->next = currentNode->next;
+
+
+                    free(currentNode->key);
+                    free(currentNode->value);
+                    free(currentNode);
+                }
+            }
+
+            prevNode = currentNode;
+            currentNode = currentNode->next;
+        
+        }
+
+    }
+
+    return true;
+}
+
+
+
+
+//Delete an entire list
+bool string_map_LL_destroy(StringMapList *const list) {
+
+    if(list == NULL) {
+        return false;
+    } else {
+
+
+        StringMapListNode *currentNode = list->firstNode;
+        StringMapListNode *prevNode = list->firstNode;
+
+        while(currentNode != NULL) {
+
+            free(prevNode->key);
+            free(prevNode->value);
+            free(prevNode);
+
+            prevNode = currentNode;
+            currentNode = currentNode->next; 
+        }
+
+    }
+    return true;
+
+    
+}
+
 
 
