@@ -324,7 +324,11 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
     //Tokenisation intialisation
-    char currentTokenLine[MAX_LINE_LENGTH] = "\0";
+    char *currentTokenLine = calloc(strlen(line) + 1, sizeof(char));
+    if(currentTokenLine == NULL) {
+        return false;
+    }
+    
     if(vector_initialise(tokensOut, sizeof(Token)) == false) {
         return false;
     }
