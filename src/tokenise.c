@@ -208,11 +208,6 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
             currentToken->Token = CHAR_IMMEDIATE;
 
         } else {
-
-
-            printf("UNKNOWN TOKEN: %s\n\n", currentTokenLine);
-            
-            
             return false;
         }
     }
@@ -360,7 +355,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
             }
 
-            j = 0;
+            j = -1;
         } else {
             //First pass tokenisation should ALWAYS pass for valid tokens
 
