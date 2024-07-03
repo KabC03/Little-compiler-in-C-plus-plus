@@ -21,20 +21,35 @@ bool string_hashmap_initialise(StringHashmap *stringhashmap, size_t initialHashm
         return false;
     } else {
 
-
         //Initialise hashmap vector
         if(vector_initialise(&(stringhashmap->stringMapListNode), sizeof(StringMapListNode)) == false) {
             return false;
         }
 
         //Resize vector
-          
-
-        //Initialise LL in hashmap vector
-        for(size_t i = 0; i < initialHashmapSize; i++) {
-
+        if(vector_resize(&(stringhashmap->stringMapListNode), initialHashmapSize) == false) {
+            return false;
         }
 
+        //Initialise LL in hashmap vector
+        
+        StringMapList newNode;
+
+        if(string_map_LL_initilise(&newNode) == false) {
+            vector_destroy(&(stringhashmap->stringMapListNode));
+            return false;
+        }
+
+
+        for(size_t i = 0; i < initialHashmapSize; i++) {
+
+            if(string_map_LL_initilise((StringMapList*)vector_get_index(&(stringhashmap->stringMapListNode), i))) {
+                for(size_t j = 0; j < i; j++) {
+                    string_map_LL_destroy((StringMapList*)vector_get_index(&(stringhashmap->stringMapListNode), j));
+                    return false;
+                }
+            }
+        }
     }
     
     return true;
