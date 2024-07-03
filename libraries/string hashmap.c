@@ -3,6 +3,17 @@
 #define STRING_DJB2_CONSTANT 5381
 #define string_hashmap_hash_djb2 string_hashmap_hash //Do this to select the current hash algorithm
 
+
+
+
+
+
+
+
+
+
+
+
 /**
  * string_hashmap_hash_djb2
  * ===============================================
@@ -34,6 +45,39 @@ bool string_hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t
     }
     return true;
 }
+
+
+
+/**
+ * string_hashmap_print
+ * ===============================================
+ * Brief: Print a string hashmap (used for debugging)
+ * 
+ * Param: *data - Data to hash
+ * 
+ * Return: bool - T/F depending on if freeing was successful
+ * 
+ */
+bool string_hashmap_print(StringHashmap *stringHashmap) {
+
+    if(stringHashmap == NULL) {
+        return false;
+    } else {
+
+        size_t tableSize = vector_get_size(&(stringHashmap->stringMapListNode)) + 1;
+
+        for(size_t i = 0; i < tableSize; i++) {
+
+            StringMapList *listToInsertTo = (StringMapList*)vector_get_index(&(stringHashmap->stringMapListNode), i);
+
+            string_map_LL_print(listToInsertTo);            
+        }
+    }
+
+
+    return true;
+}
+
 
 
 /**
