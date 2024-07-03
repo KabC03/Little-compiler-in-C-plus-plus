@@ -248,12 +248,11 @@ const void *second_pass_token_definition(char *currentTokenLine) {
     } else {
 
 
-        printf("SECOND PASS IS HASHING: %s\n",currentTokenLine);
+        printf("SECOND PASS IS HASHING: '%s'\n",currentTokenLine);
         return NULL;
 
-        if(string_hashmap_get_value(&validTokenHashmap, currentTokenLine, strlen(currentTokenLine) + 1) == false) {
-            return NULL;
-        }
+
+        data = string_hashmap_get_value(&validTokenHashmap, currentTokenLine, strlen(currentTokenLine) + 1);
     }
 
     return data;
@@ -295,7 +294,7 @@ bool initialise_compiler_hashmaps (void) {
             //TODO: Destroy the hashmap
         }
     }
-
+    string_hashmap_print(&validTokenHashmap);
 
     return true;
 }
