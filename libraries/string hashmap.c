@@ -131,7 +131,38 @@ bool string_hashmap_set(StringHashmap *stringHashmap, void *key, size_t keySize,
 
 
 
+/**
+ * string_hashmap_get_value
+ * ===============================================
+ * Brief: Get a value from a hashmap for a given key 
+ * 
+ * Param: *stringhashmap - Hashmap to initialise
+ *        *key - Key to add to the hashmap
+ *        keySize - Size of the added key
+ * 
+ * Return: Constant void pointer to data 
+ * 
+ */
+const void *string_hashmap_get_value(StringHashmap *stringHashmap, void *key, size_t keySize) {
 
+    if(stringHashmap == NULL || key == NULL || keySize == 0) {
+        return false;
+    } else {
+
+        size_t hashmapIndex = 0;
+        if(string_hashmap_hash(key, keySize, vector_get_size(&(stringHashmap->stringMapListNode)), &hashmapIndex)) {
+
+            return NULL;
+        }
+
+        const void *valueOut = string_map_LL_get_value((StringMapList*)vector_get_index(&(stringHashmap->stringMapListNode), hashmapIndex), key, keySize);
+
+        return valueOut;
+
+    }
+    
+    return false;
+}
 
 
 
