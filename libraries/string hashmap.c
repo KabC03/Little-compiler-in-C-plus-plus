@@ -68,9 +68,10 @@ bool string_hashmap_print(StringHashmap *stringHashmap) {
 
         for(size_t i = 0; i < tableSize; i++) {
 
+            printf("            Bucket: %zu:\n",i);
             StringMapList *listToInsertTo = (StringMapList*)vector_get_index(&(stringHashmap->stringMapListNode), i);
 
-            string_map_LL_print(listToInsertTo);            
+            string_map_LL_print(listToInsertTo);
         }
     }
 
@@ -203,6 +204,7 @@ bool string_hashmap_set(StringHashmap *stringHashmap, void *key, size_t keySize,
 const void *string_hashmap_get_value(StringHashmap *stringHashmap, void *key, size_t keySize) {
 
     if(stringHashmap == NULL || key == NULL || keySize == 0) {
+
         return NULL;
     } else {
 
@@ -216,8 +218,8 @@ const void *string_hashmap_get_value(StringHashmap *stringHashmap, void *key, si
 
         StringMapList *listToInsertTo = (StringMapList*)vector_get_index(&(stringHashmap->stringMapListNode), hashIndex);
 
-        const void *returnPtr = string_map_LL_get_value(listToInsertTo, key, keySize);
 
+        const void *returnPtr = string_map_LL_get_value(listToInsertTo, key, keySize);
 
         return returnPtr;
     }
