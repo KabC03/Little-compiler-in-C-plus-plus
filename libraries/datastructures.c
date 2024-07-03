@@ -814,6 +814,30 @@ bool map_LL_destroy(MapList *const list) {
 
 
 
+
+//Print a map
+void string_map_LL_print(StringMapList *const list) {
+
+    if(list == NULL) {
+        printf("NULL\n");
+        return;
+
+
+    } else {
+
+        StringMapListNode *currentNode = list->firstNode;
+
+        while(currentNode != NULL) {
+
+            printf("Key:  %20c     || Value:  %d       \n",*(char*)(currentNode->key), *(int*)(currentNode->value));
+
+            currentNode = currentNode->next;
+        }
+    }
+    return;
+}
+
+
 //Initialise first node
 bool string_map_LL_initilise(StringMapList *const list) {
 
@@ -833,7 +857,6 @@ bool string_map_LL_initilise(StringMapList *const list) {
 bool string_map_LL_set(StringMapList *const list, const void *const inputKey, const void *const inputValue, size_t inputKeySize, size_t inputValueSize) {
 
     if(list == NULL || inputKey == NULL || inputValue == NULL || inputKeySize == 0 || inputValueSize == 0) {
-
         return false;
         
     } else {
