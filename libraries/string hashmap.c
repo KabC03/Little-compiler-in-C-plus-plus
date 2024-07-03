@@ -113,22 +113,27 @@ bool string_hashmap_initialise(StringHashmap *stringhashmap, size_t initialHashm
  * 
  */
 bool string_hashmap_set(StringHashmap *stringHashmap, void *key, size_t keySize, void *value, size_t valueSize) {
-    
+
     if(stringHashmap == NULL || key == NULL || value == NULL || keySize == 0 || valueSize == 0) {
         
         return false;
     } else {
 
         size_t hashIndex = -1;
-        
-        if(string_hashmap_hash(key, keySize, vector_get_size(&(stringHashmap->stringMapListNode)), &hashIndex) == false) {
+        size_t tableSize = vector_get_size(&(stringHashmap->stringMapListNode)) + 1;
+
+        if(string_hashmap_hash(key, keySize, tableSize, &hashIndex) == false) {
             return false;
         }
 
-        if(string_map_LL_set((StringMapList*)(vector_get_index(&(stringHashmap->stringMapListNode), hashIndex)),
-        key, value, keySize, valueSize) == false) {
+
+        StringMapList *listToInsertTo = (StringMapList*)vector_get_index(&(stringHashmap->stringMapListNode), hashIndex);
+
+        if(string_map_LL_set(listToInsertTo, key, value, keySize, valueSize) == false) {
             return false;
         }
+
+
     }
 
     return true;
@@ -154,22 +159,26 @@ bool string_hashmap_set(StringHashmap *stringHashmap, void *key, size_t keySize,
 const void *string_hashmap_get_value(StringHashmap *stringHashmap, void *key, size_t keySize) {
 
     if(stringHashmap == NULL || key == NULL || keySize == 0) {
-        return false;
+        return NULL;
     } else {
 
-        size_t hashmapIndex = 0;
-        if(string_hashmap_hash(key, keySize, vector_get_size(&(stringHashmap->stringMapListNode)), &hashmapIndex)) {
+        size_t hashIndex = -1;
+        size_t tableSize = vector_get_size(&(stringHashmap->stringMapListNode)) + 1;
 
-            return NULL;
+        if(string_hashmap_hash(key, keySize, tableSize, &hashIndex) == false) {
+            return false;
         }
 
-        const void *valueOut = string_map_LL_get_value((StringMapList*)vector_get_index(&(stringHashmap->stringMapListNode), hashmapIndex), key, keySize);
 
-        return valueOut;
+        StringMapList *listToInsertTo = (StringMapList*)vector_get_index(&(stringHashmap->stringMapListNode), hashIndex);
 
+        const void *returnPtr = string_map_LL_get_value(listToInsertTo, key, keySize);
+
+
+        return returnPtr;
     }
     
-    return false;
+    return NULL;
 }
 
 
