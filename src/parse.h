@@ -25,6 +25,7 @@ How it works
 #include "datastructures.h"
 #include "static hashmap.h"
 #include "string hashmap.h"
+#include "compiler data.h"
 #include "tokenise.h"
 
 
