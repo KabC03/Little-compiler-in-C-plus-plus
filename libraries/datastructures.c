@@ -829,7 +829,7 @@ void string_map_LL_print(StringMapList *const list) {
 
         while(currentNode != NULL) {
 
-            printf("Key:  %20s     || Value:  %d       \n",(char*)(currentNode->key), *(int*)(currentNode->value));
+            printf("Key:  '%20s'     || Value:  '%d'       \n",(char*)(currentNode->key), *(int*)(currentNode->value));
 
             currentNode = currentNode->next;
         }
