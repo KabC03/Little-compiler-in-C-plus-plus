@@ -109,7 +109,7 @@ typedef struct Token {
 
     //Immediates and variables
     union {
-        size_t variableKey;     //Hash into variable hashmap to get the variable name
+        char *userString;        //User string (func name, variable, etc - parser must determine based on context)
 
         char charImmediate;     //Used if immediate char 'f'
         int intImmediate;       //Used for immediate int '3'
