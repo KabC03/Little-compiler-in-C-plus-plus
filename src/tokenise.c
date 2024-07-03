@@ -228,6 +228,9 @@ bool first_pass_token_definition(char *currentTokenLine, Token *currentToken) {
 
 
         } else {
+
+            //Check that token is a valid string
+
             printf("FIRST PASS CANNOT DETERMINE TYPE: '%s'\n",currentTokenLine);
             currentToken->Token = USER_STRING; //Contains symbols, keywords, variables - figure out on second pass
         }
@@ -252,12 +255,21 @@ const void *second_pass_token_definition(char *currentTokenLine) {
 
 
         data = string_hashmap_get_value(&validTokenHashmap, currentTokenLine, strlen(currentTokenLine) + 1);
-        printf("Found value: %d\n",*(int*)data);
     }
 
     return data;
 }
 
+
+//Final variable check before appending (should contain no symbols)
+bool final_keyword_check(void) {
+
+    if(tokenTypeData.containsChar == true && token_type_data_contains_no_delimeter_symbols == true && tokenTypeData.isOwnToken == false) {
+        return true;
+    }
+
+    return false;
+}
 
 
 
@@ -381,6 +393,13 @@ bool tokenise(char *line, Vector *const tokensOut) {
                     //Variable encountered
                     printf("TOKEN '%s' IS VARIABLE\n",currentTokenLine);
                     currentToken.Token = USER_VARIABLE_STRING;
+
+
+                    //Make sure the variable is actually valid
+                    if(final_keyword_check() == false) {
+                        printf("Unrecognised token: '%s'\n",currentTokenLine);
+                        return false;
+                    }
 
                     currentToken.userString = malloc(strlen(currentTokenLine) + 1);
                     if(currentToken.userString == NULL) {
