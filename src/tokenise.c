@@ -26,8 +26,9 @@ typedef struct TokenTypeData {
 
 
 
-HashMap validTokenHashmap; //Set this to global since only one should exist
+StringHashmap validTokenHashmap; //Set this to global since only one should exist
 TokenTypeData tokenTypeData; //Only one should exist for tokenisation
+
 
 //Reset token data
 void reset_token_data(void) {
@@ -250,8 +251,8 @@ const void *second_pass_token_definition(char *currentTokenLine) {
         printf("SECOND PASS IS HASHING: %s\n",currentTokenLine);
         return NULL;
 
-        if(hashmap_get_value(&validTokenHashmap, currentTokenLine, &data) == false) {
-            return NULL; //Make this better later on
+        if(string_hashmap_get_value(&validTokenHashmap, currentTokenLine, strlen(currentTokenLine) + 1) == false) {
+            return NULL;
         }
     }
 
@@ -277,22 +278,21 @@ const void *second_pass_token_definition(char *currentTokenLine) {
  */
 bool initialise_compiler_hashmaps (void) {
 
-    if(hashmap_initialise(&validTokenHashmap, sizeof(char) * MAX_TOKEN_LENGTH, sizeof(TOKEN_TYPE), NUM_KEYWORDS) == false) {
+    if(string_hashmap_initialise(&validTokenHashmap, NUM_KEYWORDS) == false) {
         return false;
-
-
-
     }
+
+
     
     for(size_t i = 0; i < NUM_KEYWORDS; i++) {
         
         //Add tokens to a buffer then hash
         
         //printf("Inserting key: %s\n",validTokens[i]);
-        if(hashmap_insert(&validTokenHashmap, (void*)(validTokens[i]), &i) == false) {
-            //Cannot loop over enum so enum and tokens must just align
-            hashmap_destroy(&validTokenHashmap);
-            return false;
+
+        if(string_hashmap_set(&validTokenHashmap, (void*)(validTokens[i]), strlen(validTokens[i]) + 1, &i, sizeof(TOKEN_TYPE)) == false) {
+
+            //TODO: Destroy the hashmap
         }
     }
 
@@ -380,15 +380,23 @@ bool tokenise(char *line, Vector *const tokensOut) {
                 const void *hashOutToken = second_pass_token_definition(currentTokenLine);
                 if(hashOutToken == NULL) {
                     //Variable encountered
-                    
+                    printf("TOKEN '%s' IS VARIABLE\n",currentTokenLine);
                     currentToken.Token = USER_VARIABLE_STRING;
-                    //TODO: ADD VARIABLE TO A HASHMAP AND STORE ITS ID HERE
 
+                    currentToken.userString = malloc(strlen(currentTokenLine) + 1);
+                    if(currentToken.userString == NULL) {
+                        return false;
+                    }
+
+
+                    strcpy((currentToken.userString), currentTokenLine);
 
                 } else {
 
-                    currentToken.Token = *(TOKEN_TYPE*)(hashOutToken);
 
+                    //Set keyword to hashmap ouput
+                    printf("FOUND TOKEN '%s'\n",(char*)hashOutToken);
+                    currentToken.Token = *(TOKEN_TYPE*)(hashOutToken);
                 }
             }
 
