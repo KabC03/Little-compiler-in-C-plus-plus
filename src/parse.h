@@ -21,7 +21,11 @@ How it works
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
-
+#include "vector.h"
+#include "datastructures.h"
+#include "static hashmap.h"
+#include "string hashmap.h"
+#include "tokenise.h"
 
 
 
