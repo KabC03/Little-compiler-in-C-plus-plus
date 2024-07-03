@@ -249,10 +249,10 @@ const void *second_pass_token_definition(char *currentTokenLine) {
 
 
         printf("SECOND PASS IS HASHING: '%s'\n",currentTokenLine);
-        return NULL;
 
 
         data = string_hashmap_get_value(&validTokenHashmap, currentTokenLine, strlen(currentTokenLine) + 1);
+        printf("Found value: %d\n",*(int*)data);
     }
 
     return data;
@@ -394,7 +394,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
 
 
                     //Set keyword to hashmap ouput
-                    printf("FOUND TOKEN '%s'\n",(char*)hashOutToken);
+                    printf("FOUND TOKEN '%d'\n",*(TOKEN_TYPE*)hashOutToken);
                     currentToken.Token = *(TOKEN_TYPE*)(hashOutToken);
                 }
             }
