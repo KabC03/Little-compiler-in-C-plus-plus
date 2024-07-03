@@ -50,38 +50,45 @@ bool string_hashmap_hash_djb2(const uint8_t *const data, size_t dataSize, size_t
 bool string_hashmap_initialise(StringHashmap *stringhashmap, size_t initialHashmapSize) {
     
     if(stringhashmap == NULL || initialHashmapSize == 0) {
+
         return false;
     } else {
 
-        //Initialise hashmap vector
-        if(vector_initialise(&(stringhashmap->stringMapListNode), sizeof(StringMapListNode)) == false) {
+        if(vector_initialise(&(stringhashmap->stringMapListNode), sizeof(StringMapList)) == false) {
+
             return false;
         }
-
-        //Resize vector
-        if(vector_resize(&(stringhashmap->stringMapListNode), initialHashmapSize) == false) {
-            return false;
-        }
-
-        //Initialise LL in hashmap vector
         
-        StringMapList newNode;
-
-        if(string_map_LL_initilise(&newNode) == false) {
+        if(vector_resize(&(stringhashmap->stringMapListNode), initialHashmapSize) == false) {
             vector_destroy(&(stringhashmap->stringMapListNode));
+
             return false;
         }
 
+
+
+
+        StringMapList newMap;
+        if(string_map_LL_initilise(&newMap) == false) {
+            vector_destroy(&(stringhashmap->stringMapListNode));
+
+            return false;
+        }
 
         for(size_t i = 0; i < initialHashmapSize; i++) {
+            //vector_get_index can return null ptr but map_LL will notice it
 
-            if(string_map_LL_initilise((StringMapList*)vector_get_index(&(stringhashmap->stringMapListNode), i))) {
-                for(size_t j = 0; j < i; j++) {
-                    string_map_LL_destroy((StringMapList*)vector_get_index(&(stringhashmap->stringMapListNode), j));
-                    return false;
+            if(vector_insert_index(&(stringhashmap->stringMapListNode), i, &newMap) == false) {
+                for(int j = 0; j < i; j++) {
+                    string_map_LL_destroy((StringMapList*)vector_get_index(&(stringhashmap->stringMapListNode), i));
                 }
+
+                //vector_destroy(&(hashmap->mapListNodes)); //CAUSES ERROR - BUT SHOULD BE HERE TO AVOID LEAKS
+                return false;
             }
-        }
+        
+        } 
+
     }
     
     return true;
@@ -106,6 +113,7 @@ bool string_hashmap_initialise(StringHashmap *stringhashmap, size_t initialHashm
  * 
  */
 bool string_hashmap_set(StringHashmap *stringHashmap, void *key, size_t keySize, void *value, size_t valueSize) {
+    
     if(stringHashmap == NULL || key == NULL || value == NULL || keySize == 0 || valueSize == 0) {
         
         return false;
