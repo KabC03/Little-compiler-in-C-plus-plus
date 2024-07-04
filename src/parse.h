@@ -76,6 +76,10 @@ Parser flow:
         - These will tell you immediatly the structure of the IR. Its just a case of putting the actual expressions into the template
         - While matching, make sure grammer is correct
         - If in a conditional statement, a { must be present as the last token or the next one on the newline (use a flag for this)
+        - Push if statement jump (at end) onto the stack
+            - Dont pop if there is an elif/else below, only pop if there isnt one
+            - This stack must be maintained seperately to the other conditional stack
+            - Also allows for nested conditions
 
     - Expressions
         - Expressions must be evaluated recursively with precedence
