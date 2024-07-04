@@ -51,6 +51,50 @@ ASM -> Machine code
 - Shouldnt be too bad since the compiler probably wont use many cisc instructions
 */
 
+
+/*
+
+Parser flow:
+
+- ALWAYS look at the first token
+    - If its a } then you must pop from the jump address stack and put a label there
+    - This is because } symbolises the end of a conditional statement
+
+- Next look at the following token
+
+    -Directives
+        - If its a directive (e.g $program$ or $function$ or $data$) then change the data mode
+        - Must change directives in this order:
+        - none -> $data$ -> $function$ -> $program$ 
+            - Note $function does not have to be present
+        - Cannot go back (e.g if in $program$ cannot go back to $data$ and declare more variables)
+        - Set the current mode flag - thiswill determine what can and cannot be done in the following lines (e.g can ONLY declare functions in $function$)
+
+    - Logic
+        - Look at the token - it tells you what the line does
+        - E.g for, if, elif, while, etc
+        - These will tell you immediatly the structure of the IR. Its just a case of putting the actual expressions into the template
+        - While matching, make sure grammer is correct
+        - If in a conditional statement, a { must be present as the last token or the next one on the newline (use a flag for this)
+
+    - Expressions
+        - Expressions must be evaluated recursively with precedence
+        - Includes arithmatic, dereferencing and function calls
+
+
+
+    - Declarations should add a variable to a dictionary (key = variable -> value = type)
+    - Labels should be an ID and then jumped to
+        - E.g If in a conditional statement, jump to label with ID 1, ID 1 is put onto the stack of addresses and a label is placed when a } is found
+
+
+
+    - IR->asm converter will place variables into the registers themselves and perform small peephole optimisations (e.g if jump and label follow eachother remove the jump)
+
+ 
+*/
+
+
 #ifndef PARSE_H
 #define PARSE_H
 
@@ -68,7 +112,7 @@ ASM -> Machine code
 
 
 bool parse(Vector *tokens);
-
+bool initialise_parser_structures(void);
 
 #endif // PARSE_H
 
