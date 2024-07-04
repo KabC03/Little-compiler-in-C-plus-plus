@@ -1,6 +1,38 @@
 #include "parse.h"
 
 
+Stack conditionalJumpStack; //Holds size_t (ID for jump label)
+
+typedef enum insideCurrentStructure {
+
+    IN_UNDECLARED_SECTION, //No mode - expect a mode to be given
+    IN_DATA_SECTION, 
+    IN_FUNCTION_SECTION, 
+    IN_PROGRAM_SECTION, 
+
+} insideCurrentStructure;
+
+/**
+ * initialise_parser_structures 
+ * ===============================================
+ * Brief: Initialise parser structures before use 
+ * 
+ * Param: void 
+ * 
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool initialise_parser_structures(void) {
+
+    if(stack_initialise(&conditionalJumpStack, sizeof(size_t)) == false) {
+        return false;
+    }
+
+
+
+    return true;
+}
+
 
 
 
