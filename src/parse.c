@@ -23,12 +23,25 @@ bool parse(Vector *tokens) {
 
         //If first token is a brace then pop off jump label from conditional statement
         //Then if the next is a keyword then tokenise that as per normal
-        if(vector_get_length(tokens) == 0) {
+        if(vector_get_length(tokens) == -1) {
             printf("RECIEVED EMPTY TOKENS\n");
             return false;
+        } else {
+
+            //Print recieved tokens:
+            for(size_t i = 0; i < vector_get_length(tokens) + 1; i++) {
+                printf("Current value: %d\n", *(int*)vector_get_index(tokens, i));
+            }
+
+
+
+
+
+
+
+
+
         }
-
-
     }
 
     return true;
