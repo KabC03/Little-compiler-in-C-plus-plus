@@ -15,11 +15,7 @@ IF STATEMENTS
 - This is just from an above if statement - tells the compiler to pop something off the stack (put a jump label) - and continue as normal
 
 
-
-REGISTERS
-- Keep a counter of how much a variable is requested from a register
-- When it comes to store a new variable into a register, push the least used value out
-
+- NOTE: Use variables themselves here, dont try to put things into registers yet
 
 - Need to parse recursively expressions
 
@@ -36,6 +32,23 @@ PROGRAM:
 
 - In program section
 - Parse more complex logical structures
+
+
+
+
+IR -> ASM
+- IR output can be further mapped to architecture specific assembly
+- Put variables into actual registers
+- Keep a counter of how much a variable is requested from a register
+- When it comes to store a new variable into a register, push the least used value out
+- Perform some peephole optimisation (elimiate useless instruction combinations)
+
+
+
+
+ASM -> Machine code
+- Either use NASM or code up a basic assembler
+- Shouldnt be too bad since the compiler probably wont use many cisc instructions
 */
 
 #ifndef PARSE_H
@@ -54,6 +67,7 @@ PROGRAM:
 #include "tokenise.h"
 
 
+bool parse(Vector *tokens);
 
 
 #endif // PARSE_H
