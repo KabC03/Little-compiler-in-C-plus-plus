@@ -349,9 +349,7 @@ bool tokenise(char *line, Vector *const tokensOut) {
         return false;
     }
 
-    if(vector_initialise(tokensOut, sizeof(Token)) == false) {
-        return false;
-    }
+
     Token currentToken;          //Only one exists
     TokenTypeData tokenTypeData; //Only one exists
     //Initialise token data
