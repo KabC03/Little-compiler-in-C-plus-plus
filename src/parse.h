@@ -84,14 +84,23 @@ Parser flow:
 
 
     - Declarations should add a variable to a dictionary (key = variable -> value = type)
+        - Types are used for arithmatic (e.g float and int addition instructions are different)
+        - Strict type checking is enforced, cannot do arithmatic on float and int/char (but can do with char and int together since char is basically an int) 
+
     - Labels should be an ID and then jumped to
         - E.g If in a conditional statement, jump to label with ID 1, ID 1 is put onto the stack of addresses and a label is placed when a } is found
 
-
+    - Functions should put their address into a dictionary which can be referenced by its name
+        - Max args to a function is enforced in IR->asm (here set it to the number of registers)
+        - Argumets include any temporary variables used by the function (this is because a function is limited to the current registers - it cannot load from RAM)
+            - Variables cannot be declared inside a declaration function body
+        - All argumeents are PASSED BY REFERENCE (not value), meaning the stack is not used
 
     - IR->asm converter will place variables into the registers themselves and perform small peephole optimisations (e.g if jump and label follow eachother remove the jump)
+        - No other optimisations will be implemented - only those of the fault of the compiler itself (e.g poorly timed load/store operations)
 
- 
+
+    - Any syntax errors or unexpected tokens should immediatly cause the parser to report an error (and the token that caused it)
 */
 
 
