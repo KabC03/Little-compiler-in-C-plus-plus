@@ -24,7 +24,7 @@ const char validTokens[NUM_KEYWORDS][MAX_KEYWORD_SIZE] = {
     "allocate", "free", "sizeof",
 
     //Misc symbols
-    ";", "+", "-", "*", "/", "%%", ","
+    ";", "+", "-", "*", "/", "%%", ",",
 
     "(", ")", "[", "]", "{", "}",
 
@@ -33,3 +33,4 @@ const char validTokens[NUM_KEYWORDS][MAX_KEYWORD_SIZE] = {
 
 
 
+ 
