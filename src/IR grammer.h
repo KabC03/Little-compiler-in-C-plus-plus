@@ -27,6 +27,7 @@
 #define IR_STACK_STORE "STK_STR "
 #define IR_STACK_RETRIEVE "STK_RET "
 #define IR_STACK_RESERVE "STK_RES " //Reserve some space on the stack STK_RES numOfReg
+#define IR_STACK_FREE "STK_FREE" //Opposite of reserving space on the stack STK numOfReg
 
 //Labels
 #define IR_LABEL_END "LABEL: " 
