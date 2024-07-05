@@ -12,7 +12,7 @@ const char validTokens[NUM_KEYWORDS][MAX_KEYWORD_SIZE] = {
 
     //Conditional statements
     "if", "elif", "else", "while", "for",
-    "==", "!=", ">=", "<=", ">", "<"
+    "==", "!=", ">=", "<=", ">", "<",
 
     //Functions
     "fn", "return", 
@@ -33,4 +33,4 @@ const char validTokens[NUM_KEYWORDS][MAX_KEYWORD_SIZE] = {
 
 
 
- 
+
