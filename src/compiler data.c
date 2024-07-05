@@ -3,7 +3,7 @@
 
 
 //Put these into a hashmap in main
-const char validTokens[][MAX_KEYWORD_SIZE] = {
+const char validTokens[NUM_KEYWORDS][MAX_KEYWORD_SIZE] = {
 
     //Declarations
     "decl", "int", "float", "char", 
@@ -24,7 +24,7 @@ const char validTokens[][MAX_KEYWORD_SIZE] = {
     "allocate", "free", "sizeof",
 
     //Misc symbols
-    ";", "+", "-", "*", "/", "%%",
+    ";", "+", "-", "*", "/", "%%", ","
 
     "(", ")", "[", "]", "{", "}",
 
