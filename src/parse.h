@@ -183,6 +183,7 @@ pop space 5 (total space)
 #include <stdint.h>
 #include "vector.h"
 #include "datastructures.h"
+#include "dynamic string.h"
 #include "static hashmap.h"
 #include "string hashmap.h"
 #include "compiler data.h"
