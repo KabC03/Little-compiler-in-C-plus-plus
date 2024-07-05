@@ -93,9 +93,43 @@ const char *dynamic_string_read(DynamicString *dynamicString) {
 }
 
 
+
+
+
+/**
+ * dynamic_string_concatanate 
+ * ===============================================s
+ * Brief: Concatanate a dynamic string with another 
+ * 
+ * Param: *dynamicString - string of interest
+ *        *inputString - String to add 
+ * 
+ * Return: Pointer to the dynamic string 
+ * 
+ */
+bool dynamic_string_concatanate(DynamicString *dynamicString, char *inputString) {
+
+    if(dynamicString == NULL || inputString == NULL) {
+        return false;
+    } else {
+
+        char *newPtr = realloc(dynamicString->data, dynamicString->size + strlen(inputString) + 1);
+        if(newPtr == NULL) {
+            return false;
+        } else {
+
+            dynamicString->data = newPtr;
+            dynamicString->size += strlen(inputString) + 1;
+            strcat(dynamicString->data, inputString);
+        }
+
+    }
+
+    return true;
+}
+
 /*
 TODO: add later
-- Concatanate (strcat)
 - Compare strings (stcmp)
 - And so on
 */
