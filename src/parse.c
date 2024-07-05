@@ -4,7 +4,6 @@
 
 size_t globalBranchID;              //Used to keep track of the last label ID (to prevent two labels having the same ID and wrong jumps)
 size_t globalVariableID;            //Used to keep track of the last label ID (to prevent two labels having the same ID and wrong jumps)
-#define SIZE_OF_NUM_TO_STRING_BUFFER sizeof(char) * ((int)floor(log10(SIZE_MAX)) + 2)
 
 
 //Metadata for variables - held within the current stack frame
@@ -126,50 +125,6 @@ pop A
 */
 
 
-//Append IR related to jumping to a function to an output string
-bool IR_print_jump_to_function(char *functionName, DynamicString *outString) {
-
-    if(functionName == NULL || outString == NULL) {
-        return false;
-    } else {
-
-        //Loop up function name, get metatdata, print relevent data then jump
-        const FunctionMetadata *currentMetadata = string_hashmap_get_value(&functionMetadata, functionName, strlen(functionName) + 1);
-        if(currentMetadata == NULL) {
-            return false;
-        } else {
-
-            if(currentMetadata->expectedNumberArgumesnts != 0) { //Main should expect no arguments
-                return false;
-            }
-
-
-            //PUSH
-            if(dynamic_string_set(outString, IR_STACK_RESERVE) == false) {
-                return false;
-            }
-            //VALUE
-            char *numberToStringBuffer = malloc(SIZE_OF_NUM_TO_STRING_BUFFER);
-            if(numberToStringBuffer == NULL) {
-                return false;
-            }
-            sprintf(numberToStringBuffer, "%zu", currentMetadata->numberOfLocalVariables);
-            if(dynamic_string_concatanate(outString, numberToStringBuffer) == false) {
-                return false;
-            }
-            //Add a newline
-            if(dynamic_string_concatanate(outString, "\n") == false) {
-                return false;
-            }
-
-            free(numberToStringBuffer);
-        }
-    }
-
-
-    return true;
-}
-
 
 
 
@@ -207,14 +162,14 @@ bool parser_initialise(void) {
  * Brief: Parse a line of tokens 
  * 
  * Param: *tokens - Token array (NULL to indicate EOF)
- *        *outputString - Pointer to an initialised dynamic string where an output string will be stored (for current IR line) 
+ *        *IRFilePtr - Pointer to an opened file ptr destination (in append mode)
  * 
  * Return: bool - T/F depending on if addition was successful
  * 
  */
-bool parse(Vector *tokens, DynamicString *outputString) {
+bool parse(Vector *tokens, FILE *IRFilePtr) {
 
-    if(outputString == NULL) {
+    if(IRFilePtr == NULL) {
         return false;
     } else {
 
@@ -222,32 +177,18 @@ bool parse(Vector *tokens, DynamicString *outputString) {
         //Write call to main here
         if(tokens == NULL) {
 
-            if(programFlowMetadata.mainIsDefined == false) {
-                printf("Missing main function declaration\n");
+            const FunctionMetadata *mainFunctionMetadata = string_hashmap_get_value(&functionMetadata, IR_MAIN_FUNC_NAME, strlen(IR_MAIN_FUNC_NAME) + 1);
+            if(mainFunctionMetadata == NULL) {
+                printf("Failed to find main funcion\n");
                 return false;
-            
-            
-            } else if(programFlowMetadata.insideFunction == true) {
-                printf("Expected a '}'\n");
-                return false;
-            } else {
-
-                if(IR_print_jump_to_function(IR_MAIN_FUNC_NAME, outputString) == false) {
-                    return false;
-                }
-                //Set the output string to something like 'jump main' and do the stack stuff
-
             }
-            return true;
+            
+            fprintf("    %s %zu\n", IR_STACK_RESERVE, mainFunctionMetadata->numberOfLocalVariables);
 
         } else {
 
 
-
-
         }
-
-
     }
 
     return true;
