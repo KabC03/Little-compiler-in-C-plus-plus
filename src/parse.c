@@ -56,6 +56,62 @@ Stack functionMetadata;                   //Stack of the currently used function
 
 /*
 
+E.g:
+
+SOURCE CODE:
+
+fn func(a) {
+
+    b = a;
+    c = b + a;
+
+    return c;
+}
+
+fn main() {
+
+    a = func(10);
+}
+
+
+
+
+
+IR:
+label func(a)
+
+SET B
+B = A
+
+SET C
+LET acc 0
+ADD acc, B, A
+
+
+ret C
+
+
+
+
+
+label main()
+
+SET A
+
+push A //Push A onto the stack
+push 2 //Push space for 2 variables onto the stack
+call func()
+pop 2
+pop A
+
+
+*/
+
+
+
+
+/*
+
 - If first call, write 'jum main' (unconditional jump to main function)
 - Next expecting a function declaration (no global variables)
     - Main function takes no arguments but always returns an integer
@@ -65,6 +121,31 @@ Stack functionMetadata;                   //Stack of the currently used function
 
 
 */
+
+
+
+
+
+bool parser_initialise(void) {
+
+    if(stack_initialise(&functionMetadata, sizeof(FunctionMetadata)) == false) {
+        return false;
+    }
+    
+    if(string_hashmap_initialise(&functionMetadata, INITIAL_MAP_SIZE) == false) {
+        return false;
+    }
+
+    programFlowMetadata.insideFunction = false;
+    programFlowMetadata.mainIsDefined = false;
+    programFlowMetadata.writtenmainJump = false;
+
+    return true;
+}
+
+
+
+
 
 
 
