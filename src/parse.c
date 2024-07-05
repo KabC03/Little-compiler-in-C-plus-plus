@@ -45,7 +45,7 @@ typedef struct ProgramFlowMetadata {
 
     bool mainIsDefined;                   //Main function has been seen
     bool insideFunction;                  //Used to make sure a function is not declared inside another function
-    bool writtenmainJump;                 //Used to record if the first time call 'jump main' has been set
+    bool writtenMainJump;                 //Used to record if the first time call 'jump main' has been set
 
 } ProgramFlowMetadata;
 
@@ -100,11 +100,13 @@ SET A
 
 push A //Push A onto the stack
 push 2 //Push space for 2 variables onto the stack
+update //Update any variables (e.g Store them in RAM if the register one is more updated than RAM)
 call func()
 pop 2
 pop A
 
-
+//NOTE: Use RPN to evaluate expressions just using one accumulator
+//Also note: Before calling function always make sure variables are up to date before pushing
 */
 
 
@@ -138,7 +140,7 @@ bool parser_initialise(void) {
 
     programFlowMetadata.insideFunction = false;
     programFlowMetadata.mainIsDefined = false;
-    programFlowMetadata.writtenmainJump = false;
+    programFlowMetadata.writtenMainJump = false;
 
     return true;
 }
