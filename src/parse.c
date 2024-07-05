@@ -195,6 +195,8 @@ bool parse(Vector *tokens, FILE *IRFilePtr) {
 
         } else {
 
+            //TODO: DO a bunch of strcmps with a #defines of fn, while, for, etc. Enum of tokens is useless
+            //For each if,elif call a corrosponding function
 
         }
     }
