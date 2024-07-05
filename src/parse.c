@@ -161,15 +161,15 @@ bool parser_initialise(void) {
  * ===============================================
  * Brief: Parse a line of tokens 
  * 
- * Param: *tokens - Token array 
- *        *outputString - Pointer to a vector where an output string will be stored (for current IR line) 
+ * Param: *tokens - Token array (NULL to indicate EOF)
+ *        *outputString - Pointer to an initialised dynamic string where an output string will be stored (for current IR line) 
  * 
  * Return: bool - T/F depending on if addition was successful
  * 
  */
-bool parse(Vector *tokens, Vector *outputString) {
+bool parse(Vector *tokens, DynamicString *outputString) {
 
-    if(tokens == NULL) {
+    if(outputString == NULL) {
         return false;
     } else {
 
