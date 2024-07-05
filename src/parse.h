@@ -147,7 +147,6 @@ Parser flow:
 IDEA 3:
 
 
-
 - In parser (generating IR)
 
 - IR references stack but not general purpose registers
@@ -188,13 +187,12 @@ pop space 5 (total space)
 #include "string hashmap.h"
 #include "compiler data.h"
 #include "tokenise.h"
+#define INITIAL_MAP_SIZE 100
 
 
 
 
 
-bool parse(Vector *tokens);
-bool initialise_parser_structures(void);
 
 #endif // PARSE_H
 
