@@ -15,7 +15,7 @@
 #define MAX_KEYWORD_SIZE 100
 #define MAX_LINE_LENGTH 100
 
-#define MAX_TOKEN_LENGTH 15 //Size of the largest token
+#define MAX_TOKEN_LENGTH 20 //Size of the largest token
 #define NUM_KEYWORDS 34 //Number of items in TOKEN_TYPE and KEYWORDS (EXCLUDING DATA)
 #define VARIABLE_HASHMAP_SIZE 100 //Size of array hashmap initially
 #define array_length(array) sizeof(array)/sizeof(array[0])
@@ -40,62 +40,79 @@ typedef enum TOKEN_TYPE { //NOTE - ORDER CORROSPONDS TO DATA IN COMPILER DATA.c
     INVALID = -1,                      //invalid token
 
 
-    //Variable assignment
-    TYPE_VARIABLE_DECL = 0,
+    //Declarations
+    TYPE_DECL = 0,
     TYPE_INT = 1,
     TYPE_FLOAT = 2,
     TYPE_CHAR = 3,
-    EQUALS_ASSIGNMENT = 4,
+    TYPE_EQUALS_ASSIGN = 4,
 
-    //Arithmatic operators
-    ARITH_PLUS = 5,
-    ARITH_MINUS = 6,
-    ARITH_MULTIPLY = 7,
-    ARITH_DIVIDE = 8,
-    ARITH_MODULO = 9,
-
-    //Conditional statements
-    IF = 10,
-    ELIF = 11,
-    ELSE = 12,
-    WHILE = 13,
-    FOR = 14,
-
-    //Conditional operators
-    COND_EQUAL_TO = 15,
-    COND_NOT_EQUAL_TO = 16,
-    COND_GREATER_OR_EQUAL_TO = 17,
-    COND_LESS_OR_EQUAL_TO = 18,
-    COND_GREATER_THAN = 19,
-    COND_LESS_THAN = 20,
-
-
-    //Functions
-    FUNCT_DECLARE = 21,    //fn
-    FUNCT_RETURN = 22,     //return
+    //Conditionals
+    COND_IF = 5,
+    COND_ELIF = 6,
+    COND_ELSE = 7,
+    COND_WHILE = 8,
+    COND_FOR = 9,
 
 
     //Organisation
-    COMMENT = 23,
+    COMMA = 10,
 
+
+    //Functions
+    FUNC_DECLARE = 11,
+    FUNC_RETURN = 12,
+
+    FUNC_FREE = 13,
+    FUNC_ALLOCATE = 14,
+    FUNC_SIZEOF = 15,
+
+
+    //Arithmatic symbols
+    ARI_PLUS = 16,
+    ARI_MINUS = 17,
+    ARI_MUL = 18,
+    ARI_DIV = 19,
+    ARI_MOD = 20,
+
+
+    //Conditional symbols
+    COND_EQUAL_TO = 21,
+    COND_NOT_EQUAL_TO = 22,
+    COND_GREATER_EQUAL_TO = 23,
+    COND_LESS_EQUAL_TO = 24,
+    COND_GREATER = 25,
+    COND_LESS = 26,
+
+
+    //Misc symboks
+
+
+
+    
+
+    //Declarations
+    "decl", "int", "float", "char", 
+    "=",
+
+
+    //Conditional statements
+    "if", "elif", "else", "while", "for",
+    "==", "!=", ">=", "<=", ">", "<"
+
+    //Functions
+    "fn", "return", 
+
+    //Organisation
+    "//"
 
     //Inbuilt functions
-    INBUILT_ALLOCATE = 24,
-    INBUILT_FREE = 25,
-    INBUILT_SIZEOF = 26,
+    "allocate", "free", "sizeof",
 
+    //Misc symbols
+    ";", "+", "-", "*", "/", "%%", ","
 
-    //Brackets
-    OPEN_PAREN = 27,
-    CLOSE_PAREN = 28,
-    OPEN_SQUARE = 29,
-    CLOSE_SQUARE = 30,
-    OPEN_CURLEY = 31,
-    CLOSE_CURLEY = 32, 
-
-
-    //Other symbols
-    SEMICOLEN = 33,
+    "(", ")", "[", "]", "{", "}",
 
     //Note that '.' is not here since its used in decimals - tokeniser will disguard so dont put it here
 
@@ -121,9 +138,6 @@ typedef struct Token {
 
 
 #endif // COMPILE_H 
-
-
-
 
 
 
