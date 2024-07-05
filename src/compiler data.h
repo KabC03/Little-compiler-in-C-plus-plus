@@ -40,82 +40,51 @@ typedef enum TOKEN_TYPE { //NOTE - ORDER CORROSPONDS TO DATA IN COMPILER DATA.c
     INVALID = -1,                      //invalid token
 
 
-    //Declarations
-    TYPE_DECL = 0,
-    TYPE_INT = 1,
-    TYPE_FLOAT = 2,
-    TYPE_CHAR = 3,
-    TYPE_EQUALS_ASSIGN = 4,
 
-    //Conditionals
+    DECL_DECL = 0,
+    DECL_INT = 1,
+    DECL_FLOAT = 2,
+    DECL_CHAR = 3,
+    DECL_EQUALS = 4,
+
     COND_IF = 5,
     COND_ELIF = 6,
     COND_ELSE = 7,
     COND_WHILE = 8,
     COND_FOR = 9,
 
+    COMP_EQUAL_TO = 10,
+    COMP_NOT_EQUAL_TO = 11,
+    COMP_GREATER_EQUAL_TO = 12,
+    COMP_LESS_EQUAL_TO = 13,
+    COMP_GREATER = 14,
+    COMP_LESS = 15,
 
-    //Organisation
-    COMMA = 10,
+    FUNC_DECL = 16,
+    FUNC_RETURN = 17,
 
-
-    //Functions
-    FUNC_DECLARE = 11,
-    FUNC_RETURN = 12,
-
-    FUNC_FREE = 13,
-    FUNC_ALLOCATE = 14,
-    FUNC_SIZEOF = 15,
-
-
-    //Arithmatic symbols
-    ARI_PLUS = 16,
-    ARI_MINUS = 17,
-    ARI_MUL = 18,
-    ARI_DIV = 19,
-    ARI_MOD = 20,
-
-
-    //Conditional symbols
-    COND_EQUAL_TO = 21,
-    COND_NOT_EQUAL_TO = 22,
-    COND_GREATER_EQUAL_TO = 23,
-    COND_LESS_EQUAL_TO = 24,
-    COND_GREATER = 25,
-    COND_LESS = 26,
-
-
-    //Misc symboks
-
-
-
+    COMMENT = 18,
     
 
-    //Declarations
-    "decl", "int", "float", "char", 
-    "=",
+    INBUILT_ALLOCATE = 19,
+    INBUILT_FREE = 20,
+    INBUILT_SIZEOF = 21,
+
+    MISC_SEMICOLON = 22,
+    ARI_PLUS = 23,
+    ARI_MINUS = 24,
+    ARI_MUL = 25,
+    ARI_DIV = 26,
+    ARI_MOD = 27,
+    MISC_COMMA = 28,
 
 
-    //Conditional statements
-    "if", "elif", "else", "while", "for",
-    "==", "!=", ">=", "<=", ">", "<"
-
-    //Functions
-    "fn", "return", 
-
-    //Organisation
-    "//"
-
-    //Inbuilt functions
-    "allocate", "free", "sizeof",
-
-    //Misc symbols
-    ";", "+", "-", "*", "/", "%%", ","
-
-    "(", ")", "[", "]", "{", "}",
-
-    //Note that '.' is not here since its used in decimals - tokeniser will disguard so dont put it here
-
+    OPEN_PARAN = 29,
+    CLOSE_PARAN = 30,
+    OPEN_SQUARE = 31,
+    CLOSE_SQUARE = 32,
+    OPEN_CURLEY = 33,
+    CLOSE_CURLEY = 34,
 
 } TOKEN_TYPE;
 
