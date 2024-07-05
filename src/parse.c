@@ -52,7 +52,7 @@ typedef struct ProgramFlowMetadata {
 //Use these directly
 StringHashmap functionMetadata;           //Hashmap of func name to metadata - add to it as functions are defined
 ProgramFlowMetadata programFlowMetadata;  //Metadata for program progression
-Stack functionMetadata;                   //Stack of the currently used functions - used to trace the frame
+Stack currentFunctionStack;               //Stack of the currently used functions - used to trace the frame
 
 /*
 
@@ -130,7 +130,7 @@ pop A
 
 bool parser_initialise(void) {
 
-    if(stack_initialise(&functionMetadata, sizeof(FunctionMetadata)) == false) {
+    if(stack_initialise(&currentFunctionStack, sizeof(FunctionMetadata)) == false) {
         return false;
     }
     
