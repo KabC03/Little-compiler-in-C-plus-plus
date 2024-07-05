@@ -52,6 +52,39 @@ ASM -> Machine code
 */
 
 
+
+
+/*
+Parser flow 2:
+
+- Go to main function first
+- As variables are declared push them onto the stack
+    - Store their stack address in a dictionary (name -> address) for the function
+- This is called function metadata (dictionary + name of function etc)
+- This allows for nested calls
+- Push and pop function metadata when functions are called - allowing the compiler to keep track of the current called function
+- This also means variables can be defined anywhere - not nesseserily in a program section, functions can be written/called anywhere too
+    - Preface function declaration with 'fn' and variable declaration with 'dec'
+
+- Function metadata stores
+    - key value for variable name and offset from base pointer for current stack frame
+    - Type for each variable in the frame
+    - Number of variables in the stack frame
+    - Should push/pop metadata as functions are called and returned from
+
+
+- Steps
+    - First parser call -> write 'jump main' (unconditional jump to main function)
+    - Second and onwards -> Look at first word
+        - If its a } then pop from if statement stack thingy (as normal)
+        - If its a keyword then set relevent flags for later (e.g - if fn then in function mode)
+            - Use this to ensure grammer beween lines (e.g have to FINISH declaring the function)
+        - If its whitespace just ignore
+*/
+
+
+
+
 /*
 
 Parser flow:
@@ -128,8 +161,6 @@ bool parse(Vector *tokens);
 bool initialise_parser_structures(void);
 
 #endif // PARSE_H
-
-
 
 
 
