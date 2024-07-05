@@ -1,109 +1,42 @@
-#include "parse.h"
-
-
-Stack conditionalJumpStack; //Holds size_t (ID for jump label)
-
-typedef enum insideCurrentStructure {
-
-    IN_UNDECLARED_SECTION, //No mode - expect a mode to be given
-    IN_DATA_SECTION, 
-    IN_FUNCTION_SECTION, 
-    IN_PROGRAM_SECTION, 
-
-} insideCurrentStructure;
-
-/**
- * initialise_parser_structures 
- * ===============================================
- * Brief: Initialise parser structures before use 
- * 
- * Param: void 
- * 
- * Return: bool - T/F depending on if initialisation was successful
- * 
- */
-bool initialise_parser_structures(void) {
-
-    if(stack_initialise(&conditionalJumpStack, sizeof(size_t)) == false) {
-        return false;
-    }
+ #include "parse.h"
 
 
 
-    return true;
-}
+size_t globalBranchID;              //Used to keep track of the last label ID (to prevent two labels having the same ID and wrong jumps)
+size_t globalVariableID;            //Used to keep track of the last label ID (to prevent two labels having the same ID and wrong jumps)
 
 
 
 
-/**
- * parse 
- * ===============================================
- * Brief: Parse an array of tokens - Generate IR 
- * 
- * Param: *tokens - Vector of input tokens 
- * 
- * Return: bool - T/F depending on if initialisation was successful
- * 
- */
-bool parse(Vector *tokens) {
+//Metadata for variables - held within the current stack frame
+typedef struct VariableMetadata {
 
-    if(tokens == NULL) {
-        return false;
+    TOKEN_TYPE dataType;             //int, float, chat, etc
+    size_t indirectionLvel;          //Level of indirection (number of '@')
+    size_t stackOffset;              //Offset from current base pointer
 
-    } else {
+} VariableMetadata;
 
-        //If first token is a brace then pop off jump label from conditional statement
-        //Then if the next is a keyword then tokenise that as per normal
-        if(vector_get_length(tokens) == -1) {
-            printf("RECIEVED EMPTY TOKENS\n");
-            return false;
-        } else {
+//Metadata for if, elif, else, for, while, etc statements
+typedef struct JumpMetadata {
 
-            //Print recieved tokens:
-            for(size_t i = 0; i < vector_get_length(tokens) + 1; i++) {
-                printf("Current value: %d\n", *(int*)vector_get_index(tokens, i));
-            }
+    size_t branchID;                 //e.g beq R1 R2 branchID (label ID)
+    size_t returnID;                 //At the end of an elif block when wanting to skip over next elif (label ID)
+
+} JumpMetadata;
+
+//Metadata for the current function (pushed onto an internal stack for functions)
+typedef struct FunctionMetadata {
+
+    size_t currentFrameSize;         //Frame size of LOCAL variables
+    StringHashmap localVariables;    //Hashmap of local variables (key = variabl name, value = VariableMetadata)
+    Stack JumpMetadata;              //Metadata for jumps (holds address for successful and non-successful jumps)
+
+} FunctionMetadata;
 
 
 
-
-
-
-
-
-
-        }
-    }
-
-    return true;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Stack functionMetadata;              //Stack of function metadata
 
 
 
