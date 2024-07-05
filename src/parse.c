@@ -11,9 +11,9 @@ size_t globalVariableID;            //Used to keep track of the last label ID (t
 //Metadata for variables - held within the current stack frame
 typedef struct VariableMetadata {
 
-    token_type datatype;                  //int, float, chat, etc
+    TOKEN_TYPE datatype;                  //int, float, chat, etc
     size_t indirectionlvel;               //level of indirection (number of '@')
-    size_t stackoffset;                   //offset from current base pointer
+    size_t stackoffset;                   //offset from current base pointer (NOTE: offset defined in IR but not anything else)
 
 } variablemetadata;
 
@@ -49,9 +49,10 @@ typedef struct ProgramFlowMetadata {
 
 } ProgramFlowMetadata;
 
-//Use these two directly
-Stack functionMetadata;                   //Stack of function metadata
+//Use these directly
+StringHashmap functionMetadata;           //Hashmap of func name to metadata - add to it as functions are defined
 ProgramFlowMetadata programFlowMetadata;  //Metadata for program progression
+Stack functionMetadata;                   //Stack of the currently used functions - used to trace the frame
 
 /*
 
@@ -64,6 +65,9 @@ ProgramFlowMetadata programFlowMetadata;  //Metadata for program progression
 
 
 */
+
+
+
 
 
 
