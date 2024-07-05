@@ -30,74 +30,74 @@ extern const char validTokens[][MAX_KEYWORD_SIZE];
 
 typedef enum TOKEN_TYPE { //NOTE - ORDER CORROSPONDS TO DATA IN COMPILER DATA.c
 
+    //DO NOT INCLUDE IN COUNT FOR NUMBER OF WORDS
+    //Data - since doesnt have a hashable form - push these down everytime a new hashable word is entered
+    INT_IMMEDIATE = -6,                //10
+    FLOAT_IMMEDIATE = -5,              //10.2
+    CHAR_IMMEDIATE = -4,               //'a'
+    USER_VARIABLE_STRING = -3,         //var1, function names
     USER_STRING = -2,                  //User string (could be keyword, function name or variable name)    
     INVALID = -1,                      //invalid token
 
-    //Declarations    
-    INT = 0,                           //int
-    FLOAT = 1,                         //float
-    CHAR = 2,                          //char
-    EQUALS_ASSIGNMENT = 3,             //=
+
+    //Variable assignment
+    TYPE_VARIABLE_DECL = 0,
+    TYPE_INT = 1,
+    TYPE_FLOAT = 2,
+    TYPE_CHAR = 3,
+    EQUALS_ASSIGNMENT = 4,
+
+    //Arithmatic operators
+    ARITH_PLUS = 5,
+    ARITH_MINUS = 6,
+    ARITH_MULTIPLY = 7,
+    ARITH_DIVIDE = 8,
+    ARITH_MODULO = 9,
 
     //Conditional statements
-    IF = 4,                            //if
-    ELIF = 5,                          //elif
-    ELSE = 6,                          //else
+    IF = 10,
+    ELIF = 11,
+    ELSE = 12,
+    WHILE = 13,
+    FOR = 14,
 
-    WHILE = 7,                         //while
-    FOR = 8,                           //for
-
-    EQ = 9,                            //==
-    NEQ = 10,                          //!=
-    
-    LES = 11,                          //<
-    GRE = 12,                          //>
-    LTE = 13,                          //<=
-    GTE = 14,                          //>=
+    //Conditional operators
+    COND_EQUAL_TO = 15,
+    COND_NOT_EQUAL_TO = 16,
+    COND_GREATER_OR_EQUAL_TO = 17,
+    COND_LESS_OR_EQUAL_TO = 18,
+    COND_GREATER_THAN = 19,
+    COND_LESS_THAN = 20,
 
 
     //Functions
-    DECL = 15,                         //delc (declare function)
+    FUNCT_DECLARE = 21,    //fn
+    FUNCT_RETURN = 22,     //return
+
 
     //Organisation
-    DATA = 16,                         //$data$
-    FUNCTION = 17,                     //$function$
-    PROGRAM = 18,                      //$program$
-    COMMENT = 19,                      //#
+    COMMENT = 23,
+
 
     //Inbuilt functions
-    ALLOCATE = 20,                     //allocate()
-    FREE = 21,                         //free()
-    SIZEOF = 22,                       //sizeof()
+    INBUILT_ALLOCATE = 24,
+    INBUILT_FREE = 25,
+    INBUILT_SIZEOF = 26,
 
 
+    //Brackets
+    OPEN_PAREN = 27,
+    CLOSE_PAREN = 28,
+    OPEN_SQUARE = 29,
+    CLOSE_SQUARE = 30,
+    OPEN_CURLEY = 31,
+    CLOSE_CURLEY = 32, 
 
-    //Misc symbols
-    SEMICOLEN = 23,                    //;
-    
-    ADD = 24,                          //+
-    SUB = 25,                          //-
-    MUL = 26,                          //*
-    DIV = 27,                          ///
-    MOD = 28,                          //%
 
-    OPEN_BRACE = 29,                   //(
-    CLOSE_BRACE = 30,                  //)
-    OPEN_SQUARE = 31,                  //[
-    CLOSE_SQUARE = 32,                 //]
-    OPEN_CURLY = 33,                   //{
-    CLOSE_CURLY = 34,                  //}
+    //Other symbols
+    SEMICOLEN = 33,
 
-    COMMA = 35,                        //,
-    DOT = 36,                          //.
-    
-
-    //DO NOT INCLUDE IN COUNT FOR NUMBER OF WORDS
-    //Data - since doesnt have a hashable form - push these down everytime a new hashable word is entered
-    INT_IMMEDIATE = 37,                //10
-    FLOAT_IMMEDIATE = 38,              //10.2
-    CHAR_IMMEDIATE = 39,               //'a'
-    USER_VARIABLE_STRING = 40,         //var1, function names
+    //Note that '.' is not here since its used in decimals - tokeniser will disguard so dont put it here
 
 
 } TOKEN_TYPE;
@@ -118,69 +118,6 @@ typedef struct Token {
 
 
 } Token;
-
-
-
-//Parser structures
-
-
-typedef struct ExpressionTreeNode {
-
-    Token left;
-    Token operator;
-    Token right;
-
-} ExpressionTreeNode;
-
-
-typedef struct DeclarationTree {
-
-    Token datatype;                          //e.g int, float, char
-    Token variableName;                      //e.g x, var1
-    Token equals;                            //=
-    ExpressionTreeNode assignedExpression;   //e.g 1 + 2 + (3+2) (NOTE: x == 1 IS AN EXPRESSION THAT RETURNS A VALUE)
-
-} DeclarationTree;
-
-
-typedef struct IfTree { //Also used for elif, else
-
-    ExpressionTreeNode *expression;          //Pointer to array of expressions
-    Token *operator;                         //Corrosponds to above statements (||, &&, etc)
-
-} IfTree;
-
-
-typedef struct WhileTree { 
-
-    IfTree ifTree;                           //Same as an if tree but with a jump
-
-} WhileTree;
-
-
-typedef struct ForTree { 
-
-    Token varName;                           //x
-    ExpressionTreeNode start;                //0
-    ExpressionTreeNode end;                  //10
-    ExpressionTreeNode increment;            //1
-    IfTree ifTree;                           //Same as an if tree but with a jump
-
-} ForTree;
-
-
-typedef struct FunctionDeclarationTree { 
-
-    Token functionName;                      //add
-
-    Token returnType;                        //int*
-    
-    Token *dataType;                         //Array of datatypes (corrospond with variable names)
-    Token *varName;                          //Input names
-
-} FunctionDeclarationTree;
-
-
 
 
 #endif // COMPILE_H 
