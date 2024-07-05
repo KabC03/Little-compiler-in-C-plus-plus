@@ -181,6 +181,7 @@ pop space 5 (total space)
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
+#include <math.h>
 #include "vector.h"
 #include "datastructures.h"
 #include "dynamic string.h"
@@ -193,7 +194,7 @@ pop space 5 (total space)
 
 
 bool parser_initialise(void);
-bool parse(Vector *tokens, DynamicString *outputString);
+bool parse(Vector *tokens, FILE *IRFilePtr);
 
 
 
