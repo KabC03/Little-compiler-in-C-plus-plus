@@ -175,7 +175,29 @@ bool parse(Vector *tokens, DynamicString *outputString) {
 
         //If first token is of specific marker then know its the end of the source file
         //Write call to main here
+        if(tokens == NULL) {
 
+            if(programFlowMetadata.mainIsDefined == false) {
+                printf("Missing main function declaration\n");
+                return false;
+            
+            
+            } else if(programFlowMetadata.insideFunction == true) {
+                printf("Expected a '}'\n");
+                return false;
+            } else {
+
+                //Set the output string to something like 'jump main' and do the stack stuff
+
+            }
+            return true;
+
+        } else {
+
+
+
+
+        }
 
 
     }
