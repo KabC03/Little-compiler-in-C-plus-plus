@@ -188,6 +188,7 @@ pop space 5 (total space)
 #include "string hashmap.h"
 #include "compiler data.h"
 #include "tokenise.h"
+#include "IR grammer.h"
 #define INITIAL_MAP_SIZE 100
 
 
