@@ -141,6 +141,39 @@ Parser flow:
 */
 
 
+
+/*
+
+IDEA 3:
+
+
+
+- In parser (generating IR)
+
+- IR references stack but not general purpose registers
+- When calling function push space for functions local variables onto stack and then push arguments on
+- This will lead to a small amount of bloat
+- After function call pop off out of
+
+
+label func (a,b,c) {
+
+    //Do something requiring 2 temp variables
+}
+
+main:
+
+push a
+push b
+push c
+push space 2
+call func
+pop space 5 (total space)
+
+*/
+
+
+
 #ifndef PARSE_H
 #define PARSE_H
 
@@ -164,7 +197,3 @@ bool parse(Vector *tokens);
 bool initialise_parser_structures(void);
 
 #endif // PARSE_H
-
-
-
-
