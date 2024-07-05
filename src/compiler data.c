@@ -6,24 +6,22 @@
 const char validTokens[][MAX_KEYWORD_SIZE] = {
 
     //Declarations
-    "int", "float", "char", 
+    "decl", "int", "float", "char", 
     "=",
 
 
     //Conditional statements
     "if", "elif", "else", "while", "for",
-    "==", "!=", ">=", "<=",
+    "==", "!=", ">=", "<=", ">", "<"
 
     //Functions
-    "decl", "return", 
+    "fn", "return", 
 
     //Organisation
-    "$data$", "$function$", "$program$", "//",
-
+    "//"
 
     //Inbuilt functions
     "allocate", "free", "sizeof",
-
 
     //Misc symbols
     ";", "+", "-", "*", "/", "%%",
@@ -31,35 +29,6 @@ const char validTokens[][MAX_KEYWORD_SIZE] = {
     "(", ")", "[", "]", "{", "}", ",", ".",
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
