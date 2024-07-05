@@ -190,7 +190,8 @@ pop space 5 (total space)
 #define INITIAL_MAP_SIZE 100
 
 
-
+bool parser_initialise(void);
+bool parse(Vector *tokens, Vector *outputString);
 
 
 
