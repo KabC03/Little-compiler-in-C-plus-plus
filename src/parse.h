@@ -191,7 +191,7 @@ pop space 5 (total space)
 
 
 bool parser_initialise(void);
-bool parse(Vector *tokens, Vector *outputString);
+bool parse(Vector *tokens, DynamicString *outputString);
 
 
 
