@@ -184,10 +184,10 @@ bool parse(Vector *tokens, FILE *IRFilePtr) {
             }
 
             //Reserve space on stack            
-            fprintf("    %s %zu\n", IR_STACK_RESERVE, mainFunctionMetadata->numberOfLocalVariables);
+            fprintf(IRFilePtr, "    %s %zu\n", IR_STACK_RESERVE, mainFunctionMetadata->numberOfLocalVariables);
 
             //Call the main function
-            fprintf("    %s %s\n",IR_JUMP_AND_LINK , IR_MAIN_FUNC_NAME); //JAL puts the current PC on the stack (gets popped when returning)
+            fprintf(IRFilePtr, "    %s %s\n",IR_JUMP_AND_LINK , IR_MAIN_FUNC_NAME); //JAL puts the current PC on the stack (gets popped when returning)
 
             //Free space from stack - NOTE THIS SHOULD BE DONE WHEN MAIN RETURNS NOT HERE
             //fprintf("    %s %zu\n", IR_STACK_FREE, mainFunctionMetadata->numberOfLocalVariables);
