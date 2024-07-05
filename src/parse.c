@@ -128,6 +128,16 @@ pop A
 
 
 
+/**
+ * parser_initialise 
+ * ===============================================
+ * Brief: Parse a line of tokens 
+ * 
+ * Param: void
+ * 
+ * Return: bool - T/F depending on if addition was successful
+ * 
+ */
 bool parser_initialise(void) {
 
     if(stack_initialise(&currentFunctionStack, sizeof(FunctionMetadata)) == false) {
@@ -146,7 +156,32 @@ bool parser_initialise(void) {
 }
 
 
+/**
+ * parse 
+ * ===============================================
+ * Brief: Parse a line of tokens 
+ * 
+ * Param: *tokens - Token array 
+ *        *outputString - Pointer to a vector where an output string will be stored (for current IR line) 
+ * 
+ * Return: bool - T/F depending on if addition was successful
+ * 
+ */
+bool parse(Vector *tokens, Vector *outputString) {
 
+    if(tokens == NULL) {
+        return false;
+    } else {
+
+        //If first token is of specific marker then know its the end of the source file
+        //Write call to main here
+
+
+
+    }
+
+    return true;
+}
 
 
 
