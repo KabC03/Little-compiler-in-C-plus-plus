@@ -4,8 +4,7 @@
 
 size_t globalBranchID;              //Used to keep track of the last label ID (to prevent two labels having the same ID and wrong jumps)
 size_t globalVariableID;            //Used to keep track of the last label ID (to prevent two labels having the same ID and wrong jumps)
-
-
+#define SIZE_OF_NUM_TO_STRING_BUFFER sizeof(char) * ((int)floor(log10(SIZE_MAX)) + 2)
 
 
 //Metadata for variables - held within the current stack frame
@@ -33,7 +32,9 @@ typedef struct JumpMetadata {
 //Metadata for the current function (pushed onto an internal stack for functions)
 typedef struct FunctionMetadata {
 
-    size_t currentFrameSize;              //Frame size of LOCAL variables
+    size_t currentFrameSize;              //Sum of local variables and arguments (here for debugging)
+    size_t numberOfLocalVariables;        //Number of local variables
+    size_t expectedNumberArgumesnts;      //Expected number of arguments
     StringHashmap localVariables;         //Hashmap of local variables (key = variabl name, value = VariableMetadata)
     Stack JumpMetadata;                   //Metadata for jumps (holds address for successful and non-successful jumps)
 
@@ -125,6 +126,50 @@ pop A
 */
 
 
+//Append IR related to jumping to a function to an output string
+bool IR_print_jump_to_function(char *functionName, DynamicString *outString) {
+
+    if(functionName == NULL || outString == NULL) {
+        return false;
+    } else {
+
+        //Loop up function name, get metatdata, print relevent data then jump
+        const FunctionMetadata *currentMetadata = string_hashmap_get_value(&functionMetadata, functionName, strlen(functionName) + 1);
+        if(currentMetadata == NULL) {
+            return false;
+        } else {
+
+            if(currentMetadata->expectedNumberArgumesnts != 0) { //Main should expect no arguments
+                return false;
+            }
+
+
+            //PUSH
+            if(dynamic_string_set(outString, IR_STACK_RESERVE) == false) {
+                return false;
+            }
+            //VALUE
+            char *numberToStringBuffer = malloc(SIZE_OF_NUM_TO_STRING_BUFFER);
+            if(numberToStringBuffer == NULL) {
+                return false;
+            }
+            sprintf(numberToStringBuffer, "%zu", currentMetadata->numberOfLocalVariables);
+            if(dynamic_string_concatanate(outString, numberToStringBuffer) == false) {
+                return false;
+            }
+            //Add a newline
+            if(dynamic_string_concatanate(outString, "\n") == false) {
+                return false;
+            }
+
+            free(numberToStringBuffer);
+        }
+    }
+
+
+    return true;
+}
+
 
 
 
@@ -187,6 +232,9 @@ bool parse(Vector *tokens, DynamicString *outputString) {
                 return false;
             } else {
 
+                if(IR_print_jump_to_function(IR_MAIN_FUNC_NAME, outputString) == false) {
+                    return false;
+                }
                 //Set the output string to something like 'jump main' and do the stack stuff
 
             }
