@@ -45,6 +45,7 @@ typedef struct ProgramFlowMetadata {
 
     bool mainIsDefined;                   //Main function has been seen
     bool insideFunction;                  //Used to make sure a function is not declared inside another function
+    bool writtenmainJump;                 //Used to record if the first time call 'jump main' has been set
 
 } ProgramFlowMetadata;
 
