@@ -1,3 +1,32 @@
+
+
+#ifndef PARSE_H
+#define PARSE_H
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdint.h>
+#include <math.h>
+#include "vector.h"
+#include "datastructures.h"
+#include "dynamic string.h"
+#include "static hashmap.h"
+#include "string hashmap.h"
+#include "compiler data.h"
+#include "tokenise.h"
+#include "IR grammer.h"
+#define INITIAL_MAP_SIZE 100
+
+
+bool parser_initialise(void);
+bool parse(Vector *tokens, FILE *IRFilePtr);
+
+
+
+#endif // PARSE_H
+
 //Parser
 
 
@@ -171,34 +200,75 @@ pop space 5 (total space)
 
 */
 
+/*
 
+E.g:
 
-#ifndef PARSE_H
-#define PARSE_H
+SOURCE CODE:
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdint.h>
-#include <math.h>
-#include "vector.h"
-#include "datastructures.h"
-#include "dynamic string.h"
-#include "static hashmap.h"
-#include "string hashmap.h"
-#include "compiler data.h"
-#include "tokenise.h"
-#include "IR grammer.h"
-#define INITIAL_MAP_SIZE 100
+fn func(a) {
 
+    b = a;
+    c = b + a;
 
-bool parser_initialise(void);
-bool parse(Vector *tokens, FILE *IRFilePtr);
+    return c;
+}
+
+fn main() {
+
+    a = func(10);
+}
 
 
 
-#endif // PARSE_H
+
+
+IR:
+label func(a)
+
+SET B
+B = A
+
+SET C
+LET acc 0
+ADD acc, B, A
+
+
+ret C
+
+
+
+
+
+label main()
+
+SET A
+
+push A //Push A onto the stack
+push 2 //Push space for 2 variables onto the stack
+update //Update any variables (e.g Store them in RAM if the register one is more updated than RAM)
+call func()
+pop 2
+pop A
+
+//NOTE: Use RPN to evaluate expressions just using one accumulator
+//Also note: Before calling function always make sure variables are up to date before pushing
+*/
+
+
+
+
+/*
+
+- If first call, write 'jum main' (unconditional jump to main function)
+- Next expecting a function declaration (no global variables)
+    - Main function takes no arguments but always returns an integer
+
+
+- By end of the program at least one main function should have been seen
+
+
+*/
 
 
 
