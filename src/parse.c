@@ -18,11 +18,14 @@ typedef struct VariableMetadata {
 //Metadata for if, elif, else, for, while, etc statements
 typedef struct JumpMetadata {
 
-    size_t branchID;                       //e.g beq R1 R2 branchID (label ID)
-    size_t returnID;                       //At the end of an elif block when wanting to skip over next elif (label ID)
-                                    
+    Token jumpType;                        //While, for, if, etc
+    size_t branchOnFalseTo;                //e.g beq R1 R2 branchID (label ID)
+    size_t branchOnTrueTo;                 //At the end of an elif block when wanting to skip over next elif (label ID)
+
     bool expectingOpenBrace;               //Used to denote that a '{' is expected (end of if statement) on the next line as the first token
+    bool requiresJumpUp;                   //True for for/while, false for if, elif, else
     bool seenIf;                           //Used to make sure elif or else is not declared before an if
+
 
     //Statement should consume nex } token it sees
 
@@ -43,6 +46,7 @@ typedef struct FunctionMetadata {
 
 typedef struct ProgramFlowMetadata {
 
+    DynamicString currentFuncName;        //Name of the current function being parsed
     bool mainIsDefined;                   //Main function has been seen
     bool insideFunction;                  //Used to make sure a function is not declared inside another function
     bool writtenMainJump;                 //Used to record if the first time call 'jump main' has been set
@@ -52,7 +56,6 @@ typedef struct ProgramFlowMetadata {
 //Use these directly
 StringHashmap functionMetadata;           //Hashmap of func name to metadata - add to it as functions are defined
 ProgramFlowMetadata programFlowMetadata;  //Metadata for program progression
-Stack currentFunctionStack;               //Stack of the currently used functions - used to trace the frame
 
 /*
 
@@ -139,11 +142,7 @@ pop A
  * 
  */
 bool parser_initialise(void) {
-
-    if(stack_initialise(&currentFunctionStack, sizeof(FunctionMetadata)) == false) {
-        return false;
-    }
-    
+ 
     if(string_hashmap_initialise(&functionMetadata, INITIAL_MAP_SIZE) == false) {
         return false;
     }
@@ -197,6 +196,53 @@ bool parse(Vector *tokens, FILE *IRFilePtr) {
 
             //TODO: DO a bunch of strcmps with a #defines of fn, while, for, etc. Enum of tokens is useless
             //For each if,elif call a corrosponding function
+
+            //Make sure tokens length is greater than or equal to 1
+
+            if(vector_get_length(tokens) < 1) {
+                printf("Parser expected more than one token in stream\n");
+                return false;
+            }
+
+
+            Token *currentToken = vector_get_index(tokens, 0);
+
+
+
+            //Curley brace
+            if(currentToken->Token == CLOSE_CURLEY) {
+
+                //Try pop of if statement stack
+
+
+
+                
+
+
+
+
+
+
+
+
+                //Otherwise end last function
+                if(programFlowMetadata.insideFunction == true) {
+                    programFlowMetadata.insideFunction = false;
+                } else {
+
+                    if(vector_get_length(tokens) > 1) {
+                        //Move to next token
+                        currentToken = vector_get_index(tokens, 1);
+                    } else {
+                        return true;
+                    }
+                }
+
+            }
+
+
+
+
 
         }
     }
