@@ -49,6 +49,42 @@ ProgramMetadata programMetadata;             //Struct holding basic data for the
 size_t globalLabelCounter = 0;               //Global label counter
 FILE *globalIRFileOutput = NULL;                   //Pointer to an open file pointer
 
+
+
+
+
+
+
+//Parse an array of tokens that is a function declaration
+bool parse_function_declaration(Vector *tokens) {
+
+    if(vector_get_length(tokens) < 3) {
+        printf("Function declaration expects more than 3 tokens\n");
+        return false;
+    }
+    
+    //Continue here
+
+    
+
+
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //If the first token is a { or }, handle it accordingly, otherwise return false - return -1 to indicate syntax error, 0 to indicate braces parsed and 1 to indicate no braces parsed
 ERROR_CODES handle_first_brace(Vector *tokens) {
 
@@ -89,6 +125,7 @@ ERROR_CODES handle_first_brace(Vector *tokens) {
                 printf("Expected a function declaration\n");
                 return _GENERIC_FAILURE_;
             }
+            programMetadata.expectingFirstTokenAsOpenbrace = false;
 
         } else if(firstTokenInTokens->Token == CLOSE_CURLEY) {
 
@@ -145,15 +182,15 @@ ERROR_CODES handle_first_brace(Vector *tokens) {
                     return _GENERIC_FAILURE_;
                 }
 
-                return _SUCCESS_;
-            }
 
+            }
+            programMetadata.expectingFirstTokenAsClosebrace = false;
 
         } else {
             return _NEUTRAL_; 
         }
+        return _SUCCESS_;
 
-        return _GENERIC_FAILURE_;
     }
 
 
@@ -223,6 +260,9 @@ bool parse(Vector *tokens, FILE *irFile) {
 
 
     Token *firstTokenOfInterest = NULL;
+
+
+    //Handle braces
     ERROR_CODES handleFirstBraceReturn = handle_first_brace(tokens);
     if(handleFirstBraceReturn == _SUCCESS_) { //Could use T/F directly but dont want to rely on that
 
@@ -234,17 +274,33 @@ bool parse(Vector *tokens, FILE *irFile) {
         firstTokenOfInterest = (Token*)vector_get_index(tokens, 1);
 
     } else if(handleFirstBraceReturn == _NEUTRAL_) {
+
+
+        if(programMetadata.expectingFirstTokenAsOpenbrace == false) {
+            printf("Expected a '{'\n");
+            return false;
+        }
+
+
         firstTokenOfInterest = (Token*)vector_get_index(tokens, 0);
     } else { //Syntax error encountered
         return false;
     }
 
+
+    //Handle any previous jumps that should have occured
     if(write_if_elif_jumps(firstTokenOfInterest) == false) {
         return false;
     }
 
     
+    if(firstTokenOfInterest->Token == FUNC_DECL) {
 
+        //Declare a function
+        if(parse_function_declaration(tokens) == false) {
+            return false;
+        }
+    }
 
 
 
