@@ -21,7 +21,8 @@
 #define INITIAL_MAP_SIZE 100
 
 
-
+bool parser_initialise_structures(FILE *irFile);
+bool parse(Vector *tokens);
 
 
 #endif // PARSE_H
