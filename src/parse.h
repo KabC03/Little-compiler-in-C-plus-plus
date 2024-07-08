@@ -17,6 +17,7 @@
 #include "compiler data.h"
 #include "tokenise.h"
 #include "IR grammer.h"
+#include "error codes.h"
 #define INITIAL_MAP_SIZE 100
 
 
