@@ -131,7 +131,7 @@ bool stack_push(Stack *const stack, const void *const data) {
  * Return: void* - pointer to result
  * 
  */
-const void* stack_peak(Stack *const stack) {
+void* stack_peak(Stack *const stack) {
 
     if(stack == NULL) {
         return NULL;
@@ -158,13 +158,13 @@ const void* stack_peak(Stack *const stack) {
  * Brief: Pop an item onto the stack
  * 
  * Param: *stack - stack of interest
- *        *result - output pointer of where the result should be stored
+ *        *result - output pointer of where the result should be stored, if NULL no data will be stored there
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
 bool stack_pop(Stack *const stack, void *result) {
 
-    if(stack == NULL || result == NULL) {
+    if(stack == NULL) {
         return false;
     } else {
 
@@ -174,7 +174,10 @@ bool stack_pop(Stack *const stack, void *result) {
 
 
         } else {
-            memcpy(result, stack->head->data, stack->datatypeSize);
+
+            if(result != NULL) {
+                memcpy(result, stack->head->data, stack->datatypeSize);
+            }
 
             Node *freePtr = stack->head;
             free(stack->head->data);
