@@ -1,6 +1,17 @@
 #include "parse.h"
 
 
+typedef struct ProgramMetadata {
+
+    bool mainIsDefined;
+    bool expectingFirstTokenAsOpenbrace;     //Expect the first token on next line to be a {
+    bool expectingFirstTokenAsClosebrace;    //Expect the first token on next line to be a }
+
+} ProgramMetadata;
+
+
+
+
 typedef struct FunctionMetadata {
 
     DynamicString functionName;              //Name of the function (same as the key)
@@ -27,8 +38,8 @@ typedef struct VariableMetadata {
 
 
 StringHashmap functionNameToMetadata;        //Hashmap of all known functions that are defined -> function metadata
-functionMetadata *currentFunctionProccessed; //Pointer to the current function being processed
-
+functionMetadata *currentFunctionProccessed; //Pointer to the current function being processed (NULL if no function)
+ProgramMetadata programMetadata;             //Struct holding basic data for the entire program
 
 /**
  * parse 
@@ -59,7 +70,6 @@ bool parse(Vector *tokens, FILE *irFile) {
 
     return true;
 }
-
 
 
 
