@@ -21,7 +21,7 @@
 #define IR_JUMP_LESS "JLT"
 #define IR_JUMP_GREATER_EQUAL "JGE "
 #define IR_JUMP_LESS_EQUAL "JLE "
-
+#define IR_JUMP_UNCONDITIONAL "JUM"
 
 //Stack - Format: STK_STR A1 offset_base_ptr 
 #define IR_STACK_STORE "STK_STR "
@@ -30,7 +30,7 @@
 #define IR_STACK_FREE "STK_FREE" //Opposite of reserving space on the stack STK numOfReg
 
 //Labels
-#define IR_LABEL_END "LABEL: " 
+#define IR_LABEL "LABEL: " 
 
 //Functions (push PC onto stack)
 #define IR_JUMP_AND_LINK "JAL " //JAL label
