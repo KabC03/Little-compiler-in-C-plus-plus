@@ -1,11 +1,13 @@
 #include "parse.h"
 
-
 typedef struct ProgramMetadata {
 
-    bool mainIsDefined;
+    bool mainIsDefined;                      //If main is defined
     bool expectingFirstTokenAsOpenbrace;     //Expect the first token on next line to be a {
     bool expectingFirstTokenAsClosebrace;    //Expect the first token on next line to be a }
+    bool currentlyInsideFunction;            //If currently parsing a function
+
+    bool requestJumpLabel;                   //Flag set to true if a jump label should be placed immedietly from the conditionalJumpMetadata
 
 } ProgramMetadata;
 
@@ -18,19 +20,20 @@ typedef struct FunctionMetadata {
     Stack conditionalJumpMetadata;           //A stack of all conditional jump data
     StringHashmap variableMetadata;          //Hashmap of variable name -> variable metadata 
 
-} functionMetadata;
+} FunctionMetadata;
 typedef struct ConditionalJumpMetadata {
 
-    Token statementType;                     //Type of statement (while, for, if, etc)
-    DynamicString labelIfSkipped;            //Label to exit the statement beq R1 R2 label <- this label
-    DynamicString labelIfRun;                //Label to go to if the statement is run j label <- this label
-    DynamicString loopLabel;                 //Label to loop back to the start of the statement
+    TOKEN_TYPE statementType;                //Type of statement (while, for, if, etc)
+    size_t labelSkipStatement;               //Label to exit the statement beq R1 R2 label <- this label
+    size_t labelEndOfStatement;              //Label to go to if the statement is run j label <- this label
+    size_t labelStartOfStatement;            //Label to loop back to the start of the statement
+    bool curleyBraceWasOpened;               //If a { appears
 
 } ConditionalJumpMetadata;
 typedef struct VariableMetadata {
 
     DynamicString variableName;              //Name of the variable (same as key)
-    Token type;                              //Type of the variable (char, float, int)
+    TOKEN_TYPE type;                         //Type of the variable (char, float, int)
     size_t indirectionLevel;                 //Pointer indirection level
     size_t offsetFromBasePtr;                //How far the variable is stored from the base pointer of the current frame + 1 (account for return address)
 
@@ -38,8 +41,111 @@ typedef struct VariableMetadata {
 
 
 StringHashmap functionNameToMetadata;        //Hashmap of all known functions that are defined -> function metadata
-functionMetadata *currentFunctionProccessed; //Pointer to the current function being processed (NULL if no function)
+FunctionMetadata *currentFunctionProccessed; //Pointer to the current function being processed (NULL if no function)
 ProgramMetadata programMetadata;             //Struct holding basic data for the entire program
+size_t globalLabelCounter = 0;               //Global label counter
+FILE *globalIRFileOutput = NULL;                   //Pointer to an open file pointer
+
+//If the first token is a { or }, handle it accordingly, otherwise return false
+bool handle_first_brace(Vector *tokens) {
+
+    if(tokens == NULL) {
+        return false;
+    } else {
+
+        const Token *firstTokenInTokens = (Token*)vector_get_index(tokens, 0);
+
+
+
+
+        if(firstTokenInTokens->Token == OPEN_CURLEY) {
+
+            if(programMetadata.currentlyInsideFunction == true) {
+
+
+                //Make sure a if statement was actually declared
+                if(stack_length(&(currentFunctionProccessed->conditionalJumpMetadata)) == 0) {
+                    printf("Expected a jump statement declaration\n");
+                    return false;
+                }
+
+                ConditionalJumpMetadata *currentJumpMetadata = stack_peak(&(currentFunctionProccessed->conditionalJumpMetadata));
+                if(currentJumpMetadata->curleyBraceWasOpened == true) {
+
+                    //If a brace was already opened previously
+                    printf("Unexpected additional '{' encounteded\n");
+                    return false;
+                    
+                } else {
+                    //Mark the brace as opened - note compiler will only notice brace not closed at next if block
+                    currentJumpMetadata->curleyBraceWasOpened = true;
+                }
+
+
+            } else {
+                printf("Expected a function declaration\n");
+            }
+
+        } else if(firstTokenInTokens->Token == CLOSE_CURLEY) {
+
+            
+            //Make sure a if statement was actually declared
+            if(stack_length(&(currentFunctionProccessed->conditionalJumpMetadata)) == 0) {
+                printf("Expected a jump statement declaration\n");
+            }
+
+            ConditionalJumpMetadata *currentJumpMetadata = stack_peak(&(currentFunctionProccessed->conditionalJumpMetadata));
+            if(currentJumpMetadata->curleyBraceWasOpened == false) {
+
+                //Make sure that the statement was opened with a '{'
+                printf("Expected a '{'\n");
+                return false;
+                
+            } else {
+                //Depending on statement type may need to do a variety of things
+                //For loop -> increment i and then jump to start label
+                //While loop -> jump to start label
+                //If statement -> Write a jump over the next elif and else 
+
+                if(currentJumpMetadata->statementType == COND_IF 
+                || currentJumpMetadata->statementType == COND_ELIF) {
+
+                    //If the next token is not an elif then write the jump label
+                    programMetadata.requestJumpLabel = true;
+                
+                } else if(currentJumpMetadata->statementType == COND_ELSE) {
+
+                    //Can write jump label
+                    size_t labelToJumpTo = currentJumpMetadata->labelEndOfStatement;
+                    fprintf(globalIRFileOutput, "    %s %zu\n", IR_LABEL_END, labelToJumpTo);
+                    //Write the label to jump to
+                } else if(currentJumpMetadata->statementType == COND_FOR) {
+
+                } else if(currentJumpMetadata->statementType == COND_FOR) {
+                    
+                } else {
+                    printf()
+
+                }
+
+
+            }
+
+
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    return false;
+}
+
+
+
+
 
 /**
  * parse 
@@ -57,9 +163,32 @@ bool parse(Vector *tokens, FILE *irFile) {
     if(tokens == NULL || irFile == NULL) {
         return false;
     }
+    globalIRFileOutput = irFile;
+
+    size_t sizeOfInputTokens = vector_get_size(tokens);
+
+    if(sizeOfInputTokens == 0) {
+        
+        printf("Parser error: Expected token to contain more than zero items\n");
+        return false;
+    }
 
 
+    Token *firstTokenOfInterest = NULL;
+    if(handle_first_brace(tokens) == true) { //Could use T/F directly but dont want to rely on that
 
+        if(sizeOfInputTokens == 1) {
+            return true; //Exit early - this indicates a free { or } was encountered
+        }
+
+        //Otherwise set the token of interest to the one afterwards
+        firstTokenOfInterest = (Token*)vector_get_index(tokens, 1);
+
+    } else {
+        firstTokenOfInterest = (Token*)vector_get_index(tokens, 0);
+    }
+
+    
 
     
 
