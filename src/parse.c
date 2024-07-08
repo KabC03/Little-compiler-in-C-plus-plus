@@ -28,6 +28,7 @@ typedef struct ConditionalJumpMetadata {
     size_t labelEndOfStatement;              //Label to go to if the statement is run j label <- this label (while)
     size_t labelStartOfStatement;            //Label to loop back to the start of the statement
     bool curleyBraceWasOpened;               //If a { appears
+    bool elifOrElseWasEncountered;           //If an elif or else was encountered (used to avoid placing unnesesary jumps)
     //NOTE: For loops no longer supported
 
 
@@ -98,6 +99,13 @@ int handle_first_brace(Vector *tokens) {
             }
 
             ConditionalJumpMetadata *currentJumpMetadata = stack_peak(&(currentFunctionProccessed->conditionalJumpMetadata));
+
+            if(currentJumpMetadata == NULL)  {
+                printf("Unexpectedly not able to get stack data\n");
+                return -1;
+            }
+
+
             if(currentJumpMetadata->curleyBraceWasOpened == false) {
 
                 //Make sure that the statement was opened with a '{'
@@ -151,8 +159,39 @@ int handle_first_brace(Vector *tokens) {
     return -1;
 }
 
+//Write conditional jumps for if, elif depending on if flag is set
+bool write_if_elif_jumps(Token *token) {
 
+    if(token->Token == COND_ELIF) {
+        return true; //Do nothing
+    } else {
 
+        //Write the jump address
+        ConditionalJumpMetadata *currentJumpMetadata = stack_peak(&(currentFunctionProccessed->conditionalJumpMetadata));
+        if(currentJumpMetadata == NULL)  {
+            printf("Unexpectedly not able to get stack data\n");
+            return false;
+        }
+        if(currentJumpMetadata->elifOrElseWasEncountered == false) {
+
+            //Dont do anything - unessesary jump
+        } else {
+
+            size_t labelToJumpTo = currentJumpMetadata->labelEndOfStatement;
+            fprintf(globalIRFileOutput, "    %s %zu\n", IR_LABEL, labelToJumpTo);
+            
+        }
+
+        //Pop the statement off the stack
+        void *ptr = NULL; //Pass a NULL ptr to indicate pop value should not be returned
+        if(stack_pop(&(currentFunctionProccessed->conditionalJumpMetadata), ptr) == false) {
+            printf("Was not able to pop off stack unexpectedly\n");
+            return false;
+        }
+    }
+
+    return false;
+}
 
 
 /**
@@ -195,11 +234,11 @@ bool parse(Vector *tokens, FILE *irFile) {
 
     } else if(handleFirstBraceReturn == 0) {
         firstTokenOfInterest = (Token*)vector_get_index(tokens, 0);
-    } else {
+    } else { //Syntax error encountered
         return false;
     }
 
-    
+    write_if_elif_jumps(firstTokenOfInterest);
 
     
 
