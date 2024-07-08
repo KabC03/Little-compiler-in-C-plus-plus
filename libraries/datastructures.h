@@ -80,7 +80,7 @@ typedef struct PriorityQueue {
 bool stack_initialise(Stack *const stack, size_t dataSize);
 size_t stack_length(Stack *const stack);
 bool stack_push(Stack *const stack, const void *const data);
-const void* stack_peak(Stack *const stack);
+void* stack_peak(Stack *const stack);
 bool stack_pop(Stack *const stack, void *result);
 
 bool LL_print(LinkedList *const linkedList);
