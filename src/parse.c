@@ -197,6 +197,7 @@ ERROR_CODES handle_first_brace(Vector *tokens) {
     return _GENERIC_FAILURE_;
 }
 
+
 //Write conditional jumps for if, elif depending on if flag is set
 bool write_if_elif_jumps(Token *token) {
 
@@ -232,23 +233,58 @@ bool write_if_elif_jumps(Token *token) {
 }
 
 
+
+/**
+ * parser_initialise_structures 
+ * ===============================================
+ * Brief: Initialises the parsers structures before use 
+ * 
+ * Param: *irFile - Output text file for IR (Open file pointer)
+ * 
+ * Return: bool - T/F depending on if addition was successful
+ * 
+ */
+bool parser_initialise_structures(FILE *irFile) {
+
+
+
+    if(string_hashmap_initialise(&(functionNameToMetadata), INITIAL_MAP_SIZE) == false) {
+        printf("Failed to initialise parser hashmap\n");
+        return false;
+    }
+    currentFunctionProccessed = NULL;
+    programMetadata.currentlyInsideFunction = false;
+    programMetadata.expectingFirstTokenAsClosebrace = false;
+    programMetadata.expectingFirstTokenAsOpenbrace = false;
+    programMetadata.mainIsDefined = false;
+    programMetadata.requestJumpLabel = false;
+    globalLabelCounter = 0;
+    globalIRFileOutput = irFile;
+
+
+
+    return true;
+}
+
+
+
+
 /**
  * parse 
  * ===============================================
  * Brief: parses a line of code, outputs lines of IR 
  * 
  * Param: *tokens - Input token array 
- *        *irFile - Output text file for IR (Open file pointer)
  * 
  * Return: bool - T/F depending on if addition was successful
  * 
  */
-bool parse(Vector *tokens, FILE *irFile) {
+bool parse(Vector *tokens) {
 
-    if(tokens == NULL || irFile == NULL) {
+    if(tokens == NULL) {
         return false;
     }
-    globalIRFileOutput = irFile;
+
 
     size_t sizeOfInputTokens = vector_get_size(tokens);
 
