@@ -23,11 +23,13 @@ typedef struct FunctionMetadata {
 } FunctionMetadata;
 typedef struct ConditionalJumpMetadata {
 
-    TOKEN_TYPE statementType;                //Type of statement (while, for, if, etc)
+    TOKEN_TYPE statementType;                //Type of statement (while, if, etc)
     size_t labelSkipStatement;               //Label to exit the statement beq R1 R2 label <- this label
-    size_t labelEndOfStatement;              //Label to go to if the statement is run j label <- this label
+    size_t labelEndOfStatement;              //Label to go to if the statement is run j label <- this label (while)
     size_t labelStartOfStatement;            //Label to loop back to the start of the statement
     bool curleyBraceWasOpened;               //If a { appears
+    //NOTE: For loops no longer supported
+
 
 } ConditionalJumpMetadata;
 typedef struct VariableMetadata {
@@ -46,11 +48,11 @@ ProgramMetadata programMetadata;             //Struct holding basic data for the
 size_t globalLabelCounter = 0;               //Global label counter
 FILE *globalIRFileOutput = NULL;                   //Pointer to an open file pointer
 
-//If the first token is a { or }, handle it accordingly, otherwise return false
-bool handle_first_brace(Vector *tokens) {
+//If the first token is a { or }, handle it accordingly, otherwise return false - return -1 to indicate syntax error, 0 to indicate braces parsed and 1 to indicate no braces parsed
+int handle_first_brace(Vector *tokens) {
 
     if(tokens == NULL) {
-        return false;
+        return -1;
     } else {
 
         const Token *firstTokenInTokens = (Token*)vector_get_index(tokens, 0);
@@ -66,7 +68,7 @@ bool handle_first_brace(Vector *tokens) {
                 //Make sure a if statement was actually declared
                 if(stack_length(&(currentFunctionProccessed->conditionalJumpMetadata)) == 0) {
                     printf("Expected a jump statement declaration\n");
-                    return false;
+                    return -1;
                 }
 
                 ConditionalJumpMetadata *currentJumpMetadata = stack_peak(&(currentFunctionProccessed->conditionalJumpMetadata));
@@ -74,7 +76,7 @@ bool handle_first_brace(Vector *tokens) {
 
                     //If a brace was already opened previously
                     printf("Unexpected additional '{' encounteded\n");
-                    return false;
+                    return -1;
                     
                 } else {
                     //Mark the brace as opened - note compiler will only notice brace not closed at next if block
@@ -84,6 +86,7 @@ bool handle_first_brace(Vector *tokens) {
 
             } else {
                 printf("Expected a function declaration\n");
+                return -1;
             }
 
         } else if(firstTokenInTokens->Token == CLOSE_CURLEY) {
@@ -99,11 +102,10 @@ bool handle_first_brace(Vector *tokens) {
 
                 //Make sure that the statement was opened with a '{'
                 printf("Expected a '{'\n");
-                return false;
+                return -1;
                 
             } else {
                 //Depending on statement type may need to do a variety of things
-                //For loop -> increment i and then jump to start label
                 //While loop -> jump to start label
                 //If statement -> Write a jump over the next elif and else 
 
@@ -117,15 +119,21 @@ bool handle_first_brace(Vector *tokens) {
 
                     //Can write jump label
                     size_t labelToJumpTo = currentJumpMetadata->labelEndOfStatement;
-                    fprintf(globalIRFileOutput, "    %s %zu\n", IR_LABEL_END, labelToJumpTo);
+                    fprintf(globalIRFileOutput, "    %s %zu\n", IR_LABEL, labelToJumpTo);
                     //Write the label to jump to
-                } else if(currentJumpMetadata->statementType == COND_FOR) {
 
-                } else if(currentJumpMetadata->statementType == COND_FOR) {
-                    
+                } else if(currentJumpMetadata->statementType == COND_WHILE) {
+
+                    size_t restartLoopLabel = currentJumpMetadata->labelStartOfStatement;
+                    size_t jumpOutOfLoopLabel = currentJumpMetadata->labelEndOfStatement;
+
+                    fprintf(globalIRFileOutput, "    %s %zu\n", IR_JUMP_UNCONDITIONAL, restartLoopLabel);
+                    fprintf(globalIRFileOutput, "    %s %zu\n", IR_LABEL, jumpOutOfLoopLabel);
+
+                    //Write jump back to start and label to quite white loop
                 } else {
-                    printf()
-
+                    printf("Expected conditional statement\n");
+                    return -1;
                 }
 
 
@@ -133,14 +141,14 @@ bool handle_first_brace(Vector *tokens) {
 
 
         } else {
-            return false;
+            return 1;
         }
 
-        return true;
+        return 0;
     }
 
 
-    return false;
+    return -1;
 }
 
 
@@ -175,7 +183,8 @@ bool parse(Vector *tokens, FILE *irFile) {
 
 
     Token *firstTokenOfInterest = NULL;
-    if(handle_first_brace(tokens) == true) { //Could use T/F directly but dont want to rely on that
+    int handleFirstBraceReturn = handle_first_brace(tokens);
+    if(handleFirstBraceReturn == 1) { //Could use T/F directly but dont want to rely on that
 
         if(sizeOfInputTokens == 1) {
             return true; //Exit early - this indicates a free { or } was encountered
@@ -184,8 +193,10 @@ bool parse(Vector *tokens, FILE *irFile) {
         //Otherwise set the token of interest to the one afterwards
         firstTokenOfInterest = (Token*)vector_get_index(tokens, 1);
 
-    } else {
+    } else if(handleFirstBraceReturn == 0) {
         firstTokenOfInterest = (Token*)vector_get_index(tokens, 0);
+    } else {
+        return false;
     }
 
     
