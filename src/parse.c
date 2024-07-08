@@ -50,10 +50,10 @@ size_t globalLabelCounter = 0;               //Global label counter
 FILE *globalIRFileOutput = NULL;                   //Pointer to an open file pointer
 
 //If the first token is a { or }, handle it accordingly, otherwise return false - return -1 to indicate syntax error, 0 to indicate braces parsed and 1 to indicate no braces parsed
-int handle_first_brace(Vector *tokens) {
+ERROR_CODES handle_first_brace(Vector *tokens) {
 
     if(tokens == NULL) {
-        return -1;
+        return _NULL_PTR_PASS_;
     } else {
 
         const Token *firstTokenInTokens = (Token*)vector_get_index(tokens, 0);
@@ -69,7 +69,7 @@ int handle_first_brace(Vector *tokens) {
                 //Make sure a if statement was actually declared
                 if(stack_length(&(currentFunctionProccessed->conditionalJumpMetadata)) == 0) {
                     printf("Expected a jump statement declaration\n");
-                    return -1;
+                    return _GENERIC_FAILURE_;
                 }
 
                 ConditionalJumpMetadata *currentJumpMetadata = stack_peak(&(currentFunctionProccessed->conditionalJumpMetadata));
@@ -77,7 +77,7 @@ int handle_first_brace(Vector *tokens) {
 
                     //If a brace was already opened previously
                     printf("Unexpected additional '{' encounteded\n");
-                    return -1;
+                    return _GENERIC_FAILURE_;
                     
                 } else {
                     //Mark the brace as opened - note compiler will only notice brace not closed at next if block
@@ -87,7 +87,7 @@ int handle_first_brace(Vector *tokens) {
 
             } else {
                 printf("Expected a function declaration\n");
-                return -1;
+                return _GENERIC_FAILURE_;
             }
 
         } else if(firstTokenInTokens->Token == CLOSE_CURLEY) {
@@ -96,13 +96,14 @@ int handle_first_brace(Vector *tokens) {
             //Make sure a if statement was actually declared
             if(stack_length(&(currentFunctionProccessed->conditionalJumpMetadata)) == 0) {
                 printf("Expected a jump statement declaration\n");
+                return _GENERIC_FAILURE_;
             }
 
             ConditionalJumpMetadata *currentJumpMetadata = stack_peak(&(currentFunctionProccessed->conditionalJumpMetadata));
 
             if(currentJumpMetadata == NULL)  {
                 printf("Unexpectedly not able to get stack data\n");
-                return -1;
+                return _GENERIC_FAILURE_;
             }
 
 
@@ -110,7 +111,7 @@ int handle_first_brace(Vector *tokens) {
 
                 //Make sure that the statement was opened with a '{'
                 printf("Expected a '{'\n");
-                return -1;
+                return _GENERIC_FAILURE_;
                 
             } else {
                 //Depending on statement type may need to do a variety of things
@@ -141,22 +142,22 @@ int handle_first_brace(Vector *tokens) {
                     //Write jump back to start and label to quite white loop
                 } else {
                     printf("Expected conditional statement\n");
-                    return -1;
+                    return _GENERIC_FAILURE_;
                 }
 
-
+                return _SUCCESS_;
             }
 
 
         } else {
-            return 1;
+            return _NEUTRAL_; 
         }
 
-        return 0;
+        return _GENERIC_FAILURE_;
     }
 
 
-    return -1;
+    return _GENERIC_FAILURE_;
 }
 
 //Write conditional jumps for if, elif depending on if flag is set
@@ -222,8 +223,8 @@ bool parse(Vector *tokens, FILE *irFile) {
 
 
     Token *firstTokenOfInterest = NULL;
-    int handleFirstBraceReturn = handle_first_brace(tokens);
-    if(handleFirstBraceReturn == 1) { //Could use T/F directly but dont want to rely on that
+    ERROR_CODES handleFirstBraceReturn = handle_first_brace(tokens);
+    if(handleFirstBraceReturn == _SUCCESS_) { //Could use T/F directly but dont want to rely on that
 
         if(sizeOfInputTokens == 1) {
             return true; //Exit early - this indicates a free { or } was encountered
@@ -232,13 +233,15 @@ bool parse(Vector *tokens, FILE *irFile) {
         //Otherwise set the token of interest to the one afterwards
         firstTokenOfInterest = (Token*)vector_get_index(tokens, 1);
 
-    } else if(handleFirstBraceReturn == 0) {
+    } else if(handleFirstBraceReturn == _NEUTRAL_) {
         firstTokenOfInterest = (Token*)vector_get_index(tokens, 0);
     } else { //Syntax error encountered
         return false;
     }
 
-    write_if_elif_jumps(firstTokenOfInterest);
+    if(write_if_elif_jumps(firstTokenOfInterest) == false) {
+        return false;
+    }
 
     
 
