@@ -241,7 +241,14 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
         }
 
 
-        char charFromSrcFile = '0';
+        char charFromSrcFile = fgetc(srcFilePtr); //have to do this here because this needs to be one char behind nextCharFromSrcFile
+        if(charFromSrcFile == EOF) {
+            if(fclose(srcFilePtr) != 0) {
+                return _FAILED_TO_CLOSE_FILE_;
+            }
+            return _SUCCESS_;
+        }
+        
         char nextCharFromSrcFile = '0';
         for(size_t i = 0; i < MAX_TOKEN_LENGTH; i++) {
 
@@ -249,10 +256,11 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
                 break;
             }
 
-            charFromSrcFile = fgetc(srcFilePtr);
             nextCharFromSrcFile = fgetc(srcFilePtr);
 
+
             if(isspace(charFromSrcFile) != 0) { //Skip whitespace
+                charFromSrcFile = nextCharFromSrcFile;
                 continue;
             }
 
