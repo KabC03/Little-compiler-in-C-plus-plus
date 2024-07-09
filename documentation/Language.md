@@ -46,7 +46,7 @@
 |]|Dereference operator (right)|
 |(|Parenthesis|
 |)|Parenthesis|
-|>|Angle bracket bracket|
+|>|Angle bracket|
 |<|Angle bracket|
 |//|Comment|
 
