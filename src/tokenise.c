@@ -191,7 +191,7 @@ bool internal_is_complete_token(char nextChar) {
         return true;
 
 
-    } else if(internal_is_symbol(nextChar) == true) {
+    } else if(internal_is_symbol(nextChar) == true || internal_is_lone_token(nextChar) == true) {
         //User strings (varable names, functions, etc) must be followed by a symbol to be complete
         
         return true;
@@ -288,7 +288,8 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             charFromSrcFile = nextCharFromSrcFile;
             i = -1; //Set to -1 so it increments to 0 next loop
 
-            
+            printf("Token: %s\n",tempTokenBuffer);
+
             //DO HASHING HERE
 
             if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
