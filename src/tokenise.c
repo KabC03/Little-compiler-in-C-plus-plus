@@ -240,7 +240,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             return _FAILED_TO_OPEN_FILE_;
         }
 
-
+        Token currentToken;
         char charFromSrcFile = fgetc(srcFilePtr); //have to do this here because this needs to be one char behind nextCharFromSrcFile
         if(charFromSrcFile == EOF) {
             if(fclose(srcFilePtr) != 0) {
@@ -272,6 +272,10 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             //Update the metadata based on the type of character present
             if(internal_catagorise_character(charFromSrcFile) == false) {
                 printf("Unexpected character: '%c' with ASCII '%d'\n", charFromSrcFile, (unsigned char)(charFromSrcFile));
+
+                if(fclose(srcFilePtr) != 0) {
+                    return _FAILED_TO_CLOSE_FILE_;
+                }
                 return _UNRECOGNISED_ARGUMENT_PASS_;
             }
 
@@ -284,12 +288,19 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
             //if the token is complete - should add a NULL terminator to the end for propper string handling
             tempTokenBuffer[i + 1] = '\0';
-
             charFromSrcFile = nextCharFromSrcFile;
+            i = 0;
 
 
-            //Continue here
+            //DO HASHING HERE
 
+            if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
+
+                if(fclose(srcFilePtr) != 0) {
+                    return _FAILED_TO_CLOSE_FILE_;
+                }
+                return _GENERIC_FAILURE_;
+            }
 
 
             //Reset the token metadata
