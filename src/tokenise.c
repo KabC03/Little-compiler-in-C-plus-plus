@@ -239,7 +239,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
         char charFromSrcFile = '0';
         char nextCharFromSrcFile = '0';
-        for(size_t i = 0, j = 0; ;i++, j++) {
+        for(size_t i = 0; i < MAX_TOKEN_LENGTH; i++) {
 
             if(charFromSrcFile == EOF) {
                 break;
@@ -251,6 +251,12 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             if(isspace(charFromSrcFile) != 0) { //Skip whitespace
                 continue;
             }
+
+
+            //Append the new character to the buffer
+            tempTokenBuffer[i] = charFromSrcFile;
+
+
             //Update the metadata based on the type of character present
             if(internal_catagorise_character(charFromSrcFile) == false) {
                 printf("Unrecognisd character: '%c'\n", charFromSrcFile);
@@ -263,6 +269,10 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
                 charFromSrcFile = nextCharFromSrcFile;
                 continue;
             }
+
+            //if the token is complete - should add a NULL terminator to the end for propper string handling
+            tempTokenBuffer[i + 1] = '\0';
+
             charFromSrcFile = nextCharFromSrcFile;
 
 
