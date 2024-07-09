@@ -154,6 +154,8 @@ def write_c_file():
         if len(token) > maxTokenSize:
             maxTokenSize = len(token);
 
+    maxTokenSize += 1; #Make space for NULL terminator
+
     try:
         with open(cFile, 'w') as file:
             file.write("#include " + "\"" + str(hFile) + "\"\n\n\n");
