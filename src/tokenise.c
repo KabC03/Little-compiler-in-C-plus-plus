@@ -263,7 +263,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
             //Update the metadata based on the type of character present
             if(internal_catagorise_character(charFromSrcFile) == false) {
-                printf("Unexpected character: '%c'\n", charFromSrcFile);
+                printf("Unexpected character: '%c' with ASCII '%d'\n", charFromSrcFile, (unsigned char)(charFromSrcFile));
                 return _UNRECOGNISED_ARGUMENT_PASS_;
             }
 
