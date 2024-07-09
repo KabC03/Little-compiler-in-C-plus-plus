@@ -5,18 +5,18 @@
 ## Keywords list
 
 
-|Keyword|
-|:-:|
-|int|
-|flt|
-|chr|
-|gto|
-|lbl|
-|fn|
-|ret|
-|allocate|
-|free|
-|sizeof|
+|Keyword|Purpose|
+|:-:|:-:|
+|int|Integer datatype|
+|flt|Float datatype|
+|chr|Char datatype|
+|gto|Goto statement|
+|lbl|Label declaration|
+|fn|Function declaration|
+|ret|Return statement|
+|allocate|Dynamic memory allocation|
+|free|Free dynamic memory|
+|sizeof|Datatype size at compile-time|
 
 
 
