@@ -1,103 +1,216 @@
-//10, Jul, 24
-#include "tokenise.h"
+# 10, Jul, 24
+# This file generates the compiler data.h and compiler data.c files
+import sys
 
 
-
-typedef struct CurrentTokenMetadata {
-
-    bool containsLoneTokens; //Braces, commas, dots, etc
-    bool containsSymbols;    //Arithmatic operators
-    bool containsNumbers;    //Contains 0-9
-    bool containsLetters;    //Contains ASCII characters
-
-} CurrentTokenMetadata;
-CurrentTokenMetadata currentTokenMetadata; //Global since many functions will need to access this
-StringHashmap tokeniserValidTokenHashmap;
+#Print a newline every newLineConstant lines in the .c and .h files
+newLineConstant = 5;
 
 
+defineNameNumberOfTokens = "NUMBER_OF_TOKENS";
+defineNameMaxTokenLength = "MAX_TOKEN_LENGTH";
+tokenStruct = """
+
+typedef struct Token {
+
+    VALID_TOKEN_ENUM tokenEnum;
+
+    //Immediates and variables
+    union {
+        char *userString;       //User string (func name, variable, etc - parser must determine based on context)
+
+        char charImmediate;     //Used if immediate char 'f'
+        int intImmediate;       //Used for immediate int '3'
+        float floatImmediate;   //Used for immediate float '3.32'
+    };
+
+} Token;
+""";
 
 
+hFile = "./compiler data.h";
+cFile = "./compiler data.c";
+headerGuardName = "COMPILE_H";
+
+#Tokens to append to the files
+tokens = {
+
+    #Internal types
+    "usr_str" : "USER_STRING", "invalid" : "INVALID_TOKEN",
+
+    #Datatypes
+    "int" : "TOK_INT", "flt" : "TOK_FLT", "chr" : "TOK_CHR", "@" : "TOK_PTR",
+
+    #Operators
+    "+" : "TOK_ADD", "-" : "TOK_SUB", "*" : "TOK_MUL", "/" : "TOK_DIV","%%" : "TOK_MOD","||" : "TOK_OR", "&&" : "TOK_AND",
+    "==" : "TOK_EQUAL_TO", "!=" : "TOK_NOT_EQUAL_TO", ">=" : "TOK_GREATER_EQUAL_TO", "<=" : "TOK_LESS_EQUAL_TO", ">>" : "TOK_GREATER_TO", "<<" : "TOK_LESS_TO", 
 
 
+    #Control flow
+    "if" : "TOK_IF", "gto" : "TOK_GTO", "lbl" : "TOK_LBL",
 
+    #Functions
+    "fn" : "TOK_FN", "ret" : "TOK_RET",
 
+    #Inbuilt functions
+    "allocate" : "TOK_ALLOCATE", "free" : "TOK_FREE", "sizeof" : "TOK_SIZEOF",
 
+    #Organisation
+    "//" : "TOK_COMMENT",
 
+    #Misc
+    "<" : "TOK_OPEN_ANGLE", ">" : "TOK_CLOSE_ANGLE", "[" : "TOK_OPEN_SQUAER", "]" : "TOK_CLOSE_SQUARE", 
+    "(" : "TOK_OPEN_PAREN", ")" : "TOK_CLOSE_PAREN", "{" : "TOK_OPEN_CURLEY", "}" : "TOK_CLOSE_CURLEY", 
+    "," : "TOK_COMMA", "." : "TOK_DOT", ";" : "TOK_SEMICOLEN",
+};
 
-//Initialises tokeniser structures
-RETURN_CODE internal_tokeniser_initialiser(Vector *tokensOut) {
-
-    if(tokensOut == NULL) {
-        return _NULL_PTR_PASS_;
-    }
-
-
-    if(string_hashmap_initialise(&(tokeniserValidTokenHashmap), NUMBER_OF_TOKENS) == false) {
-        return _GENERIC_FAILURE_;
-    }
-
-    for(VALID_TOKEN_ENUM i = 0; i < NUMBER_OF_TOKENS; i++) {
-
-        if(string_hashmap_set(&(tokeniserValidTokenHashmap), (void*)(validTokens[i]), strlen(validTokens[i]) + 1, (void*)(&i), sizeof(VALID_TOKEN_ENUM)) == false) {
-            return _GENERIC_FAILURE_;
-        }
-
-    }
-    //string_hashmap_print(&tokeniserValidTokenHashmap);
-
-
-    if(vector_initialise(tokensOut, sizeof(Token)) == false) {
-        //TODO: Add string hashmap destroy function here 
-        return _GENERIC_FAILURE_;
-    }
-
-    return _SUCCESS_;
-}
-
-
-
-
-
-/**
- * tokenise 
- * ===============================================
- * Brief: Tokenises an input stream 
- * 
- * Param: *srcFilename - Source file name to be tokenised
- *        *tokensOut - Uninitialised output vector for tokens (points to a pre-allocated token array)
- * 
- * Return: RETURN_CODE - Indicating succes or type of failure 
- * 
- */
-RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
-
-    if(srcFilename == NULL || tokensOut == NULL) {
-        return _NULL_PTR_PASS_;
-    } else {
-
-        RETURN_CODE returnCode = internal_tokeniser_initialiser(tokensOut);
-        if(returnCode != _SUCCESS_) {
-            return returnCode;
-        }
-
-
-        FILE *srcFilePtr = fopen(srcFilename, "r");
-        if(srcFilePtr == NULL) {
-            return _FAILED_TO_OPEN_FILE;
-        }
+numberOfTokens = 0;
+maxTokenSize = 0;
 
 
 
 
-        if(fclose(srcFilePtr) != 0) {
-            return _FAILED_TO_CLOSE_FILE;
-        }
-    }
+librariesToInclude = [
+
+    "<stdlib.h>",
+    "<stdio.h>",
+    "<stdbool.h>",
+    "<string.h>",
+    "<stdint.h>",
+    "\"vector.h\"",
+    "\"datastructures.h\"",
+    "\"static hashmap.h\"",
+];
 
 
 
-    return _SUCCESS_;
-}
+#Write to the .h file
+def write_h_file():
+
+    try:
+        
+        with open(hFile, 'w') as file:
+        
+            #Write header guards
+            file.write("#ifndef " + str(headerGuardName) + "\n");
+            file.write("#define " + str(headerGuardName) + "\n\n\n");
+
+            #Define constants
+            file.write("#define " + str(defineNameNumberOfTokens) + " " + str(numberOfTokens) + "\n");
+            file.write("#define " + str(defineNameMaxTokenLength) + " " + str(maxTokenSize) + "\n\n\n");
+
+
+            #Include libraries
+            for library in librariesToInclude:
+                file.write("#include " + str(library) + "\n");
+
+            file.write("extern const char validTokens[" + str(defineNameNumberOfTokens) + "][" + str(defineNameMaxTokenLength) + "];\n" ) 
+
+            file.write("\n\ntypedef enum VALID_TOKEN_ENUM {\n");
+
+            counter = 0;
+            for value in tokens.values():
+
+                if counter % newLineConstant == 0:
+                    file.write("\n\n");
+
+                file.write("    " + str(value) + " = " + str(counter) + ",\n");
+                counter += 1;
+
+            file.write("\n\n} VALID_TOKEN_ENUM;\n");
+
+
+            file.write("\n\n" + str(tokenStruct) + "\n\n");
+
+
+
+
+            file.write("\n\n#endif //" + str(headerGuardName) + "\n\n");
+            file.write("//NOTE: Generated by python script\n\n\n\n");
+
+
+
+
+
+
+        return True; 
+    
+    
+    except:
+        return False;
+
+
+
+
+#Write to the .c file
+def write_c_file():
+
+    global numberOfTokens;
+    global maxTokenSize;
+
+    numberOfTokens = len(tokens);
+    maxTokenSize = 0;
+    for token in tokens:
+        if len(token) > maxTokenSize:
+            maxTokenSize = len(token);
+
+    try:
+        with open(cFile, 'w') as file:
+            file.write("#include " + "\"" + str(hFile) + "\"\n\n\n");
+
+
+            file.write("const char validTokens[" + str(defineNameNumberOfTokens) + "][" + str(defineNameMaxTokenLength) + "] = {\n");
+
+            counter = 0;
+            for key in tokens.keys():
+
+                if counter % newLineConstant == 0:
+                    file.write("\n\n\n\n    ");
+
+                file.write("\"" + key + "\",");
+            
+                counter += 1;
+
+            file.write("\n\n};\n\n");
+        
+            file.write("//NOTE: Generated by python script\n\n\n\n");
+        return True; 
+    
+    
+    except:
+        return False;
+
+
+
+#Main function
+def main():
+    
+    if(write_c_file() == False):
+        print("Failed to write data to .c file: " + str(cFile));
+        return -1;
+
+
+    if(write_h_file() == False):
+        print("Failed to write data to .c file: " + str(hFile));
+        return -2;
+
+
+    return 0;
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    sys.exit(main());
+
+
+
+
+
+
 
 
 
