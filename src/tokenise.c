@@ -131,13 +131,17 @@ bool internal_catagorise_character(char character) {
         //Digit encountered
         currentTokenMetadata.containsNumbers = true;
 
-    } else if(isascii(character) != 0) {
+    } else if(isalpha(character) != 0) {
         //Letter encountered
         currentTokenMetadata.containsLetters = true;
 
     } else if(internal_is_lone_token(character) == true) {
         //Is a lone token
-        currentTokenMetadata.numberOfDecimals++; 
+        currentTokenMetadata.containsLoneTokens = true;
+
+    } else if(character == DECIMAL_POINT) {
+        //Contains a decimal point
+        currentTokenMetadata.numberOfDecimals++;
 
     } else if(internal_is_symbol(character) == true) {
         //Is a symbol
@@ -174,7 +178,6 @@ bool internal_is_complete_token(char nextChar) {
     //If the character is a symbol then next token should not be a symbol or whitespace for the token to be complete
     //If the character is NOT a symbol then the next token should be a symbol or whitespace for the token to be complete
     //Whitespace for both cases is already filtered out in the above switch statement
-
 
 
     if(currentTokenMetadata.containsLoneTokens == true) {
@@ -284,8 +287,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             tempTokenBuffer[i + 1] = '\0';
             charFromSrcFile = nextCharFromSrcFile;
             i = 0;
-
-
+            printf("Complete token: %s\n",tempTokenBuffer);
             //DO HASHING HERE
 
             if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
