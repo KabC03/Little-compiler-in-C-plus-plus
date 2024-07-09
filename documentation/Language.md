@@ -5,11 +5,18 @@
 ## Keywords list
 
 
-|Keyword
-|:-:
-|
-|
-|
+|Keyword|
+|:-:|
+|int|
+|flt|
+|chr|
+|gto|
+|lbl|
+|fn|
+|ret|
+|allocate|
+|free|
+|sizeof|
 
 
 
