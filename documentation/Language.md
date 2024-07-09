@@ -22,7 +22,7 @@
 
 ## Symbols list
 
-|**Symbol**|**Purpose**|
+|**Symbol**|**Name**|
 |:-:|:-:|
 |+|Addition|
 |-|Subtraction|
@@ -53,7 +53,18 @@
 
 
 
+# ADD SYNTAX USAGE HERE
 
+e.g
+
+function declaration
+
+fn main(<int@@> x, <flt>y) {
+  //Something
+
+  
+  return y;
+}
 
 
 
