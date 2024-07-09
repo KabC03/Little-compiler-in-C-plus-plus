@@ -132,7 +132,7 @@ def write_c_file():
             for key in tokens.keys():
 
                 if counter % newLineConstant == 0:
-                    file.write("\n\n");
+                    file.write("\n\n\n\n    ");
 
                 file.write("\"" + key + "\",");
             
