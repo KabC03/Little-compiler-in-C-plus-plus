@@ -289,8 +289,12 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             i = -1; //Set to -1 so it increments to 0 next loop
 
             printf("Token: %s\n",tempTokenBuffer);
+            //Note: Tokeniser breaks with "for(int i = 0; i <10;i++);"
+
 
             //DO HASHING HERE
+
+
 
             if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
 
