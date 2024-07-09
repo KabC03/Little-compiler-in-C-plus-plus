@@ -1,6 +1,6 @@
 # 10, Jul, 24
 # This file generates the compiler data.h and compiler data.c files
-
+import sys
 
 
 #Print a newline every newLineConstant lines in the .c and .h files
@@ -200,7 +200,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main();
+    sys.exit(main());
 
 
 
