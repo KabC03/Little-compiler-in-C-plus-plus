@@ -11,7 +11,7 @@
 |flt|Float datatype|2 bytes|
 |chr|Char datatype|1 byte|
 |gto|Goto statement|None|
-|lbl|Label declaration|Labels cannot have the same name|
+|lbl|Label declaration|None|
 |fn|Function declaration|None|
 |ret|Return statement|None|
 |allocate|Dynamic memory allocation|None|
