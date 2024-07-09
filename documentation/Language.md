@@ -10,12 +10,12 @@
 |int|Integer datatype|2 bytes|
 |flt|Float datatype|2 bytes|
 |chr|Char datatype|1 byte|
-|gto|Goto statement|None|
-|lbl|Label declaration|None|
+|gto|Goto statement|Labels must be unique|
+|lbl:|Label declaration|None|
 |fn|Function declaration|None|
 |ret|Return statement|None|
-|allocate|Dynamic memory allocation|None|
-|free|Free dynamic memory|None|
+|allocate|Dynamic memory allocation|Not garbage collected|
+|free|Free dynamic memory|Double free is possible|
 |sizeof|Datatype size at compile-time|None|
 
 
