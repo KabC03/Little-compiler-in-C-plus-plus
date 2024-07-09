@@ -159,7 +159,7 @@ bool internal_catagorise_character(char character) {
 
 
     
-    return false;
+    return true;
 }
 
 
@@ -198,6 +198,10 @@ bool internal_is_complete_token(char nextChar) {
         //User strings (varable names, functions, etc) must be followed by a symbol to be complete
         
         return true;
+    } else {
+
+        //Token is not complete
+        return false;
     }
     
 
