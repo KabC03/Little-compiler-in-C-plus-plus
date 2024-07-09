@@ -1,5 +1,4 @@
-
-// Compiler data
+//10, Jul, 24
 
 #ifndef TOKENISE_H
 #define TOKENISE_H 
@@ -8,14 +7,12 @@
 #include "compiler data.h"
 #include "datastructures.h"
 #include "static hashmap.h"
-#include "dynamic hashmap.h"
+#include "string hashmap.h"
 #include "vector.h"
+#include "return codes.h"
 
 
-bool initialise_compiler_hashmaps(void);
-bool tokenise(char *line, Vector *const tokensOut);
-
-
+RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut);
  
 #endif // TOKENISE_H 
 
