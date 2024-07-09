@@ -163,6 +163,48 @@ bool internal_catagorise_character(char character) {
 }
 
 
+//Determines if a token can be considered complete or not based on metadata and the next char
+bool internal_is_complete_token(char nextChar) {
+
+    //EOL-type whitespace indicates the current token should end
+    switch (nextChar) {
+    case EOF:
+    case ' ':
+    case '\0':
+    case '\n':
+        return true; 
+    default:
+        break;
+    }
+
+    //If the character is a symbol then next token should not be a symbol or whitespace for the token to be complete
+    //If the character is NOT a symbol then the next token should be a symbol or whitespace for the token to be complete
+    //Whitespace for both cases is already filtered out in the above switch statement
+
+
+
+    if(currentTokenMetadata.containsLoneTokens == true) {
+        //Lone symbols ALWAYS are their own token - doesnt matter whats next
+    
+        return true;
+
+    } else if(currentTokenMetadata.containsSymbol == true && internal_is_symbol(nextChar) == false) {
+        //Regular symbols need to be followed by a non-symbol to be complete
+
+        return true;
+
+
+    } else if(internal_is_symbol(nextChar) == true) {
+        //User strings (varable names, functions, etc) must be followed by a symbol to be complete
+        
+        return true;
+    }
+    
+
+
+    return false;
+}
+
 
 
 
@@ -195,18 +237,20 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
         }
 
 
-        char charFromSrcFile = "\0";
+        char charFromSrcFile = '0';
+        char nextCharFromSrcFile = '0';
         for(size_t i = 0, j = 0; ;i++, j++) {
-            charFromSrcFile = fgetc(srcFilePtr);
+
             if(charFromSrcFile == EOF) {
                 break;
             }
 
+            charFromSrcFile = fgetc(srcFilePtr);
+            nextCharFromSrcFile = fgetc(srcFilePtr);
+
             if(isspace(charFromSrcFile) != 0) { //Skip whitespace
                 continue;
             }
-
-
             //Update the metadata based on the type of character present
             if(internal_catagorise_character(charFromSrcFile) == false) {
                 printf("Unrecognisd character: '%c'\n", charFromSrcFile);
@@ -214,8 +258,20 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             }
 
 
-            //Upon successful pass call the token reset metadata function
+            //Only if the token is complete should it be hashed
+            if(internal_is_complete_token(nextCharFromSrcFile) == false) {
+                charFromSrcFile = nextCharFromSrcFile;
+                continue;
+            }
+            charFromSrcFile = nextCharFromSrcFile;
 
+
+            //Continue here
+
+
+
+            //Reset the token metadata
+            internal_reset_token_metadata();
         }
 
 
