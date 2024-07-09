@@ -51,7 +51,7 @@ maxTokenSize = 0;
 
 librariesToInclude = [
 
-    "<stdlib.h>"
+    "<stdlib.h>",
     "<stdio.h>",
     "<stdbool.h>",
     "<string.h>",
@@ -84,10 +84,10 @@ def write_h_file():
                 file.write("#include " + str(library) + "\n");
         
 
-            file.write("\n\ntypedef enum VALID_TOKEN_ENUM = {\n");
+            file.write("\n\ntypedef enum VALID_TOKEN_ENUM {\n");
 
             counter = 0;
-            for value in tokens:
+            for value in tokens.values():
 
                 if counter % newLineConstant == 0:
                     file.write("\n\n");
@@ -112,6 +112,9 @@ def write_h_file():
 #Write to the .c file
 def write_c_file():
 
+    global numberOfTokens;
+    global maxTokenSize;
+
     numberOfTokens = len(tokens);
     maxTokenSize = 0;
     for token in tokens:
@@ -126,7 +129,7 @@ def write_c_file():
             file.write("const char validTokens[" + str(defineNameNumberOfTokens) + "][" + str(defineNameMaxTokenLength) + "] = {\n");
 
             counter = 0;
-            for key in tokens:
+            for key in tokens.keys():
 
                 if counter % newLineConstant == 0:
                     file.write("\n\n");
