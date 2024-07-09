@@ -286,8 +286,9 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             //if the token is complete - should add a NULL terminator to the end for propper string handling
             tempTokenBuffer[i + 1] = '\0';
             charFromSrcFile = nextCharFromSrcFile;
-            i = 0;
-            printf("Complete token: %s\n",tempTokenBuffer);
+            i = -1; //Set to -1 so it increments to 0 next loop
+
+            
             //DO HASHING HERE
 
             if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
