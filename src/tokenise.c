@@ -6,15 +6,14 @@
 typedef struct CurrentTokenMetadata {
 
     bool containsLoneTokens; //Braces, commas, dots, etc
-    bool containsSymbols;    //Arithmatic operators
+    bool symbol;             //Symbol, but not a lone token
     bool containsNumbers;    //Contains 0-9
     bool containsLetters;    //Contains ASCII characters
 
 } CurrentTokenMetadata;
 CurrentTokenMetadata currentTokenMetadata; //Global since many functions will need to access this
 StringHashmap tokeniserValidTokenHashmap;
-
-
+char tempTokenBuffer[MAX_TOKEN_LENGTH + 1]; 
 
 
 
@@ -56,6 +55,90 @@ RETURN_CODE internal_tokeniser_initialiser(Vector *tokensOut) {
 }
 
 
+bool internal_is_symbol(char character) {
+
+    switch (character) {
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '%':
+    case '@':
+    case '=':
+    case '>':
+    case '<':
+    case '!':
+
+        return true;
+         
+    default:
+
+        return false;
+    }
+
+
+
+    return false;
+}
+
+
+
+//Test if a lone token
+bool internal_is_lone_token(char character) {
+
+    switch (character) {
+    case '{':
+    case '}':
+    case '[':
+    case ']':
+    case '(':
+    case ')':
+    case '.':
+    case '\'':
+    case ';':
+
+        return true; 
+        break;
+    
+    default:
+        return false;
+    }
+
+    return false;
+}
+
+
+
+//Catagorise a character
+bool internal_catagorise_character(char character) {
+
+    if(isdigit(character) != 0) {
+        //Digit encountered
+
+    } else if(isascii(character) != 0) {
+        //Letter encountered
+
+
+    } else if(internal_is_lone_token(character) == true) {
+    
+    
+    } else if(internal_is_symbol(character) == true) {
+    
+        //Letter encountered
+    } else {
+        
+        //Unexpected character encountered
+        return false;
+
+    }
+
+
+
+    
+    return false;
+}
+
+
 
 
 
@@ -84,14 +167,37 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
         FILE *srcFilePtr = fopen(srcFilename, "r");
         if(srcFilePtr == NULL) {
-            return _FAILED_TO_OPEN_FILE;
+            return _FAILED_TO_OPEN_FILE_;
+        }
+
+
+        char charFromSrcFile = "\0";
+        for(size_t i = 0, j = 0; ;i++, j++) {
+            charFromSrcFile = fgetc(srcFilePtr);
+            if(charFromSrcFile == EOF) {
+                break;
+            }
+
+            if(isspace(charFromSrcFile) != 0) { //Skip whitespace
+                continue;
+            }
+
+
+            //Update the metadata based on the type of character present
+            if(internal_catagorise_character(charFromSrcFile) == false) {
+                printf("Unrecognisd character: '%c'\n", charFromSrcFile);
+                return _UNRECOGNISED_ARGUMENT_PASS_;
+            }
+
+
+
+
         }
 
 
 
-
         if(fclose(srcFilePtr) != 0) {
-            return _FAILED_TO_CLOSE_FILE;
+            return _FAILED_TO_CLOSE_FILE_;
         }
     }
 
