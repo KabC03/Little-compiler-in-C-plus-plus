@@ -74,6 +74,10 @@ def write_h_file():
             file.write("#ifndef " + str(headerGuardName) + "\n");
             file.write("#define " + str(headerGuardName) + "\n\n\n");
 
+            #Define constants
+            file.write("#define " + str(defineNameNumberOfTokens) + " " + str(numberOfTokens) + "\n");
+            file.write("#define " + str(defineNameMaxTokenLength) + " " + str(maxTokenSize) + "\n\n\n");
+
 
             #Include libraries
             for library in librariesToInclude:
