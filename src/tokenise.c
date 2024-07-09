@@ -139,12 +139,6 @@ bool internal_catagorise_character(char character) {
         //Is a lone token
         currentTokenMetadata.numberOfDecimals++; 
 
-
-    } else if(internal_is_lone_token(character) == true) {
-        //Is a lone token
-        currentTokenMetadata.containsLoneTokens = true;
-
-
     } else if(internal_is_symbol(character) == true) {
         //Is a symbol
         currentTokenMetadata.containsSymbol = true;
