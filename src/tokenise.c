@@ -1,12 +1,13 @@
 //10, Jul, 24
 #include "tokenise.h"
-
+#define DECIMAL_POINT '.'
 
 
 typedef struct CurrentTokenMetadata {
 
+    size_t numberOfDecimals; //Number of decimal points encountered
     bool containsLoneTokens; //Braces, commas, dots, etc
-    bool symbol;             //Symbol, but not a lone token
+    bool containsSymbol;     //Symbol, but not a lone token
     bool containsNumbers;    //Contains 0-9
     bool containsLetters;    //Contains ASCII characters
 
@@ -51,10 +52,25 @@ RETURN_CODE internal_tokeniser_initialiser(Vector *tokensOut) {
         return _GENERIC_FAILURE_;
     }
 
+
     return _SUCCESS_;
 }
 
 
+//Reset metadata after a successful pass
+void internal_reset_token_metadata(void) {
+
+    currentTokenMetadata.containsLetters = false;
+    currentTokenMetadata.containsLoneTokens = false;
+    currentTokenMetadata.containsNumbers = false;
+    currentTokenMetadata.containsSymbol = false;
+    currentTokenMetadata.numberOfDecimals = 0;
+
+    return;
+}
+
+
+//Contains a symbol
 bool internal_is_symbol(char character) {
 
     switch (character) {
@@ -93,7 +109,6 @@ bool internal_is_lone_token(char character) {
     case ']':
     case '(':
     case ')':
-    case '.':
     case '\'':
     case ';':
 
@@ -114,19 +129,28 @@ bool internal_catagorise_character(char character) {
 
     if(isdigit(character) != 0) {
         //Digit encountered
+        currentTokenMetadata.containsNumbers = true;
 
     } else if(isascii(character) != 0) {
         //Letter encountered
+        currentTokenMetadata.containsLetters = true;
+
+    } else if(internal_is_lone_token(character) == true) {
+        //Is a lone token
+        currentTokenMetadata.numberOfDecimals++; 
 
 
     } else if(internal_is_lone_token(character) == true) {
-    
-    
+        //Is a lone token
+        currentTokenMetadata.containsLoneTokens = true;
+
+
     } else if(internal_is_symbol(character) == true) {
-    
-        //Letter encountered
-    } else {
-        
+        //Is a symbol
+        currentTokenMetadata.containsSymbol = true;
+
+
+    } else {     
         //Unexpected character encountered
         return false;
 
@@ -190,7 +214,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             }
 
 
-
+            //Upon successful pass call the token reset metadata function
 
         }
 
