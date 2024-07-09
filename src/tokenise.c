@@ -38,6 +38,7 @@ RETURN_CODE internal_tokeniser_initialiser(Vector *tokensOut) {
 
     for(VALID_TOKEN_ENUM i = 0; i < NUMBER_OF_TOKENS; i++) {
 
+
         if(string_hashmap_set(&(tokeniserValidTokenHashmap), (void*)(validTokens[i]), strlen(validTokens[i]) + 1, (void*)(&i), sizeof(VALID_TOKEN_ENUM)) == false) {
             return _GENERIC_FAILURE_;
         }
