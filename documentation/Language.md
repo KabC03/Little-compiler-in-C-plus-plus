@@ -24,31 +24,31 @@
 
 |**Symbol**|**Purpose**|
 |:-:|:-:|
-|+|Addition
-|-|Subtraction
-|*|Multiplication
-|/|Division
-|%|Modulo
-|>>|Greater than
-|<<|Less than
-|!=|Not equal to
-|==|Equal to
-|\|\||Boolean OR
-|&&|Boolean AND
-|=|Assignment operator
-|,|Comma
-|.|Dot
-|;|Semicolen
-|@|Pointer declaration operator
-|{|Curley brace
-|}|Curley brace
-|[|Dereference operator (left)
-|]|Dereference operator (right)
-|(|Parenthesis
-|)|Parenthesis
-|>|Angle bracket bracket
-|<|Angle bracket
-|//|Comment
+|+|Addition|
+|-|Subtraction|
+|*|Multiplication|
+|/|Division|
+|%|Modulo|
+|>>|Greater than|
+|<<|Less than|
+|!=|Not equal to|
+|==|Equal to|
+|\|\||Boolean OR|
+|&&|Boolean AND|
+|=|Assignment operator|
+|,|Comma|
+|.|Dot|
+|;|Semicolen|
+|@|Pointer declaration operator|
+|{|Curley brace|
+|}|Curley brace|
+|[|Dereference operator (left)|
+|]|Dereference operator (right)|
+|(|Parenthesis|
+|)|Parenthesis|
+|>|Angle bracket bracket|
+|<|Angle bracket|
+|//|Comment|
 
 
 
