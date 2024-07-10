@@ -208,8 +208,21 @@ bool internal_is_complete_token(char nextChar) {
     return false;
 }
 
+//Set the immediate in the current token
+RETURN_CODE internal_attempt_set_immediate(Token *tokenToAppendTo) {
+
+    if(tokenToAppendTo == false) {
+        return _NULL_PTR_PASS_;
+    } else {
 
 
+
+
+
+    }
+
+    return _TRUE_;
+}
 
 /**
  * tokenise 
@@ -291,13 +304,25 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             charFromSrcFile = nextCharFromSrcFile;
             i = -1; //Set to -1 so it increments to 0 next loop
 
-            printf("Token: %s\n",tempTokenBuffer);
-            //Note: Tokeniser breaks with "for(int i = 0; i <10;i++);"
-            // int i = 0; i <10;i++) ;
 
 
-            //DO HASHING HERE
+            //Do hashing here
+            //Hash, if not in map then check for immediate or user string
 
+            const void *validTokenHashmapOutput = string_hashmap_get_value(&tokeniserValidTokenHashmap, tempTokenBuffer, strlen(tempTokenBuffer) + 1);
+
+            if(validTokenHashmapOutput == NULL) {
+                //Must be an immediate or user string
+                if(internal_attempt_set_immediate(&currentToken) != _TRUE_) {
+
+                    printf("Unrecognised token: '%s'\n",tempTokenBuffer);
+
+                }
+
+            } else {
+                //Key was found in the map
+                currentToken.tokenEnum = *(VALID_TOKEN_ENUM*)(validTokenHashmapOutput);
+            }
 
 
             if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
@@ -324,6 +349,9 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
     return _SUCCESS_;
 }
+
+
+
 
 
 
