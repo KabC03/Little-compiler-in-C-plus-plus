@@ -209,14 +209,23 @@ bool internal_is_complete_token(char nextChar) {
 }
 
 //Set the immediate in the current token
-RETURN_CODE internal_attempt_set_immediate(Token *tokenToAppendTo) {
+RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo) {
 
     if(tokenToAppendTo == false) {
         return _NULL_PTR_PASS_;
     } else {
 
+        //Check for integer immediate
+        //Only numbers allowed
 
+        //Check for float immediate
+        //Only numbers AND a single '.'
 
+        //Check for char immediate
+        //Single character surrounded by ''' quotes
+
+        //Check for user string
+        //Contains letters and possibly a number
 
 
     }
@@ -313,7 +322,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
             if(validTokenHashmapOutput == NULL) {
                 //Must be an immediate or user string
-                if(internal_attempt_set_immediate(&currentToken) != _TRUE_) {
+                if(internal_attempt_set_immediate_or_user_string(&currentToken) != _TRUE_) {
 
                     printf("Unrecognised token: '%s'\n",tempTokenBuffer);
 
@@ -349,6 +358,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
     return _SUCCESS_;
 }
+
 
 
 
