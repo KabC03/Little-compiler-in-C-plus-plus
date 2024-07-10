@@ -32,6 +32,17 @@ hFile = "./compiler data.h";
 cFile = "./compiler data.c";
 headerGuardName = "COMPILE_H";
 
+
+#Tokens to pre-append (Appear in .h but not .c file)
+tokensPreappend = [
+
+    "INT_IMMEDIATE",
+    "FLOAT_IMMEDIATE",
+    "CHAR_IMMEDIATE",
+
+];
+
+
 #Tokens to append to the files
 tokens = {
 
@@ -106,7 +117,16 @@ def write_h_file():
 
             file.write("extern const char validTokens[" + str(defineNameNumberOfTokens) + "][" + str(defineNameMaxTokenLength) + "];\n" ) 
 
-            file.write("\n\ntypedef enum VALID_TOKEN_ENUM {\n");
+            file.write("\n\ntypedef enum VALID_TOKEN_ENUM {\n\n");
+
+
+            counter = -1;
+            for token in tokensPreappend:
+                
+                if (-1 * counter) % newLineConstant == 0:
+                    file.write("\n\n");
+                file.write("    " + str(token) + " = " + str(counter) + ",\n");
+                counter -= 1;
 
             counter = 0;
             for value in tokens.values():
