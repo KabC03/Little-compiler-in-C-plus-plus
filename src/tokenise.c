@@ -40,7 +40,7 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
     } else {
 
         size_t vectorSize = vector_get_length(tokensToPrint) + 1;
-        const Token *currentToken = NULL;
+        Token *currentToken = NULL;
         for(size_t i = 0; i < vectorSize; i++) {
 
             currentToken = (Token*)vector_get_index(tokensToPrint, i);
@@ -71,7 +71,7 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
                 break;
             }
 
-            printf("%s\n", validTokens[currentToken->tokenEnum]);
+            printf("Token: %s\n", validTokens[currentToken->tokenEnum]);
 
         }
 
