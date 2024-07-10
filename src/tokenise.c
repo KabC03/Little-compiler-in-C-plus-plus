@@ -190,8 +190,10 @@ bool internal_is_complete_token(char nextChar) {
         //Regular symbols need to be followed by a non-symbol to be complete
         return true;
 
-    } else if(currentTokenMetadata.containsLetters == true && (internal_is_symbol(nextChar) == true || internal_is_lone_token(nextChar) == true)) {
+    } else if((currentTokenMetadata.containsLetters == true || currentTokenMetadata.containsNumbers) \
+    && (internal_is_symbol(nextChar) == true || internal_is_lone_token(nextChar) == true)) {
         //User strings (varable names, functions, etc) must be followed by a symbol to be complete
+        //Same with immediates
         
         return true;
 
@@ -322,7 +324,6 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
     return _SUCCESS_;
 }
-
 
 
 
