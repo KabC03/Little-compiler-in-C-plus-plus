@@ -59,6 +59,14 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
             case CHAR_IMMEDIATE:
                 printf("CHAR_IMMEDIATE: %c\n",currentToken->charImmediate);
                 break;
+            case USER_STRING:
+
+                const char *userStringOut = dynamic_string_read(&(currentToken->userString));
+                if(userStringOut == NULL) {
+                    printf("ERROR obtaining user string for printing\n");
+                }
+                printf("USER_STRING: %s\n",userStringOut);
+                break;
             default:
                 break;
             }
@@ -277,6 +285,7 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
         //Only numbers allowed
         if(currentTokenMetadata.containsLetters == false && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
         currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true) {
+            tokenToAppendTo->tokenEnum = INT_IMMEDIATE; 
             tokenToAppendTo->intImmediate = atoi(tempTokenBuffer);
             
             //printf("DETECTED INT IMMEDIATE: %s\n", tempTokenBuffer);
@@ -285,6 +294,8 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
         currentTokenMetadata.numberOfDecimals == 1 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true) {
             //Check for float immediate
             //Only numbers AND a single '.'
+
+            tokenToAppendTo->tokenEnum = FLOAT_IMMEDIATE; 
             tokenToAppendTo->floatImmediate = atof(tempTokenBuffer);
             //printf("DETECTED FLOAT IMMEDIATEL %s\n",tempTokenBuffer);
 
@@ -293,6 +304,7 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
         tempTokenBuffer[CHAR_IMMEDIATE_INDEX] != SINGLE_QUOTE) { //Use short circuit && (left evaluated before right so technically safe)
             //Check for char immediate
             //Single character surrounded by ''' quotes, size of the immediate == 3 
+            tokenToAppendTo->tokenEnum = CHAR_IMMEDIATE; 
             tokenToAppendTo->charImmediate = tempTokenBuffer[CHAR_IMMEDIATE_INDEX]; //Grab whats in between the quotes ('c')
             //printf("DETECTED CHAR IMMEDIATE: %c\n",tempTokenBuffer[1]);
 
@@ -301,6 +313,7 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
             //Check for user string
             //Contains letters and possibly a number
             //printf("DETECTED INPUT STRING: %s\n", tempTokenBuffer);
+            tokenToAppendTo->tokenEnum = USER_STRING; 
             if(dynamic_string_initialise(&(tokenToAppendTo->userString)) == false) {
                 return _GENERIC_FAILURE_;
             }
