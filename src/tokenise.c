@@ -52,12 +52,15 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
             switch (currentToken->tokenEnum) {
             case INT_IMMEDIATE:
                 printf("INT_IMMEDIATE: %d\n",currentToken->intImmediate);
+                continue;
                 break;
             case FLOAT_IMMEDIATE:
                 printf("FLOAT_IMMEDIATE: %f\n",currentToken->floatImmediate);
+                continue;
                 break;
             case CHAR_IMMEDIATE:
                 printf("CHAR_IMMEDIATE: %c\n",currentToken->charImmediate);
+                continue;
                 break;
             case USER_STRING:
 
@@ -66,6 +69,7 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
                     printf("ERROR obtaining user string for printing\n");
                 }
                 printf("USER_STRING: %s\n",userStringOut);
+                continue;
                 break;
             default:
                 break;
