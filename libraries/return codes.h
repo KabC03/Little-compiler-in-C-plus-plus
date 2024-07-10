@@ -13,6 +13,10 @@ typedef enum RETURN_CODE {
     _FAILED_TO_OPEN_FILE_,
     _FAILED_TO_CLOSE_FILE_,
 
+    _TRUE_,
+    _FALSE_,
+
+
     _GENERIC_FAILURE_,
     _NEUTRAL_,
     _SUCCESS_,
@@ -22,7 +26,6 @@ typedef enum RETURN_CODE {
 
 
 #endif //RETURN_CODE_H 
-
 
 
 
