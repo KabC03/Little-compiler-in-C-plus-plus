@@ -43,6 +43,12 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
         const Token *currentToken = NULL;
         for(size_t i = 0; i < vectorSize; i++) {
 
+            currentToken = (Token*)vector_get_index(tokensToPrint, i);
+            if(currentToken == NULL) {
+                printf("ERROR obtaining token for printing\n");
+                return _GENERIC_FAILURE_;
+            }
+
             switch (currentToken->tokenEnum) {
             case INT_IMMEDIATE:
                 printf("INT_IMMEDIATE: %d\n",currentToken->intImmediate);
