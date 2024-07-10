@@ -22,7 +22,50 @@ char tempTokenBuffer[MAX_TOKEN_LENGTH + 1];
 
 
 
+/**
+ * print_tokens 
+ * ===============================================
+ * Brief: Prints an array of tokens 
+ * 
+ * Param: *tokensToPrint - Vector of tokens to print
+ * 
+ * Return: RETURN_CODE - Indicating succes or type of failure 
+ * 
+ */
+RETURN_CODE print_tokens(Vector *tokensToPrint) {
 
+    if(tokensToPrint == NULL) {
+        return _NULL_PTR_PASS_;
+
+    } else {
+
+        size_t vectorSize = vector_get_length(tokensToPrint) + 1;
+        const Token *currentToken = NULL;
+        for(size_t i = 0; i < vectorSize; i++) {
+
+            switch (currentToken->tokenEnum) {
+            case INT_IMMEDIATE:
+                printf("INT_IMMEDIATE: %d\n",currentToken->intImmediate);
+                break;
+            case FLOAT_IMMEDIATE:
+                printf("FLOAT_IMMEDIATE: %f\n",currentToken->floatImmediate);
+                break;
+            case CHAR_IMMEDIATE:
+                printf("CHAR_IMMEDIATE: %c\n",currentToken->charImmediate);
+                break;
+            default:
+                break;
+            }
+
+            printf("%s\n", validTokens[currentToken->tokenEnum]);
+
+        }
+
+        return _SUCCESS_;
+    }
+
+    return _GENERIC_FAILURE_;
+}
 
 
 
