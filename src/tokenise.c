@@ -1,15 +1,19 @@
 //10, Jul, 24
 #include "tokenise.h"
 #define DECIMAL_POINT '.'
+#define SINGLE_QUOTE '\''
+#define CHAR_IMMEDIATE_SIZE 3
+#define CHAR_IMMEDIATE_INDEX 1
 
 
 typedef struct CurrentTokenMetadata {
 
-    size_t numberOfDecimals; //Number of decimal points encountered
-    bool containsLoneTokens; //Braces, commas, dots, etc
-    bool containsSymbol;     //Symbol, but not a lone token
-    bool containsNumbers;    //Contains 0-9
-    bool containsLetters;    //Contains ASCII characters
+    size_t numberOfDecimals;     //Number of decimal points encountered
+    size_t numberOfSingleQuotes; //Number of single quotes encountered
+    bool containsLoneTokens;     //Braces, commas, dots, etc
+    bool containsSymbol;         //Symbol, but not a lone token
+    bool containsNumbers;        //Contains 0-9
+    bool containsLetters;        //Contains ASCII characters 
 
 } CurrentTokenMetadata;
 CurrentTokenMetadata currentTokenMetadata; //Global since many functions will need to access this
@@ -65,6 +69,7 @@ void internal_reset_token_metadata(void) {
     currentTokenMetadata.containsNumbers = false;
     currentTokenMetadata.containsSymbol = false;
     currentTokenMetadata.numberOfDecimals = 0;
+    currentTokenMetadata.numberOfSingleQuotes = 0;
 
     return;
 }
@@ -109,7 +114,6 @@ bool internal_is_lone_token(char character) {
     case ']':
     case '(':
     case ')':
-    case '\'':
     case ';':
 
         return true; 
@@ -142,6 +146,11 @@ bool internal_catagorise_character(char character) {
     } else if(character == DECIMAL_POINT) {
         //Contains a decimal point
         currentTokenMetadata.numberOfDecimals++;
+
+
+    } else if(character == SINGLE_QUOTE) {
+        //Contains a decimal point
+        currentTokenMetadata.numberOfSingleQuotes++;
 
     } else if(internal_is_symbol(character) == true) {
         //Is a symbol
@@ -209,25 +218,53 @@ bool internal_is_complete_token(char nextChar) {
 }
 
 //Set the immediate in the current token
-RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo) {
+RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo, char *tempTokenBuffer) {
 
-    if(tokenToAppendTo == false) {
+    if(tokenToAppendTo == NULL || tempTokenBuffer == NULL) {
         return _NULL_PTR_PASS_;
     } else {
 
         //Check for integer immediate
         //Only numbers allowed
+        if(currentTokenMetadata.containsLetters == false && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
+        currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true) {
+            tokenToAppendTo->intImmediate = atoi(tempTokenBuffer);
+            
+        } else if(currentTokenMetadata.containsLetters == false && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
+        currentTokenMetadata.numberOfDecimals == 1 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true) {
+            //Check for float immediate
+            //Only numbers AND a single '.'
+            tokenToAppendTo->floatImmediate = atof(tempTokenBuffer);
 
-        //Check for float immediate
-        //Only numbers AND a single '.'
+        } else if(currentTokenMetadata.containsLetters == true && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
+        currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 2 && currentTokenMetadata.containsNumbers == false && strlen(tempTokenBuffer) == CHAR_IMMEDIATE_SIZE &&
+        tempTokenBuffer[CHAR_IMMEDIATE_INDEX] != SINGLE_QUOTE) { //Use short circuit && (left evaluated before right so technically safe)
+            //Check for char immediate
+            //Single character surrounded by ''' quotes, size of the immediate == 3 
+            tokenToAppendTo->charImmediate = tempTokenBuffer[CHAR_IMMEDIATE_INDEX]; //Grab whats in between the quotes ('c')
 
-        //Check for char immediate
-        //Single character surrounded by ''' quotes
+        } else if(currentTokenMetadata.containsLetters == true && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
+        currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0) {
+            //Check for user string
+            //Contains letters and possibly a number
+            if(dynamic_string_initialise(&(tokenToAppendTo->userString)) == false) {
+                return _GENERIC_FAILURE_;
+            }
 
-        //Check for user string
-        //Contains letters and possibly a number
+            //Add the string to the token
+            if(dynamic_string_set(&(tokenToAppendTo->userString), tempTokenBuffer) == false) {
+
+                //TODO: Destroy dynamic string
+                return _GENERIC_FAILURE_;
+            }
 
 
+        } else {
+
+            //Unrecognised invalid token sequence
+            return _FALSE_;
+        }
+        
     }
 
     return _TRUE_;
@@ -322,7 +359,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
             if(validTokenHashmapOutput == NULL) {
                 //Must be an immediate or user string
-                if(internal_attempt_set_immediate_or_user_string(&currentToken) != _TRUE_) {
+                if(internal_attempt_set_immediate_or_user_string(&currentToken, tempTokenBuffer) != _TRUE_) {
 
                     printf("Unrecognised token: '%s'\n",tempTokenBuffer);
 
