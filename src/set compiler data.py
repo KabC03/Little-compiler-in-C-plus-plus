@@ -17,11 +17,11 @@ typedef struct Token {
 
     //Immediates and variables
     union {
-        char *userString;       //User string (func name, variable, etc - parser must determine based on context)
+        DynamicString userString;  //User string (func name, variable, etc - parser must determine based on context)
 
-        char charImmediate;     //Used if immediate char 'f'
-        int intImmediate;       //Used for immediate int '3'
-        float floatImmediate;   //Used for immediate float '3.32'
+        char charImmediate;        //Used if immediate char 'f'
+        int intImmediate;          //Used for immediate int '3'
+        float floatImmediate;      //Used for immediate float '3.32'
     };
 
 } Token;
@@ -50,10 +50,10 @@ tokens = {
     "usr_str" : "USER_STRING", "invalid" : "INVALID_TOKEN",
 
     #Datatypes
-    "int" : "TOK_INT", "flt" : "TOK_FLT", "chr" : "TOK_CHR", "@" : "TOK_PTR",
+    "int" : "TOK_INT", "flt" : "TOK_FLT", "chr" : "TOK_CHR", "@" : "TOK_PTR", "=" : "TOK_EQUALS_ASSIGNMENT",
 
     #Operators
-    "+" : "TOK_ADD", "-" : "TOK_SUB", "*" : "TOK_MUL", "/" : "TOK_DIV","%%" : "TOK_MOD","||" : "TOK_OR", "&&" : "TOK_AND",
+    "+" : "TOK_ADD", "-" : "TOK_SUB", "*" : "TOK_MUL", "/" : "TOK_DIV","\%" : "TOK_MOD","||" : "TOK_OR", "&&" : "TOK_AND",
     "==" : "TOK_EQUAL_TO", "!=" : "TOK_NOT_EQUAL_TO", ">=" : "TOK_GREATER_EQUAL_TO", "<=" : "TOK_LESS_EQUAL_TO", ">>" : "TOK_GREATER_TO", "<<" : "TOK_LESS_TO", 
 
 
@@ -72,7 +72,7 @@ tokens = {
     #Misc
     "<" : "TOK_OPEN_ANGLE", ">" : "TOK_CLOSE_ANGLE", "[" : "TOK_OPEN_SQUAER", "]" : "TOK_CLOSE_SQUARE", 
     "(" : "TOK_OPEN_PAREN", ")" : "TOK_CLOSE_PAREN", "{" : "TOK_OPEN_CURLEY", "}" : "TOK_CLOSE_CURLEY", 
-    "," : "TOK_COMMA", "." : "TOK_DOT", ";" : "TOK_SEMICOLEN",
+    "," : "TOK_COMMA", "." : "TOK_DOT", ";" : "TOK_SEMICOLEN", "\'" :"TOK_SINGLE_QUOTE",
 };
 
 numberOfTokens = 0;
@@ -91,6 +91,7 @@ librariesToInclude = [
     "\"vector.h\"",
     "\"datastructures.h\"",
     "\"static hashmap.h\"",
+    "\"dynamic string.h\"",
 ];
 
 
@@ -227,15 +228,6 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main());
-
-
-
-
-
-
-
-
-
 
 
 
