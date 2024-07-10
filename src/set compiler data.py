@@ -39,6 +39,7 @@ tokensPreappend = [
     "INT_IMMEDIATE",
     "FLOAT_IMMEDIATE",
     "CHAR_IMMEDIATE",
+    "USER_STRING",
 
 ];
 
@@ -47,7 +48,7 @@ tokensPreappend = [
 tokens = {
 
     #Internal types
-    "usr_str" : "USER_STRING", "invalid" : "INVALID_TOKEN",
+    "invalid" : "INVALID_TOKEN",
 
     #Datatypes
     "int" : "TOK_INT", "flt" : "TOK_FLT", "chr" : "TOK_CHR", "@" : "TOK_PTR", "=" : "TOK_EQUALS_ASSIGNMENT",
