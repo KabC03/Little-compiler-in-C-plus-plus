@@ -230,11 +230,14 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
         currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true) {
             tokenToAppendTo->intImmediate = atoi(tempTokenBuffer);
             
+            printf("DETECTED INT IMMEDIATE: %s\n", tempTokenBuffer);
+
         } else if(currentTokenMetadata.containsLetters == false && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
         currentTokenMetadata.numberOfDecimals == 1 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true) {
             //Check for float immediate
             //Only numbers AND a single '.'
             tokenToAppendTo->floatImmediate = atof(tempTokenBuffer);
+            printf("DETECTED FLOAT IMMEDIATEL %s\n",tempTokenBuffer);
 
         } else if(currentTokenMetadata.containsLetters == true && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
         currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 2 && currentTokenMetadata.containsNumbers == false && strlen(tempTokenBuffer) == CHAR_IMMEDIATE_SIZE &&
@@ -242,11 +245,13 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
             //Check for char immediate
             //Single character surrounded by ''' quotes, size of the immediate == 3 
             tokenToAppendTo->charImmediate = tempTokenBuffer[CHAR_IMMEDIATE_INDEX]; //Grab whats in between the quotes ('c')
+            printf("DETECTED CHAR IMMEDIATE: %c\n",tempTokenBuffer[1]);
 
         } else if(currentTokenMetadata.containsLetters == true && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
         currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0) {
             //Check for user string
             //Contains letters and possibly a number
+            printf("DETECTED INPUT STRING: %s\n", tempTokenBuffer);
             if(dynamic_string_initialise(&(tokenToAppendTo->userString)) == false) {
                 return _GENERIC_FAILURE_;
             }
@@ -367,6 +372,8 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
             } else {
                 //Key was found in the map
+
+                printf("KEYWORD WAS FOUND: '%s'\n",tempTokenBuffer);
                 currentToken.tokenEnum = *(VALID_TOKEN_ENUM*)(validTokenHashmapOutput);
             }
 
