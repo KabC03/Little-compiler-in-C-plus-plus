@@ -170,6 +170,7 @@ bool internal_is_complete_token(char nextChar) {
     case ' ':
     case '\0':
     case '\n':
+
         return true; 
     default:
         break;
@@ -258,6 +259,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
             if(isspace(charFromSrcFile) != 0) { //Skip whitespace
                 charFromSrcFile = nextCharFromSrcFile;
+                i--; //Preserve index by decrementing
                 continue;
             }
 
@@ -290,6 +292,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
             printf("Token: %s\n",tempTokenBuffer);
             //Note: Tokeniser breaks with "for(int i = 0; i <10;i++);"
+            // int i = 0; i <10;i++) ;
 
 
             //DO HASHING HERE
