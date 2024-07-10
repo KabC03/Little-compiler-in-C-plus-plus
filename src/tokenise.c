@@ -410,7 +410,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
                 if(internal_attempt_set_immediate_or_user_string(&currentToken, tempTokenBuffer) != _TRUE_) {
 
                     printf("Unrecognised token: '%s'\n",tempTokenBuffer);
-
+                    return _GENERIC_FAILURE_;
                 }
 
             } else {
