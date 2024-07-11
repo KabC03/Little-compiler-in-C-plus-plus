@@ -9,10 +9,13 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
+#include "return codes.h"
+#include "compiler data.h"
 
 
-
-
+RETURN_CODE parse(Vector *tokens, char *fileName);
 
 
 #endif //PARSE_H
+
+
