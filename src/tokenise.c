@@ -50,6 +50,10 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
             }
 
             switch (currentToken->tokenEnum) {
+            case EOF_TOKEN:
+                printf("EOF_TOKEN\n");
+                continue;
+                break;
             case INT_IMMEDIATE:
                 printf("INT_IMMEDIATE: %d\n",currentToken->intImmediate);
                 continue;
@@ -372,6 +376,10 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
         Token currentToken;
         char charFromSrcFile = fgetc(srcFilePtr); //have to do this here because this needs to be one char behind nextCharFromSrcFile
         if(charFromSrcFile == EOF) {
+            currentToken.tokenEnum = EOF_TOKEN;
+            if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
+                return _GENERIC_FAILURE_;
+            }
             if(fclose(srcFilePtr) != 0) {
                 return _FAILED_TO_CLOSE_FILE_;
             }
@@ -382,6 +390,10 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
         for(size_t i = 0; i < MAX_TOKEN_LENGTH; i++) {
 
             if(charFromSrcFile == EOF) {
+                currentToken.tokenEnum = EOF_TOKEN;
+                if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
+                    return _GENERIC_FAILURE_;
+                }
                 break;
             }
 
