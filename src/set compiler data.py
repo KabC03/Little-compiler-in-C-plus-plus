@@ -36,6 +36,7 @@ headerGuardName = "COMPILE_H";
 #Tokens to pre-append (Appear in .h but not .c file)
 tokensPreappend = [
 
+    "EOF_TOKEN",
     "INT_IMMEDIATE",
     "FLOAT_IMMEDIATE",
     "CHAR_IMMEDIATE",
@@ -229,10 +230,6 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main());
-
-
-
-
 
 
 
