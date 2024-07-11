@@ -1,25 +1,71 @@
 #include "parse.h"
-
+#define handle_unexpected_null_token() printf("Unexpected NULL token encountered\n"); return _GENERIC_FAILURE_; 
 
 size_t inputTokenLength = 0;                  //Global so every function can access this
 size_t startingTokenIndex = 0;                //Current working index into the token array - updated by individual parsing function
+FILE *irOutputFile = NULL;                    //File stream - global so everything can write to it
 
 
 
 
+//Parse expressions (binary expressions)
+RETURN_CODE parse_expression(Vector *tokens) {
+
+    return _SUCCESS_;
+}
 
 
 
 //Parse comments - token stream as input and uses startingTokenIndex to index into vector
 RETURN_CODE parse_comment(Vector *tokens) {
 
-    if(tokens == NULL)  {
-        return _NULL_PTR_PASS_;
-    }
+    return _SUCCESS_;
+}
 
+
+
+
+//Parse function declaration
+RETURN_CODE parse_function_declarations(Vector *tokens) {
 
     return _SUCCESS_;
 }
+//Parse variable delcarations
+RETURN_CODE parse_variable_declarations(Vector *tokens) {
+
+    return _SUCCESS_;
+}
+//Label declaration
+RETURN_CODE parse_label_declaration(Vector *tokens) {
+
+    return _SUCCESS_;
+}
+
+
+
+
+//Parse variable assignments
+RETURN_CODE parse_variable_assignment(Vector *tokens) {
+
+    return _SUCCESS_;
+}
+//Parse if statements 
+RETURN_CODE parse_if_statement(Vector *tokens) {
+
+    return _SUCCESS_;
+}
+//Goto statement
+RETURN_CODE parse_goto_statement(Vector *tokens) {
+
+    return _SUCCESS_;
+}
+//End of function or if statement (}):w
+RETURN_CODE parse_end_of_statement(Vector *tokens) {
+
+    return _SUCCESS_;
+}
+
+
 
 
 
@@ -31,7 +77,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
    
     //print_tokens(tokens);
-    FILE *irOutputFile = fopen(irOutputFileName, "w");
+    irOutputFile = fopen(irOutputFileName, "w");
     if(irOutputFile == NULL) {
         return _NULL_PTR_PASS_;
     }
@@ -43,8 +89,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
     //Is updated by each function in the switch case (what token should be processed and at what index)
     const Token *currentFirstToken = (Token*)vector_get_index(tokens, 0);
     if(currentFirstToken == NULL) {
-        printf("Unexpected NULL token\n");
-        return _GENERIC_FAILURE_; 
+        handle_unexpected_null_token();
     }
 
 
@@ -75,23 +120,3 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
     return _SUCCESS_;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
