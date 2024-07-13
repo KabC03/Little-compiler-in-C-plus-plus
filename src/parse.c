@@ -7,7 +7,7 @@
 //Macro to make assertions cleaner
 #define expect_singular_token_and_increment_counter(tokenEnumCode, expectMessage) \
     do {\
-        currentToken = (Token*)vector_get_index(tokens, *(startingIndex++)); \
+        currentToken = (Token*)vector_get_index(tokens, *(startingIndex)); \
         if(currentToken == NULL) { \
         \
             printf("%s\n", expectMessage); \
@@ -35,25 +35,118 @@ typedef struct FunctionMetadata {
     Stack jumpMetadata;                       //Metadata for any jumps (labels)
     //Static type checking
     size_t indirectionLevel;                  //Number of @
-    Token baseType;                           //Base datatype (char, float, int)
+    VALID_TOKEN_ENUM baseType;                //Base datatype (char, float, int)
 
 } FunctionMetadata;
-typedef struct VariableNameMetadata {
+typedef struct VariableMetadata {
 
     size_t offsetFromBasePointer;             //Offset from stack base pointer
     size_t numberOfCallsToVariable;           //How many times this variable has been requested (used to decide who to push out of a register when one is neeeded)
     size_t variableLocationInRegister;        //Register number containing the variable - if not contained then set this to 0
     //Static type checking 
     size_t indirectionLevel;                  //Number of @
-    Token baseType;                           //Base datatype (e.g char, float, int, etc)
+    VALID_TOKEN_ENUM baseType;                //Base datatype (e.g char, float, int, etc)
 
-} VariableNameMetadata;
+} VariableMetadata;
 typedef struct JumpMetadata {
 
     size_t labelID;                           //Label ID to write at the end of the if statement (preceded with a '.' to avoid collisions)
 
 } JumpMetadata;
 
+
+
+
+//Parse variable declarations
+RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, const FILE *irOutputFile) {
+
+    //<int, 2@> x (double pointer to an int)
+
+    /*
+    1. Check for <  
+    2. Assign base type (int, float, char)
+    3. If a > is encountered skip the next few steps
+    4. Check for a comma
+    5. If a @ is encountered indirection is 1
+    6. If a number is encountered then indirection is equal to that
+    7. Push onto the stack, and set the variables location to that spot
+    NOTE: One variable per space since it avoids need to do manual alignment (also a performance benifit)
+    */ 
+
+    if(tokens == NULL || startingIndex == NULL || irOutputFile == NULL) {
+        return _NULL_PTR_PASS_;
+    } 
+
+    //Get the <
+    Token *currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
+    expect_singular_token_and_increment_counter(TOK_OPEN_ANGLE, "Expected a '<' in variable declaration\n");
+
+
+    
+    VariableMetadata variableMetadata;
+    variableMetadata.numberOfCallsToVariable = 0;
+    variableMetadata.variableLocationInRegister = 0; //Indicates NOT IN REGISTER
+    //Get the base type
+    currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
+    if(currentToken == NULL) {
+        printf("Expected a base type in variable declaration\n");
+        return _GENERIC_FAILURE_;
+    }
+    switch (currentToken->tokenEnum) {
+    case TOK_INT:
+
+        variableMetadata.baseType = TOK_INT;
+        break;
+
+    case TOK_FLT:
+        
+        variableMetadata.baseType = TOK_FLT;
+        break;
+    
+    case TOK_CHR:
+        
+        variableMetadata.baseType = TOK_CHR;
+        break;
+    
+    default:
+        printf("Unrecognised datatype in declaration");
+        return _GENERIC_FAILURE_;
+    }
+
+
+    //Search for another '>'
+    currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
+    if(currentToken == NULL) {
+        printf("Expected a '>' in variable declaration\n");
+        return _GENERIC_FAILURE_;
+    }
+    if(currentToken == TOK_CLOSE_ANGLE) {
+        //End of type specifications - expect naming next
+        //Do nothing here - just skip over the else
+
+    } else {
+        //Expect a comma then a pointer declaration and finally a >
+
+        //FINISH HERE
+
+
+
+    }
+
+
+
+    currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
+    if(currentToken == NULL) {
+        printf("Expected variable name\n");
+        return _GENERIC_FAILURE_;
+    }
+    const char *variableName = dynamic_string_read(&(currentToken->userString));
+
+    //FINISH HEER
+
+
+    return _SUCCESS_;
+}
 
 
 
@@ -78,7 +171,7 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
     }
 
 
-    Token *currentToken = (Token*)vector_get_index(tokens, *startingIndex);
+    Token *currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
     const char *functionName = NULL;
     if(currentToken == NULL) {
         printf("Expected a function name\n");
@@ -108,7 +201,7 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
 
 
     //Next token must be an open paren
-    currentToken = (Token*)vector_get_index(tokens, *(startingIndex++));
+    currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
     if(currentToken == NULL) {
 
         printf("Expected an open parenthesis in function declaration\n");
@@ -131,12 +224,14 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
     //That function should handle the metadata stack stuff
     while(1) {
 
-        //if(parse_variable_declaration() != _GENERIC_SUCCESS_ {}
+        if(parse_variable_declaration(tokens, startingIndex, irOutputFile) != _SUCCESS_) {
+            return _GENERIC_FAILURE_;
+        }
 
         
 
         //Expect a ',' to seperate the tokens
-        currentToken = (Token*)vector_get_index(tokens, *(startingIndex++));
+        currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
         if(currentToken == NULL) {
             printf("Expected a ',' in function argument declaration\n");
             return _GENERIC_FAILURE_;
@@ -152,8 +247,7 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
 
 
     //Add the return type
-    //if(parse_variable_declaration() != _GENERIC_SUCCESS_ {}
-
+    //NOTE: MUST DO THIS SEPERATELY
 
 
 
@@ -231,7 +325,6 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
 
-        startingTokenIndex++; //Increment past the current token
     
         //Parsing functions
         switch (currentFirstToken->tokenEnum) {
@@ -253,7 +346,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
         //Set up for next token iteration
-        currentFirstToken = (Token*)vector_get_index(tokens, startingTokenIndex);
+        currentFirstToken = (Token*)vector_get_index(tokens, startingTokenIndex++);
         if(currentFirstToken == NULL) {
             handle_unexpected_null_token();
         }
