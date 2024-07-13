@@ -9,6 +9,8 @@ typedef enum RETURN_CODE {
     _UNRECOGNISED_ARGUMENT_PASS_,
 
     _MEMORY_ALLOCATION_FAILURE_,
+    _INITIALISATION_FAILURE,
+
 
     _FAILED_TO_OPEN_FILE_,
     _FAILED_TO_CLOSE_FILE_,
@@ -26,9 +28,6 @@ typedef enum RETURN_CODE {
 
 
 #endif //RETURN_CODE_H 
-
-
-
 
 
 
