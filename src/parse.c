@@ -1,9 +1,38 @@
 #include "parse.h"
 #define handle_unexpected_null_token() printf("Unexpected NULL token encountered\n"); return _GENERIC_FAILURE_; 
+#define LOCAL_HASHMAP_SIZE 100                //Local hashmap size for function and variable metadatas
+
 
 size_t inputTokenLength = 0;                  //Global so every function can access this
 size_t startingTokenIndex = 0;                //Current working index into the token array - updated by individual parsing function
 FILE *irOutputFile = NULL;                    //File stream - global so everything can write to it
+//Metadata
+StringHashmap functionNameToMetadataMap;
+bool validEndOfTokenStream = false;           //Used to denote if it is correct to exit the program now (e.g main is defined, not in the middle of a statement)
+bool mainIsDefined = false;                   //Used to denote if main function has been defined or not
+typedef struct FunctionMetadata {
+
+    StringHashmap variableNameToMetadataMap;  //Variable name to its metadata for the current function
+    Stack jumpMetadata;                       //Metadata for any jumps (labels)
+
+} FunctionMetadata;
+typedef struct VariableNameMetadata {
+
+    size_t offsetFromBasePointer;             //Offset from stack base pointer
+    size_t numberOfCallsToVariable;           //How many times this variable has been requested (used to decide who to push out of a register when one is neeeded)
+    size_t variableLocationInRegister;        //Register number containing the variable - if not contained then set this to 0
+
+} VariableNameMetadata;
+typedef struct JumpMetadata {
+
+    labelID;                                  //Label ID to write at the end of the if statement (preceded with a '.' to avoid collisions)
+
+} JumpMetadata;
+
+
+
+
+
 
 
 
@@ -18,6 +47,17 @@ RETURN_CODE parse_expression(Vector *tokens) {
 
 //Parse comments - token stream as input and uses startingTokenIndex to index into vector
 RETURN_CODE parse_comment(Vector *tokens) {
+    //This function is REALLY inefficient - work on it in the future
+
+
+    if(tokens == NULL) {
+        return _NULL_PTR_PASS_;
+    }
+
+
+
+
+
 
     return _SUCCESS_;
 }
@@ -77,10 +117,17 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
    
     //print_tokens(tokens);
-    irOutputFile = fopen(irOutputFileName, "w");
-    if(irOutputFile == NULL) {
-        return _NULL_PTR_PASS_;
+    //irOutputFile = fopen(irOutputFileName, "w");
+    //if(irOutputFile == NULL) {
+    //    return _NULL_PTR_PASS_;
+    //}
+
+
+    if(string_hashmap_initialise(&functionNameToMetadataMap, LOCAL_HASHMAP_SIZE) == false) {
+        return _INITIALISATION_FAILURE;
     }
+
+
 
     //Set the token length
     inputTokenLength = vector_get_length(tokens);
@@ -89,20 +136,29 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
     //Is updated by each function in the switch case (what token should be processed and at what index)
     const Token *currentFirstToken = (Token*)vector_get_index(tokens, 0);
     if(currentFirstToken == NULL) {
-        handle_unexpected_null_token();
+        printf("Expected main function declaration\n");
+        return _GENERIC_FAILURE_;
     }
 
 
-    //Used to maintain state - e.g if in the middle of a function declaration - must finish the function declaration before token stream stops
-    bool validEndOfTokenStream = false;
     while(1) {
 
-        if(validEndOfTokenStream == true && currentFirstToken->floatImmediate == EOF) {
+
+        //Exit main loop
+        if(validEndOfTokenStream == true && currentFirstToken->tokenEnum == EOF && mainIsDefined == true) {
+            //Valid exit encountered, all required conditions are met
             break;
+        } else if(currentFirstToken->tokenEnum == EOF) {
+            printf("Incomplete statement\n");
+            return _GENERIC_FAILURE_;
         }
 
 
-        //currentFirsToken gets updated in individual parsing functions below
+
+
+
+
+        //Parsing functions
         switch (currentFirstToken->tokenEnum) {
         case TOK_COMMENT:
             if(parse_comment(tokens)  != _SUCCESS_) {
@@ -115,8 +171,20 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
             return _GENERIC_FAILURE_; 
             break;
         }
+
+
+
+        //Set up for next token iteration
+        currentFirstToken = vector_get_index(tokens, startingTokenIndex);
+        if(currentFirstToken == NULL) {
+            handle_unexpected_null_token();
+        }
     }
 
 
     return _SUCCESS_;
 }
+
+
+
+
