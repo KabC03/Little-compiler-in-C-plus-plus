@@ -3,9 +3,28 @@
 #define LOCAL_HASHMAP_SIZE 100                //Local hashmap size for function and variable metadatas
 
 
-size_t inputTokenLength = 0;                  //Global so every function can access this
-size_t startingTokenIndex = 0;                //Current working index into the token array - updated by individual parsing function
-FILE *irOutputFile = NULL;                    //File stream - global so everything can write to it
+
+//Macro to make assertions cleaner
+#define expect_singular_token_and_increment_counter(tokenEnumCode, expectMessage) \
+    do {\
+        currentToken = (Token*)vector_get_index(tokens, *(startingIndex++)); \
+        if(currentToken == NULL) { \
+        \
+            printf("%s\n", expectMessage); \
+        } else { \
+        \
+            if(currentToken->tokenEnum != tokenEnumCode) { \
+                printf("%s\n", expectMessage); \
+                return _GENERIC_FAILURE_; \
+            } \
+        \
+        } \
+    } while (0);
+    
+
+
+
+
 //Metadata
 StringHashmap functionNameToMetadataMap;
 bool validEndOfTokenStream = false;           //Used to denote if it is correct to exit the program now (e.g main is defined, not in the middle of a statement)
@@ -14,6 +33,9 @@ typedef struct FunctionMetadata {
 
     StringHashmap variableNameToMetadataMap;  //Variable name to its metadata for the current function
     Stack jumpMetadata;                       //Metadata for any jumps (labels)
+    //Static type checking
+    size_t indirectionLevel;                  //Number of @
+    Token baseType;                           //Base datatype (char, float, int)
 
 } FunctionMetadata;
 typedef struct VariableNameMetadata {
@@ -21,43 +43,133 @@ typedef struct VariableNameMetadata {
     size_t offsetFromBasePointer;             //Offset from stack base pointer
     size_t numberOfCallsToVariable;           //How many times this variable has been requested (used to decide who to push out of a register when one is neeeded)
     size_t variableLocationInRegister;        //Register number containing the variable - if not contained then set this to 0
+    //Static type checking 
+    size_t indirectionLevel;                  //Number of @
+    Token baseType;                           //Base datatype (e.g char, float, int, etc)
 
 } VariableNameMetadata;
 typedef struct JumpMetadata {
 
-    labelID;                                  //Label ID to write at the end of the if statement (preceded with a '.' to avoid collisions)
+    size_t labelID;                           //Label ID to write at the end of the if statement (preceded with a '.' to avoid collisions)
 
 } JumpMetadata;
 
 
 
 
+//Parse function declarations - modifies starting index but reads from irOutputFile
+RETURN_CODE parse_function_declarations(const Vector *tokens, size_t *startingIndex, const FILE *irOutputFile) {
+
+    //fn main(<int, @, @> x, <float, @, @> y) <int, @, @> {
+    //fn is already garunteed to be here - so ignore it
+
+ 
+    /*
+    1. Make sure function does not already exist - hashing it should return NULL 
+    2. Hash the function name, and initialise its metadata
+    3. Set the base pointer to point to the base of the stack
+    4. Store the arguments at the base of the stack (sit above the return address) and record offsets in metadata
+    */
 
 
 
-
-
-//Parse expressions (binary expressions)
-RETURN_CODE parse_expression(Vector *tokens) {
-
-    return _SUCCESS_;
-}
-
-
-
-//Parse comments - token stream as input and uses startingTokenIndex to index into vector
-RETURN_CODE parse_comment(Vector *tokens) {
-    //This function is REALLY inefficient - work on it in the future
-
-
-    if(tokens == NULL) {
+    if(tokens == NULL || startingIndex == NULL || irOutputFile == NULL) {
         return _NULL_PTR_PASS_;
     }
 
 
+    const Token *currentToken = vector_get_index(tokens, *startingIndex);
+    const char *functionName = NULL;
+    if(currentToken == NULL) {
+        printf("Expected a function name\n");
+        return _GENERIC_FAILURE_;
+    } else {
+
+        //Get the function name
+        if(currentToken->tokenEnum != USER_STRING) {
+            printf("Function name must be a string\n");
+            return _GENERIC_FAILURE_;
+        } else {
+
+            functionName = dynamic_string_read(&currentToken->userString);
+            if(functionName == NULL) {
+                printf("Failed to read function name\n");
+                return _GENERIC_FAILURE_;
+            }
+
+            //Make sure the function hasng been defined previously
+            if(string_hashmap_get_value(&functionNameToMetadataMap, functionName, strlen(functionName) + 1) != NULL) {
+                printf("Function '%s' is already defined\n",functionName);
+                return _GENERIC_FAILURE_;
+            }
+        }
+    }
 
 
 
+    //Next token must be an open paren
+    currentToken = vector_get_index(tokens, *(startingIndex++));
+    if(currentToken == NULL) {
+
+        printf("Expected an open parenthesis in function declaration\n");
+    } else {
+
+        if(currentToken->tokenEnum != TOK_OPEN_PAREN) {
+            printf("Expected open parenthesis in function declaration\n");
+            return _GENERIC_FAILURE_;
+        }
+
+    }
+
+    //Expect a '('
+    expect_singular_token_and_increment_counter(TOK_OPEN_PAREN, "Expected a '(' in function declaration");
+    
+
+
+    //Now must expect variable declarations here - can be infinite amount of them
+    //Parse variable declaration function should be called here
+    //That function should handle the metadata stack stuff
+    while(1) {
+
+        //if(parse_variable_declaration() != _GENERIC_SUCCESS_ {}
+
+        
+
+        //Expect a ',' to seperate the tokens
+        currentToken = vector_get_index(tokens, *(startingIndex++));
+        if(currentToken == NULL) {
+            printf("Expected a ',' in function argument declaration\n");
+            return _GENERIC_FAILURE_;
+        }
+    }
+
+
+
+    //Expect a ')' token
+    expect_singular_token_and_increment_counter(TOK_CLOSE_PAREN, "Expected a ')' in function declaration");
+
+
+
+
+    //Add the return type
+    //if(parse_variable_declaration() != _GENERIC_SUCCESS_ {}
+
+
+
+
+    //Expect a { 
+    expect_singular_token_and_increment_counter(TOK_OPEN_CURLEY, "Expected a '{' in function declaration");
+
+
+
+    FunctionMetadata functionMetadata;
+
+
+    //Append the metadata for the function
+    if(string_hashmap_set(&functionNameToMetadataMap, functionName, strlen(functionName) + 1, &functionMetadata, sizeof(functionMetadata)) == false) {
+        printf("Failed to append function metadata\n");
+        return _GENERIC_FAILURE_;
+    }
 
     return _SUCCESS_;
 }
@@ -65,51 +177,13 @@ RETURN_CODE parse_comment(Vector *tokens) {
 
 
 
-//Parse function declaration
-RETURN_CODE parse_function_declarations(Vector *tokens) {
-
-    return _SUCCESS_;
-}
-//Parse variable delcarations
-RETURN_CODE parse_variable_declarations(Vector *tokens) {
-
-    return _SUCCESS_;
-}
-//Label declaration
-RETURN_CODE parse_label_declaration(Vector *tokens) {
-
-    return _SUCCESS_;
-}
-
-
-
-
-//Parse variable assignments
-RETURN_CODE parse_variable_assignment(Vector *tokens) {
-
-    return _SUCCESS_;
-}
-//Parse if statements 
-RETURN_CODE parse_if_statement(Vector *tokens) {
-
-    return _SUCCESS_;
-}
-//Goto statement
-RETURN_CODE parse_goto_statement(Vector *tokens) {
-
-    return _SUCCESS_;
-}
-//End of function or if statement (}):w
-RETURN_CODE parse_end_of_statement(Vector *tokens) {
-
-    return _SUCCESS_;
-}
 
 
 
 
 
-RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
+
+RETURN_CODE parse(const Vector *tokens, char *irOutputFileName) {
 
     if(tokens == NULL || irOutputFileName == NULL) {
         return _NULL_PTR_PASS_;
@@ -117,10 +191,10 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
    
     //print_tokens(tokens);
-    //irOutputFile = fopen(irOutputFileName, "w");
-    //if(irOutputFile == NULL) {
-    //    return _NULL_PTR_PASS_;
-    //}
+    FILE *irOutputFile = fopen(irOutputFileName, "w");
+    if(irOutputFile == NULL) {
+        return _NULL_PTR_PASS_;
+    }
 
 
     if(string_hashmap_initialise(&functionNameToMetadataMap, LOCAL_HASHMAP_SIZE) == false) {
@@ -129,8 +203,6 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
 
-    //Set the token length
-    inputTokenLength = vector_get_length(tokens);
 
     //Start loop by setting the first token in the token vector
     //Is updated by each function in the switch case (what token should be processed and at what index)
@@ -139,7 +211,10 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
         printf("Expected main function declaration\n");
         return _GENERIC_FAILURE_;
     }
-
+    
+    
+    
+    size_t startingTokenIndex = 0;
 
     while(1) {
 
@@ -156,15 +231,18 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
 
-
-
+        startingTokenIndex++; //Increment past the current token
+    
         //Parsing functions
         switch (currentFirstToken->tokenEnum) {
-        case TOK_COMMENT:
-            if(parse_comment(tokens)  != _SUCCESS_) {
+        
+        
+        case TOK_FN:
+            if(parse_function_declarations(tokens, &startingTokenIndex, irOutputFile)  != _SUCCESS_) {
                 return _GENERIC_FAILURE_;
             }
             break;
+
 
         default:
             printf("Unrecognised token: '%s'\n", validTokens[currentFirstToken->tokenEnum]);
@@ -175,7 +253,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
         //Set up for next token iteration
-        currentFirstToken = vector_get_index(tokens, startingTokenIndex);
+        currentFirstToken = (Token*)vector_get_index(tokens, startingTokenIndex);
         if(currentFirstToken == NULL) {
             handle_unexpected_null_token();
         }
