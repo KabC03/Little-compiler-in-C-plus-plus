@@ -13,7 +13,7 @@
 #include "compiler data.h"
 #include "string hashmap.h"
 
-RETURN_CODE parse(const Vector *tokens, char *irOutputFileName);
+RETURN_CODE parse(Vector *tokens, char *irOutputFileName);
 
 
 #endif //PARSE_H
