@@ -168,7 +168,9 @@ def write_text_section():
         with open(dataFileName, 'a') as file:
 
             file.write("; .text section\n");
-            file.write("section .section\n\n");
+            file.write("section .text\n\n");
+            file.write("initialise_hashmap:\n");
+
 
             #Store the perfect hash table in the .bss block
             #Just iterate over each character and store it as a byte
