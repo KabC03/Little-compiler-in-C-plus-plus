@@ -58,7 +58,7 @@ typedef struct JumpMetadata {
 
 
 //Parse function declarations - modifies starting index but reads from irOutputFile
-RETURN_CODE parse_function_declarations(const Vector *tokens, size_t *startingIndex, const FILE *irOutputFile) {
+RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, const FILE *irOutputFile) {
 
     //fn main(<int, @, @> x, <float, @, @> y) <int, @, @> {
     //fn is already garunteed to be here - so ignore it
@@ -78,7 +78,7 @@ RETURN_CODE parse_function_declarations(const Vector *tokens, size_t *startingIn
     }
 
 
-    const Token *currentToken = vector_get_index(tokens, *startingIndex);
+    Token *currentToken = (Token*)vector_get_index(tokens, *startingIndex);
     const char *functionName = NULL;
     if(currentToken == NULL) {
         printf("Expected a function name\n");
@@ -91,14 +91,14 @@ RETURN_CODE parse_function_declarations(const Vector *tokens, size_t *startingIn
             return _GENERIC_FAILURE_;
         } else {
 
-            functionName = dynamic_string_read(&currentToken->userString);
+            functionName = (char*)dynamic_string_read(&currentToken->userString);
             if(functionName == NULL) {
                 printf("Failed to read function name\n");
                 return _GENERIC_FAILURE_;
             }
 
             //Make sure the function hasng been defined previously
-            if(string_hashmap_get_value(&functionNameToMetadataMap, functionName, strlen(functionName) + 1) != NULL) {
+            if(string_hashmap_get_value(&functionNameToMetadataMap, (void*)functionName, strlen(functionName) + 1) != NULL) {
                 printf("Function '%s' is already defined\n",functionName);
                 return _GENERIC_FAILURE_;
             }
@@ -108,7 +108,7 @@ RETURN_CODE parse_function_declarations(const Vector *tokens, size_t *startingIn
 
 
     //Next token must be an open paren
-    currentToken = vector_get_index(tokens, *(startingIndex++));
+    currentToken = (Token*)vector_get_index(tokens, *(startingIndex++));
     if(currentToken == NULL) {
 
         printf("Expected an open parenthesis in function declaration\n");
@@ -136,7 +136,7 @@ RETURN_CODE parse_function_declarations(const Vector *tokens, size_t *startingIn
         
 
         //Expect a ',' to seperate the tokens
-        currentToken = vector_get_index(tokens, *(startingIndex++));
+        currentToken = (Token*)vector_get_index(tokens, *(startingIndex++));
         if(currentToken == NULL) {
             printf("Expected a ',' in function argument declaration\n");
             return _GENERIC_FAILURE_;
@@ -166,7 +166,7 @@ RETURN_CODE parse_function_declarations(const Vector *tokens, size_t *startingIn
 
 
     //Append the metadata for the function
-    if(string_hashmap_set(&functionNameToMetadataMap, functionName, strlen(functionName) + 1, &functionMetadata, sizeof(functionMetadata)) == false) {
+    if(string_hashmap_set(&functionNameToMetadataMap, (void*)functionName, strlen(functionName) + 1, &functionMetadata, sizeof(functionMetadata)) == false) {
         printf("Failed to append function metadata\n");
         return _GENERIC_FAILURE_;
     }
@@ -183,7 +183,7 @@ RETURN_CODE parse_function_declarations(const Vector *tokens, size_t *startingIn
 
 
 
-RETURN_CODE parse(const Vector *tokens, char *irOutputFileName) {
+RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
     if(tokens == NULL || irOutputFileName == NULL) {
         return _NULL_PTR_PASS_;
