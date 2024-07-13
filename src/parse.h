@@ -12,6 +12,8 @@
 #include "return codes.h"
 #include "compiler data.h"
 #include "string hashmap.h"
+#include "IR grammer.h"
+
 
 RETURN_CODE parse(Vector *tokens, char *irOutputFileName);
 
