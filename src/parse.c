@@ -1,7 +1,7 @@
 #include "parse.h"
 #define handle_unexpected_null_token() printf("Unexpected NULL token encountered\n"); return _GENERIC_FAILURE_; 
 #define LOCAL_HASHMAP_SIZE 100                //Local hashmap size for function and variable metadatas
-
+#define SIZEOF_INTEGER 4
 
 
 //Macro to make assertions cleaner
@@ -32,6 +32,7 @@ bool mainIsDefined = false;                   //Used to denote if main function 
 typedef struct FunctionMetadata {
 
     StringHashmap variableNameToMetadataMap;  //Variable name to its metadata for the current function
+    size_t numberOfVariables;                 //Used to keep track of the top of the stack from base pointer
     Stack jumpMetadata;                       //Metadata for any jumps (labels)
     //Static type checking
     size_t indirectionLevel;                  //Number of @
@@ -58,7 +59,7 @@ typedef struct JumpMetadata {
 
 
 //Parse variable declarations
-RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, const FILE *irOutputFile) {
+RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, const FILE *irOutputFile, FunctionMetadata *functionMetadata) {
 
     //<int, 2@> x (double pointer to an int)
 
@@ -160,8 +161,19 @@ RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, co
         return _GENERIC_FAILURE_;
     }
     const char *variableName = dynamic_string_read(&(currentToken->userString));
+    if(variableName == NULL) {
+        printf("Variable name unexpectedly NULL during assignment\n");
+        return _GENERIC_FAILURE_;
+    }
 
-    //FINISH HEER
+    variableMetadata.offsetFromBasePointer = ((functionMetadata->numberOfVariables)++) * SIZEOF_INTEGER;
+
+    //Add variable name to hashmap, also add its offset from the base pointer
+    //Assuming variable hashmap is already initialised
+    if(string_hashmap_set(&(functionMetadata->variableNameToMetadataMap), variableName, strlen(variableName) + 1, &(variableMetadata), sizeof(VariableMetadata)) == false) {
+        printf("Unable to append variable '%s' to hashmap\n", variableName);
+        return _GENERIC_FAILURE_;
+    }
 
 
     return _SUCCESS_;
@@ -243,10 +255,12 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
     //That function should handle the metadata stack stuff
     while(1) {
 
-        if(parse_variable_declaration(tokens, startingIndex, irOutputFile) != _SUCCESS_) {
+
+        /*
+        if(parse_variable_declaration(tokens, startingIndex, irOutputFile, ) != _SUCCESS_) {
             return _GENERIC_FAILURE_;
         }
-
+        */
         
 
         //Expect a ',' to seperate the tokens
