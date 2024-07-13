@@ -26,8 +26,8 @@
 //Stack - Format: STK_STR A1 offset_base_ptr 
 #define IR_STACK_STORE "STK_STR "
 #define IR_STACK_RETRIEVE "STK_RET "
-#define IR_STACK_RESERVE "STK_RES " //Reserve some space on the stack STK_RES numOfReg
-#define IR_STACK_FREE "STK_FREE" //Opposite of reserving space on the stack STK numOfReg
+#define IR_STACK_PUSH "STK_PUSH " //Simple push operation (like in x86) 
+#define IR_STACK_POP "STK_POP" 
 
 //Labels
 #define IR_LABEL "LABEL: " 
