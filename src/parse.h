@@ -11,11 +11,12 @@
 #include <stdint.h>
 #include "return codes.h"
 #include "compiler data.h"
+#include "string hashmap.h"
 
-
-RETURN_CODE parse(Vector *tokens, char *fileName);
+RETURN_CODE parse(const Vector *tokens, char *irOutputFileName);
 
 
 #endif //PARSE_H
+
 
 
