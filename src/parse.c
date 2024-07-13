@@ -79,7 +79,7 @@ RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, co
 
     //Get the <
     Token *currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
-    expect_singular_token_and_increment_counter(TOK_OPEN_ANGLE, "Expected a '<' in variable declaration\n");
+    expect_singular_token_and_increment_counter(TOK_OPEN_ANGLE, "Expected a '<' in variable declaration");
 
 
     
@@ -126,11 +126,30 @@ RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, co
 
     } else {
         //Expect a comma then a pointer declaration and finally a >
-
-        //FINISH HERE
-
+        expect_singular_token_and_increment_counter(TOK_COMMA, "Expected a comma in declaration");
 
 
+
+        //Expect a positive integer immediate 
+        currentToken = (Token*)vector_get_index(tokens, (*startingIndex)++);
+        if(currentToken == NULL) {
+            printf("Expected an integer indirection counter in declaration statement\n");
+            return _GENERIC_FAILURE_;
+        } 
+        if(currentToken->tokenEnum != INT_IMMEDIATE) {
+            printf("Expected an integer indirection counter in declaration statement\n");
+            return _GENERIC_FAILURE_;
+        }
+        if(currentToken->intImmediate <= 0) {
+            printf("Integer indirection must be larger than zero in declaration statement\n");
+            return _GENERIC_FAILURE_;
+
+        }
+        variableMetadata.indirectionLevel = currentToken->intImmediate;
+        //Expect a @ 
+        expect_singular_token_and_increment_counter(TOK_PTR, "Expected a '@' pointer operator");
+        //Expect a >
+        expect_singular_token_and_increment_counter(TOK_CLOSE_ANGLE, "Expected a '>' in variable declaration");
     }
 
 
