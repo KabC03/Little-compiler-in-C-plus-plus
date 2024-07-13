@@ -58,8 +58,8 @@ typedef struct JumpMetadata {
 
 
 
-//Parse variable declarations
-RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, const FILE *irOutputFile, FunctionMetadata *functionMetadata) {
+//Parse variable declarations - DOES NOT RESERVE STACK SPACE - MUST BE DONE IN OTHER FUNCTION - functionMetadata is the function of interest
+RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, FunctionMetadata *functionMetadata) {
 
     //<int, 2@> x (double pointer to an int)
 
@@ -74,7 +74,7 @@ RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, co
     NOTE: One variable per space since it avoids need to do manual alignment (also a performance benifit)
     */ 
 
-    if(tokens == NULL || startingIndex == NULL || irOutputFile == NULL) {
+    if(tokens == NULL || startingIndex == NULL || functionMetadata == NULL) {
         return _NULL_PTR_PASS_;
     } 
 
@@ -168,6 +168,7 @@ RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, co
 
     variableMetadata.offsetFromBasePointer = ((functionMetadata->numberOfVariables)++) * SIZEOF_INTEGER;
 
+
     //Add variable name to hashmap, also add its offset from the base pointer
     //Assuming variable hashmap is already initialised
     if(string_hashmap_set(&(functionMetadata->variableNameToMetadataMap), (void*)variableName, strlen(variableName) + 1, &(variableMetadata), sizeof(VariableMetadata)) == false) {
@@ -253,14 +254,29 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
     //Now must expect variable declarations here - can be infinite amount of them
     //Parse variable declaration function should be called here
     //That function should handle the metadata stack stuff
+
+
+
+    FunctionMetadata functionMetadata;
+    //Initialise the various structures inside the metadata
+
+
+    if(stack_initialise(&(functionMetadata.jumpMetadata), sizeof(JumpMetadata)) == false) {
+        printf("Unable to initialise stack during function declaration\n");
+        return _GENERIC_FAILURE_;
+    }
+    if(string_hashmap_initialise(&(functionMetadata.variableNameToMetadataMap), LOCAL_HASHMAP_SIZE) == false) {
+        printf("Unable to initialise hashmap during function declaration\n");
+        return _GENERIC_FAILURE_;
+    }
+
+
     while(1) {
 
 
-        /*
-        if(parse_variable_declaration(tokens, startingIndex, irOutputFile, ) != _SUCCESS_) {
+        if(parse_variable_declaration(tokens, startingIndex, &functionMetadata) != _SUCCESS_) {
             return _GENERIC_FAILURE_;
         }
-        */
         
 
         //Expect a ',' to seperate the tokens
@@ -280,7 +296,9 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
 
 
     //Add the return type
-    //NOTE: MUST DO THIS SEPERATELY
+    if(parse_variable_declaration(tokens, startingIndex, &functionMetadata) != _SUCCESS_) {
+        return _GENERIC_FAILURE_;
+    }
 
 
 
@@ -289,7 +307,6 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
 
 
 
-    FunctionMetadata functionMetadata;
 
 
     //Append the metadata for the function
