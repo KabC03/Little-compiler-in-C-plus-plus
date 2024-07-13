@@ -121,7 +121,7 @@ RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, co
         printf("Expected a '>' in variable declaration\n");
         return _GENERIC_FAILURE_;
     }
-    if(currentToken == TOK_CLOSE_ANGLE) {
+    if(currentToken->tokenEnum == TOK_CLOSE_ANGLE) {
         //End of type specifications - expect naming next
         //Do nothing here - just skip over the else
 
@@ -170,7 +170,7 @@ RETURN_CODE parse_variable_declaration(Vector *tokens, size_t *startingIndex, co
 
     //Add variable name to hashmap, also add its offset from the base pointer
     //Assuming variable hashmap is already initialised
-    if(string_hashmap_set(&(functionMetadata->variableNameToMetadataMap), variableName, strlen(variableName) + 1, &(variableMetadata), sizeof(VariableMetadata)) == false) {
+    if(string_hashmap_set(&(functionMetadata->variableNameToMetadataMap), (void*)variableName, strlen(variableName) + 1, &(variableMetadata), sizeof(VariableMetadata)) == false) {
         printf("Unable to append variable '%s' to hashmap\n", variableName);
         return _GENERIC_FAILURE_;
     }
