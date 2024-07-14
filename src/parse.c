@@ -1,3 +1,4 @@
+//14, Jun, 2024
 #include "parse.h"
 #define handle_unexpected_null_token() printf("Unexpected NULL token encountered\n"); return _GENERIC_FAILURE_; 
 #define LOCAL_HASHMAP_SIZE 100                //Local hashmap size for function and variable metadatas
