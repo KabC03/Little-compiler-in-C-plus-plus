@@ -35,8 +35,7 @@ typedef struct FunctionMetadata {
     size_t numberOfVariables;                 //Used to keep track of the top of the stack from base pointer
     Stack jumpMetadata;                       //Metadata for any jumps (labels)
     //Static type checking
-    size_t indirectionLevel;                  //Number of @
-    VALID_TOKEN_ENUM baseType;                //Base datatype (char, float, int)
+    VariableMetadata returnTypeMetadata;      //Metadata for the return type
 
 } FunctionMetadata;
 typedef struct VariableMetadata {
@@ -296,7 +295,7 @@ RETURN_CODE parse_function_declarations(Vector *tokens, size_t *startingIndex, c
 
 
     //Add the return type
-    if(parse_variable_declaration(tokens, startingIndex, &functionMetadata) != _SUCCESS_) {
+    if(parse_variable_declaration(tokens, startingIndex, &(functionMetadata.returnTypeMetadata)) != _SUCCESS_) {
         return _GENERIC_FAILURE_;
     }
 
