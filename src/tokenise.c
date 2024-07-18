@@ -180,6 +180,7 @@ bool internal_is_lone_token(char character) {
     case '(':
     case ')':
     case ';':
+    case ',':
 
         return true; 
         break;
