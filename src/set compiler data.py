@@ -28,8 +28,10 @@ typedef struct Token {
 """;
 
 
-hFile = "./src/compiler data.h";
-cFile = "./src/compiler data.c";
+outputFolder = "./src/";
+
+hFile = "compiler data.h";
+cFile = "compiler data.c";
 headerGuardName = "COMPILE_H";
 
 
@@ -90,10 +92,10 @@ librariesToInclude = [
     "<stdbool.h>",
     "<string.h>",
     "<stdint.h>",
-    "\"vector.h\"",
-    "\"datastructures.h\"",
-    "\"static hashmap.h\"",
-    "\"dynamic string.h\"",
+    "\"../libraries/vector.h\"",
+    "\"../libraries/datastructures.h\"",
+    "\"../libraries/static hashmap.h\"",
+    "\"../libraries/dynamic string.h\"",
 ];
 
 
@@ -103,7 +105,7 @@ def write_h_file():
 
     try:
         
-        with open(hFile, 'w') as file:
+        with open(str(outputFolder + hFile), 'w') as file:
         
             #Write header guards
             file.write("#ifndef " + str(headerGuardName) + "\n");
@@ -180,7 +182,7 @@ def write_c_file():
     maxTokenSize += 1; #Make space for NULL terminator
 
     try:
-        with open(cFile, 'w') as file:
+        with open(str(outputFolder + cFile), 'w') as file:
             file.write("#include " + "\"" + str(hFile) + "\"\n\n\n");
 
 
