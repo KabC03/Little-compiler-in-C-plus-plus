@@ -28,8 +28,8 @@ typedef struct Token {
 """;
 
 
-hFile = "./compiler data.h";
-cFile = "./compiler data.c";
+hFile = "./src/compiler data.h";
+cFile = "./src/compiler data.c";
 headerGuardName = "COMPILE_H";
 
 
