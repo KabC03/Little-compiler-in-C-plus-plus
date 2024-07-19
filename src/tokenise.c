@@ -35,7 +35,7 @@ char tempTokenBuffer[MAX_TOKEN_LENGTH + 1];
 RETURN_CODE print_tokens(Vector *tokensToPrint) {
 
     if(tokensToPrint == NULL) {
-        return _NULL_PTR_PASS_;
+        return _INVALID_ARG_PASS_;
 
     } else {
 
@@ -47,7 +47,7 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
             currentToken = (Token*)vector_get_index(tokensToPrint, i);
             if(currentToken == NULL) {
                 printf("ERROR obtaining token for printing\n");
-                return _GENERIC_FAILURE_;
+                return _INTERNAL_ERROR_;
             }
 
             switch (currentToken->tokenEnum) {
@@ -87,7 +87,7 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
         return _SUCCESS_;
     }
 
-    return _GENERIC_FAILURE_;
+    return _INTERNAL_ERROR_;
 }
 
 
@@ -98,19 +98,19 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
 RETURN_CODE internal_tokeniser_initialiser(Vector *tokensOut) {
 
     if(tokensOut == NULL) {
-        return _NULL_PTR_PASS_;
+        return _INVALID_ARG_PASS_;
     }
 
 
     if(string_hashmap_initialise(&(tokeniserValidTokenHashmap), NUMBER_OF_TOKENS) == false) {
-        return _GENERIC_FAILURE_;
+        return _INTERNAL_ERROR_;
     }
 
     for(VALID_TOKEN_ENUM i = 0; i < NUMBER_OF_TOKENS; i++) {
 
 
         if(string_hashmap_set(&(tokeniserValidTokenHashmap), (void*)(validTokens[i]), strlen(validTokens[i]) + 1, (void*)(&i), sizeof(VALID_TOKEN_ENUM)) == false) {
-            return _GENERIC_FAILURE_;
+            return _INTERNAL_ERROR_;
         }
 
     }
@@ -119,7 +119,7 @@ RETURN_CODE internal_tokeniser_initialiser(Vector *tokensOut) {
 
     if(vector_initialise(tokensOut, sizeof(Token)) == false) {
         //TODO: Add string hashmap destroy function here 
-        return _GENERIC_FAILURE_;
+        return _INTERNAL_ERROR_;
     }
 
 
@@ -295,7 +295,7 @@ bool internal_is_complete_token(char nextChar) {
 RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo, char *tempTokenBuffer) {
 
     if(tokenToAppendTo == NULL || tempTokenBuffer == NULL) {
-        return _NULL_PTR_PASS_;
+        return _INVALID_ARG_PASS_;
     } else {
 
         //Check for integer immediate
@@ -332,26 +332,26 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
             //printf("DETECTED INPUT STRING: %s\n", tempTokenBuffer);
             tokenToAppendTo->tokenEnum = USER_STRING; 
             if(dynamic_string_initialise(&(tokenToAppendTo->userString)) == false) {
-                return _GENERIC_FAILURE_;
+                return _INTERNAL_ERROR_;
             }
 
             //Add the string to the token
             if(dynamic_string_set(&(tokenToAppendTo->userString), tempTokenBuffer) == false) {
 
                 //TODO: Destroy dynamic string
-                return _GENERIC_FAILURE_;
+                return _INTERNAL_ERROR_;
             }
 
 
         } else {
 
             //Unrecognised invalid token sequence
-            return _FALSE_;
+            return _VALUE_ERROR_;
         }
         
     }
 
-    return _TRUE_;
+    return _SUCCESS_;
 }
 
 /**
@@ -368,7 +368,7 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
 RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
     if(srcFilename == NULL || tokensOut == NULL) {
-        return _NULL_PTR_PASS_;
+        return _INVALID_ARG_PASS_;
     } else {
 
         RETURN_CODE returnCode = internal_tokeniser_initialiser(tokensOut);
@@ -379,7 +379,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
         FILE *srcFilePtr = fopen(srcFilename, "r");
         if(srcFilePtr == NULL) {
-            return _FAILED_TO_OPEN_FILE_;
+            return _FILE_NOT_OPENED_;
         }
 
         Token currentToken;
@@ -387,10 +387,10 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
         if(charFromSrcFile == EOF) {
             currentToken.tokenEnum = EOF_TOKEN;
             if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
-                return _GENERIC_FAILURE_;
+                return _INTERNAL_ERROR_;
             }
             if(fclose(srcFilePtr) != 0) {
-                return _FAILED_TO_CLOSE_FILE_;
+                return _FILE_NOT_CLOSED_;
             }
             return _SUCCESS_;
         }
@@ -401,7 +401,7 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             if(charFromSrcFile == EOF) {
                 currentToken.tokenEnum = EOF_TOKEN;
                 if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
-                    return _GENERIC_FAILURE_;
+                    return _INTERNAL_ERROR_;
                 }
                 break;
             }
@@ -425,9 +425,9 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
                 printf("Unexpected character: '%c' with ASCII '%d'\n", charFromSrcFile, (unsigned char)(charFromSrcFile));
 
                 if(fclose(srcFilePtr) != 0) {
-                    return _FAILED_TO_CLOSE_FILE_;
+                    return _FILE_NOT_CLOSED_;
                 }
-                return _UNRECOGNISED_ARGUMENT_PASS_;
+                return _INVALID_ARG_PASS_;
             }
 
 
@@ -451,10 +451,10 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
             if(validTokenHashmapOutput == NULL) {
                 //Must be an immediate or user string
-                if(internal_attempt_set_immediate_or_user_string(&currentToken, tempTokenBuffer) != _TRUE_) {
+                if(internal_attempt_set_immediate_or_user_string(&currentToken, tempTokenBuffer) != _SUCCESS_) {
 
                     printf("Unrecognised token: '%s'\n",tempTokenBuffer);
-                    return _GENERIC_FAILURE_;
+                    return _INTERNAL_ERROR_;
                 }
 
             } else {
@@ -468,9 +468,9 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
 
                 if(fclose(srcFilePtr) != 0) {
-                    return _FAILED_TO_CLOSE_FILE_;
+                    return _FILE_NOT_CLOSED_;
                 }
-                return _GENERIC_FAILURE_;
+                return _INTERNAL_ERROR_;
             }
 
 
@@ -481,10 +481,9 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
 
         if(fclose(srcFilePtr) != 0) {
-            return _FAILED_TO_CLOSE_FILE_;
+            return _FILE_NOT_CLOSED_;
         }
     }
-
 
 
     return _SUCCESS_;
