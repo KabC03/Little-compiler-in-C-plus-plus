@@ -1,27 +1,25 @@
 //14, Jun, 2024
 #include "parse.h"
-#define handle_unexpected_null_token() printf("Unexpected NULL token encountered\n"); return _GENERIC_FAILURE_; 
+
+
 #define LOCAL_HASHMAP_SIZE 100                //Local hashmap size for function and variable metadatas
 #define SIZEOF_INTEGER 4
+#define SIZEOF_FLOAT 4
+#define SIZEOF_CHAR 4 //Should be 1 - to match UTF-8 but chose 4 so that its always memory aligned
 
 
-//Macro to make assertions cleaner
-#define expect_singular_token_and_increment_counter(tokenEnumCode, expectMessage) \
+//Assert a single token (like ; at the end of a statement) - Also increments counter automatically
+#define internal_assert_token(TOKEN, SYMBOL) \
+    //TOKEN - Token to assert e.g - OPEN_ANGLE_BRACE
+    //SYMBOL - The symbol actually expected e.g - <
     do {\
-        currentToken = (Token*)vector_get_index(tokens, *(startingIndex)); \
-        if(currentToken == NULL) { \
-        \
-            printf("%s\n", expectMessage); \
-        } else { \
-        \
-            if(currentToken->tokenEnum != tokenEnumCode) { \
-                printf("%s\n", expectMessage); \
-                return _GENERIC_FAILURE_; \
-            } \
-        \
-        } \
-    } while (0);
-    
+        const Token *currentToken = vector_get_index(inputTokens, inputTokenIndex;\
+        if(currentToken == NULL) {\
+            return _FAILED_TO_CLOSE_FILE_
+        
+
+    } while(0);
+
 
 
 
@@ -54,6 +52,42 @@ typedef struct JumpMetadata {
     size_t labelID;                           //Label ID to write at the end of the if statement (preceded with a '.' to avoid collisions)
 
 } JumpMetadata;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
