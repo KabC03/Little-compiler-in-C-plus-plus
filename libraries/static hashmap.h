@@ -31,3 +31,5 @@ bool hashmap_remove(HashMap *const hashmap, void *const key);
 bool hashmap_destroy(HashMap *const hashmap);
 
 #endif // HASHMAP_H
+
+

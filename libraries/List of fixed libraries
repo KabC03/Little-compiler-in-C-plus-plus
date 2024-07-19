@@ -1,0 +1,5 @@
+Used to keep track of libraries that have been updated to avoid - malloc overflow, poor return codes
+
+- Heap allocator
+- Dynamic strings
+

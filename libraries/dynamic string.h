@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
+#include "return codes.h"
+
 
 typedef struct DynamicString {
 
@@ -17,13 +19,20 @@ typedef struct DynamicString {
 } DynamicString;
 
 
-bool dynamic_string_initialise(DynamicString *dynamicString);
-bool dynamic_string_set(DynamicString *dynamicString, char *inputString);
+RETURN_CODE dynamic_string_initialise(DynamicString *dynamicString);
+RETURN_CODE dynamic_string_set(DynamicString *dynamicString, char *inputString);
 const char *dynamic_string_read(const DynamicString *dynamicString);
-bool dynamic_string_concatanate(DynamicString *dynamicString, char *inputString);
+RETURN_CODE dynamic_string_concatanate(DynamicString *dynamicString, char *inputString);
+RETURN_CODE dynamic_string_destroy(DynamicString *dynamicString);
+
+
 
 #endif // DYNAMIC_STRING_H
-
-
-
-
+      
+      
+      
+      
+      
+      
+      
+      

@@ -29,6 +29,3 @@ const void *string_hashmap_get_value(StringHashmap *stringHashmap, void *key, si
 
 
 
-
-
-

@@ -14,20 +14,19 @@
  * 
  * Param: *dynamicString - string of interest
  * 
- * Return: bool - T/F depending on if addition was successful
+ * Return: RETURN_CODE - T/F depending on if addition was successful
  * 
  */
-bool dynamic_string_initialise(DynamicString *dynamicString) {
+RETURN_CODE dynamic_string_initialise(DynamicString *dynamicString) {
 
     if(dynamicString == NULL) {
-        return false;
+        return _INVALID_ARG_PASS_;
     } else {
-
         dynamicString->size = 0;
         dynamicString->data = NULL;
     }
 
-    return true;
+    return _SUCCESS_;
 }
 
 
@@ -42,18 +41,18 @@ bool dynamic_string_initialise(DynamicString *dynamicString) {
  * Param: *dynamicString - string of interest
  *        *inputString - String to copy from
  * 
- * Return: bool - T/F depending on if addition was successful
+ * Return: RETURN_CODE - T/F depending on if addition was successful
  * 
  */
-bool dynamic_string_set(DynamicString *dynamicString, char *inputString) {
+RETURN_CODE dynamic_string_set(DynamicString *dynamicString, char *inputString) {
 
     if(dynamicString == NULL || inputString == NULL) {
-        return false;
+        return _INVALID_ARG_PASS_;
     } else {
 
         char *newPtr = realloc(dynamicString->data, strlen(inputString) + 1);
         if(newPtr == NULL) { //Realloc returns NULL if block is unchaged
-            return false;
+            return _ALLOC_FAILURE_;
         } else {
             dynamicString->data = newPtr;
         }
@@ -63,7 +62,7 @@ bool dynamic_string_set(DynamicString *dynamicString, char *inputString) {
         strncpy(dynamicString->data, inputString, dynamicString->size); 
     }
 
-    return true;
+    return _SUCCESS_;
 }
 
 
@@ -107,15 +106,15 @@ const char *dynamic_string_read(const DynamicString *dynamicString) {
  * Return: Pointer to the dynamic string 
  * 
  */
-bool dynamic_string_concatanate(DynamicString *dynamicString, char *inputString) {
+RETURN_CODE dynamic_string_concatanate(DynamicString *dynamicString, char *inputString) {
 
     if(dynamicString == NULL || inputString == NULL) {
-        return false;
+        return _INVALID_ARG_PASS_;
     } else {
 
         char *newPtr = realloc(dynamicString->data, dynamicString->size + strlen(inputString) + 1);
         if(newPtr == NULL) {
-            return false;
+            return _ALLOC_FAILURE_;
         } else {
 
             dynamicString->data = newPtr;
@@ -125,38 +124,51 @@ bool dynamic_string_concatanate(DynamicString *dynamicString, char *inputString)
 
     }
 
-    return true;
+    return _SUCCESS_;
 }
+
+
+
+
+
+
+/**
+ * dynamic_string_destroy
+ * ===============================================s
+ * Brief: Destroy memory associated with a dynamic string 
+ * 
+ * Param: *dynamicString - string of interest
+ *        *inputString - String to copy from
+ * 
+ * Return: Pointer to the dynamic string 
+ * 
+ */
+RETURN_CODE dynamic_string_destroy(DynamicString *dynamicString) {
+
+    if(dynamicString == NULL) {
+
+
+        return _INVALID_ARG_PASS_;
+    } else {
+
+        if(dynamicString->data == NULL) {
+
+            return _CRITICAL_ERROR_; //Library is not functioning properly if this has happened
+        }
+        free(dynamicString->data);
+    }
+
+    return _SUCCESS_;
+}
+
+
 
 /*
 TODO: add later
-- Compare strings (stcmp)
-- And so on
+- Strcmp
+- Strlen
+- Strstr
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
