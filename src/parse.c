@@ -166,15 +166,64 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
                 break;
 
 
+           
 
-                
             case TOK_FN:
                 //Function declaration
 
                 break;
+            
+            case TOK_RET:
+                //Return keyword
+
+                break;
+
+
+
+
+
+            case TOK_LBL:
+                //Label declaration
+
+                break;
+
+            case TOK_GTO:
+                //Goto statement
+
+                break;
+
+
+
+
+            case TOK_OPEN_ANGLE:
+                //Variable declaration
+
+                break;
+
+
+            case TOK_OPEN_ANGLE:
+                //Variable declaration
+
+                break;
+
+
+
+            case TOK_IF:
+                //If statement
+
+                break;
+
+
+
 
 
             default:
+
+
+                //Check for a function or variable name
+                //If neither then not a valid first token
+
+
                 printf("Starting token was not recognised: '");
                 internal_print_tokens(currentToken);
                 printf("'\n");
