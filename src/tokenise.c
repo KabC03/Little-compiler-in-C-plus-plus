@@ -56,15 +56,15 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
                 continue;
                 break;
             case INT_IMMEDIATE:
-                printf("%d",currentToken->intImmediate);
+                printf("int: '%d', ",currentToken->intImmediate);
                 continue;
                 break;
             case FLOAT_IMMEDIATE:
-                printf("%f",currentToken->floatImmediate);
+                printf("float: '%f', ",currentToken->floatImmediate);
                 continue;
                 break;
             case CHAR_IMMEDIATE:
-                printf("%c",currentToken->charImmediate);
+                printf("char: '%c', ",currentToken->charImmediate);
                 continue;
                 break;
             case USER_STRING:
@@ -74,14 +74,14 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
                     printf("CANNOT OBTAIN STRING TOKENAL ERROR\n");
                     return _INTERNAL_ERROR_;
                 }
-                printf("%s",userStringOut);
+                printf("str: '%s', ",userStringOut);
                 continue;
                 break;
             default:
                 break;
             }
 
-            printf("%s", validTokens[currentToken->tokenEnum]);
+            printf("enum: '%s', ", validTokens[currentToken->tokenEnum]);
 
         }
 

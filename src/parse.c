@@ -158,10 +158,10 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
                 //End of token stream reached
                 if(allowedToExit == true) {
                     //Check if was in the middle of declaring something
-                    return _INVALID_ARG_PASS_; 
+                    return _SUCCESS_; 
                 } else {
-
-                    return _SUCCESS_;
+                    printf("Statement incomplete\n");
+                    return _INVALID_ARG_PASS_;
                 }
                 break;
 
