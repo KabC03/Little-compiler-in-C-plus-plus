@@ -1,18 +1,25 @@
 #include "VM.h"
+#include "tokenise.h"
+#include "parse.h"
 
+#define TOKEN_PATH "./data/test_tokens.txt"
+#define IR_PATH "./data/IR.txt"
 
 int main(void) {
 
+    Vector tokensOut;
 
-    initialise_VM(10, 100, 10);
-    if(get_tokens_VM("IR.txt") == false) {
+    if(tokenise(TOKEN_PATH, &tokensOut) != _SUCCESS_) {
+        
+        printf("Failed to tokenise\n");
         return -1;
     }
-    run_VM();
+    if(print_tokens(&tokensOut) != _SUCCESS_) {
 
-
-
-
+        printf("Failed to print tokens\n");
+        return -2;
+    }
+    
 
     return 0;
 }

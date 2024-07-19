@@ -180,6 +180,8 @@ bool internal_is_lone_token(char character) {
     case ']':
     case '(':
     case ')':
+    case '<':
+    case '>':
     case ';':
     case ',':
 
@@ -257,7 +259,12 @@ bool internal_is_complete_token(char nextChar) {
     //Whitespace for both cases is already filtered out in the above switch statement
 
 
-    if(currentTokenMetadata.containsLoneTokens == true) {
+    if(internal_is_lone_token(nextChar) == true) {
+        //If the next char is a lone token then the token is complete
+
+        return true;
+
+    } else if(currentTokenMetadata.containsLoneTokens == true) {
         //Lone symbols ALWAYS are their own token - doesnt matter whats next
     
         return true;
