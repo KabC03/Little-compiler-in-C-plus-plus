@@ -11,10 +11,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
-#include "../libraries/vector.h"
-#include "../libraries/datastructures.h"
-#include "../libraries/static hashmap.h"
-#include "../libraries/dynamic string.h"
+#include "vector.h"
+#include "datastructures.h"
+#include "static hashmap.h"
+#include "dynamic string.h"
 extern const char validTokens[NUMBER_OF_TOKENS][MAX_TOKEN_LENGTH];
 
 

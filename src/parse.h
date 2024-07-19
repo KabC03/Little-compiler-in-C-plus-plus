@@ -9,9 +9,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
-#include "return codes.h"
+#include "../libraries/return codes.h"
 #include "compiler data.h"
-#include "string hashmap.h"
+#include "../libraries/string hashmap.h"
 #include "IR grammer.h"
 
 

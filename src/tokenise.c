@@ -39,6 +39,7 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
 
     } else {
 
+        const char *userStringOut;
         size_t vectorSize = vector_get_length(tokensToPrint) + 1;
         Token *currentToken = NULL;
         for(size_t i = 0; i < vectorSize; i++) {
@@ -68,7 +69,7 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
                 break;
             case USER_STRING:
 
-                const char *userStringOut = dynamic_string_read(&(currentToken->userString));
+                userStringOut = dynamic_string_read(&(currentToken->userString));
                 if(userStringOut == NULL) {
                     printf("ERROR obtaining user string for printing\n");
                 }
