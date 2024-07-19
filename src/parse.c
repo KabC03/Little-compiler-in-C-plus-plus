@@ -221,6 +221,8 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
                 //Check for a function or variable name
+                //Function - Call to a void function
+                //Variable name - A reassignment
                 //If neither then not a valid first token
 
 
@@ -233,13 +235,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
         }
-        
-
-
-
     }
-
-
 
     return _SUCCESS_;
 }
