@@ -19,7 +19,7 @@ typedef struct DynamicString {
 
 bool dynamic_string_initialise(DynamicString *dynamicString);
 bool dynamic_string_set(DynamicString *dynamicString, char *inputString);
-const char *dynamic_string_read(DynamicString *dynamicString);
+const char *dynamic_string_read(const DynamicString *dynamicString);
 bool dynamic_string_concatanate(DynamicString *dynamicString, char *inputString);
 
 #endif // DYNAMIC_STRING_H

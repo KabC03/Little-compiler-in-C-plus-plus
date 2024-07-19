@@ -13,7 +13,7 @@
 #include "compiler data.h"
 #include "../libraries/string hashmap.h"
 #include "IR grammer.h"
-
+#include "tokenise.h"
 
 RETURN_CODE parse(Vector *tokens, char *irOutputFileName);
 

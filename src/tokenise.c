@@ -46,41 +46,42 @@ RETURN_CODE print_tokens(Vector *tokensToPrint) {
 
             currentToken = (Token*)vector_get_index(tokensToPrint, i);
             if(currentToken == NULL) {
-                printf("ERROR obtaining token for printing\n");
+                printf("CANNOT OBTAIN TOKEN\n");
                 return _INTERNAL_ERROR_;
             }
 
             switch (currentToken->tokenEnum) {
             case EOF_TOKEN:
-                printf("EOF_TOKEN\n");
+                printf("EOF\n");
                 continue;
                 break;
             case INT_IMMEDIATE:
-                printf("INT_IMMEDIATE: %d\n",currentToken->intImmediate);
+                printf("%d",currentToken->intImmediate);
                 continue;
                 break;
             case FLOAT_IMMEDIATE:
-                printf("FLOAT_IMMEDIATE: %f\n",currentToken->floatImmediate);
+                printf("%f",currentToken->floatImmediate);
                 continue;
                 break;
             case CHAR_IMMEDIATE:
-                printf("CHAR_IMMEDIATE: %c\n",currentToken->charImmediate);
+                printf("%c",currentToken->charImmediate);
                 continue;
                 break;
             case USER_STRING:
 
                 userStringOut = dynamic_string_read(&(currentToken->userString));
                 if(userStringOut == NULL) {
-                    printf("ERROR obtaining user string for printing\n");
+                    printf("CANNOT OBTAIN STRING TOKENAL ERROR\n");
+                    return _INTERNAL_ERROR_;
                 }
-                printf("USER_STRING: %s\n",userStringOut);
+                printf("%s",userStringOut);
                 continue;
                 break;
             default:
                 break;
             }
 
-            printf("Token: %s\n", validTokens[currentToken->tokenEnum]);
+            printf("%s", validTokens[currentToken->tokenEnum]);
 
         }
 

@@ -19,7 +19,14 @@ int main(void) {
         printf("Failed to print tokens\n");
         return -2;
     }
-    
+
+    if(parse(&tokensOut, IR_PATH) != _SUCCESS_) {
+
+        printf("Failed to parse tokens\n");
+        return -3;
+    }
+
+
 
     return 0;
 }
