@@ -9,15 +9,20 @@
 
 
 //Assert a single token (like ; at the end of a statement) - Also increments counter automatically
-#define internal_assert_token(TOKEN, SYMBOL) \
-    //TOKEN - Token to assert e.g - OPEN_ANGLE_BRACE
+#define internal_assert_token(INPUT_TOKENS, INPUT_TOKEN_INDEX, ASSERTED_SYMBOL) \
     //SYMBOL - The symbol actually expected e.g - <
+    //INPUT_TOKEN_INDEX - Index into inputTokensA
+    //INPUT_TOKENS - Vector of tokens
     do {\
-        const Token *currentToken = vector_get_index(inputTokens, inputTokenIndex;\
+        const Token *currentToken = vector_get_index(INPUT_TOKENS, INPUT_TOKEN_INDEX;\
         if(currentToken == NULL) {\
-            return _FAILED_TO_CLOSE_FILE_
-        
-
+            return _INTERNAL_ERROR_;\ //Should never happen
+        }\
+        if(currentToken->tokenEnum != TOKEN_ASSERTED) {\ //Check if the symbols are equal
+            printf("Expected '%s'\n",ASSERTED_SYMBOL);
+            return _INVALID_ARG_PASS_;
+        }\
+        INPUT_TOKEN_INDEX++; //Increment the counter
     } while(0);
 
 
