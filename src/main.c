@@ -33,13 +33,17 @@ int main(void) {
 
 
     int data = 1;
-    LL_insert_front(&l1, data);
-    LL_insert_front(&l1, data);
-    LL_insert_front(&l1, data);
-    LL_insert_front(&l1, data);
-    LL_insert_front(&l1, data);
-    LL_insert_front(&l1, data);
-    LL_insert_front(&l1, data);
+    LL_insert_front(&l1, &data);
+    LL_insert_front(&l1, &data);
+    LL_insert_front(&l1, &data);
+    LL_insert_front(&l1, &data);
+    LL_insert_front(&l1, &data);
+    LL_insert_front(&l1, &data);
+    LL_insert_front(&l1, &data);
+
+    data =  2;
+    LL_insert_index(&l1, 1, &data);
+
 
     
     if(LL_print(&l1) == false) {

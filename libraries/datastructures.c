@@ -504,7 +504,7 @@ bool LL_delete_back(LinkedList *const list) {
 
 
 /**
- * LL_insert_index - WARNING DOES NOT WORK
+ * LL_insert_index
  * ===============================================
  * Brief: Insert at an index into the LL 
  * 
@@ -550,13 +550,10 @@ bool LL_insert_index(LinkedList *const list, size_t index,const void *const data
         memcpy(newNode->data, data, list->datatypeSize);
 
 
-        printf("Inserting at index: %zu\n", index);
-        LL_print(list);
-        printf("\n");
 
         //Could use double pointer if didnt have to worry about end pointer 
         ListNode *currentNode = list->head;
-        for(size_t i = 0; i < index; i++) {
+        for(size_t i = 0; i < index - 1; i++) {
 
             currentNode = currentNode->next;
             if(currentNode == NULL) { //Index out of bounds
