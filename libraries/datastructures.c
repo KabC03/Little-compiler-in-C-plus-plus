@@ -158,7 +158,7 @@ void* stack_peak(Stack *const stack) {
  * Brief: Pop an item onto the stack
  * 
  * Param: *stack - stack of interest
- *        *result - output pointer of where the result should be stored, if NULL no data will be stored there
+ *        *result - output pointer of where the result should be stored
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
@@ -174,18 +174,10 @@ bool stack_pop(Stack *const stack, void *result) {
 
 
         } else {
-
-            if(result != NULL) {
-                memcpy(result, stack->head->data, stack->datatypeSize);
-            }
-
-            Node *freePtr = stack->head;
-            free(stack->head->data);
-
-
+            
+            result = stack->head; //NOTE: CALLER MUST FREE THIS POINTER
 
             stack->head = stack->head->next;
-            free(freePtr);
         }
 
     }
@@ -323,11 +315,49 @@ bool queue_enqueue(Queue *queue, const void *const data) {
         }
     }
 
-    return false;
+    return true;
 }
 
 
+/**
+ * queue_dequeue
+ * ===============================================
+ * Brief: Dequeue an item to a queue 
+ * 
+ * Param: *queue - Queue to enqueue to 
+ *        *dataOut - Output data pointer 
+ * 
+ * Return: bool - T/F depending on if list exists
+ * 
+ */
+bool queue_dequeue(Queue *const queue, void *data) {
 
+    if(queue == NULL) {
+
+        return false;
+
+    } else {
+
+        if(queue->head == NULL) { //Empty queue
+            data = NULL;
+            return false;
+
+
+        } else {
+            
+            //NOTE: Caller MUST free data pointer - lost reference to it here
+            data = queue->head;
+
+
+            queue->head = queue->head->next;
+            if(queue->head == NULL) { //Queue is now empty
+                queue->tail = NULL;
+            }
+        }
+    }
+
+    return true;
+}
 
 
 

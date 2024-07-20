@@ -39,6 +39,22 @@ int main(void) {
         }
     }
 
+    printf("\n\n");
+    int *ptr = NULL;
+
+    for(int i = 0; i < 10; i++) {
+
+        if(queue_dequeue(&q1, (void*)ptr) == false) {
+
+            printf("Failed to dequeue");
+            return false;
+        }
+
+        printf("%d, ", *ptr);
+
+    }
+
+
     queue_print(&q1);
 
     return 0;
