@@ -245,7 +245,6 @@ bool LL_print(LinkedList *const linkedList) {
     if(linkedList == NULL) {
         return false;
     } else {
-
         ListNode *currentNode = linkedList->head;
 
         while(currentNode != NULL) {
@@ -539,13 +538,15 @@ bool LL_insert_index(LinkedList *const list, size_t index,const void *const data
         ListNode **currentNode = &(list->head);
         for(size_t i = 0; i < index; i++) {
 
-            if(*currentNode == NULL) { //Out of range
+            *(currentNode) = (*currentNode)->next;
+            if((*currentNode) == NULL) { //Out of range
                 free(newNode);
                 return false;
             }
 
-            *(currentNode) = (*currentNode)->next;
         }
+
+
 
         if(list->head == NULL) {
             list->head = newNode;

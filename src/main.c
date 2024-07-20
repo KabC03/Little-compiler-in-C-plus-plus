@@ -30,10 +30,19 @@ int main(void) {
 
    LinkedList l1;
     LL_initialise(&l1, sizeof(int));
-
     int data = 10;
-    LL_insert_index(&l1, 0, &data);
-    LL_print(&l1);
+    LL_insert_front(&l1, &data);
+    LL_insert_front(&l1, &data);
+
+    if(LL_insert_index(&l1, 1, &data) == false) {
+        printf("Failed to insert\n");
+    }
+
+
+    
+    if(LL_print(&l1) == false) {
+        printf("Failed to print\n");
+    }
 
     return 0;
 }
