@@ -82,13 +82,13 @@ bool stack_initialise(Stack *const stack, size_t dataSize);
 size_t stack_length(Stack *const stack);
 bool stack_push(Stack *const stack, const void *const data);
 void* stack_peak(Stack *const stack);
-bool stack_pop(Stack *const stack, void *result);
+bool stack_pop(Stack *const stack, void **const result);
 
 
 bool queue_print(const Queue *const queue);
 bool queue_initialise(Queue *const queue, const size_t dataSize);
 bool queue_enqueue(Queue *queue, const void *const data);
-bool queue_dequeue(Queue *const queue, void *data);
+bool queue_dequeue(Queue *const queue, void **data);
 
 
 bool LL_print(LinkedList *const linkedList);

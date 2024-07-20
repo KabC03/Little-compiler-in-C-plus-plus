@@ -162,20 +162,20 @@ void* stack_peak(Stack *const stack) {
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool stack_pop(Stack *const stack, void *result) {
+bool stack_pop(Stack *const stack, void **const result) {
 
-    if(stack == NULL) {
+    if(stack == NULL || result == NULL) {
         return false;
     } else {
 
         if(stack->head == NULL) {
-            result = NULL;
+            *result = NULL;
             return false;
 
 
         } else {
             
-            result = stack->head; //NOTE: CALLER MUST FREE THIS POINTER
+            *result = stack->head; //NOTE: CALLER MUST FREE THIS POINTER
 
             stack->head = stack->head->next;
         }
@@ -330,23 +330,22 @@ bool queue_enqueue(Queue *queue, const void *const data) {
  * Return: bool - T/F depending on if list exists
  * 
  */
-bool queue_dequeue(Queue *const queue, void *data) {
+bool queue_dequeue(Queue *const queue, void **data) {
 
-    if(queue == NULL) {
+    if(queue == NULL || data == NULL) {
 
         return false;
 
     } else {
 
         if(queue->head == NULL) { //Empty queue
-            data = NULL;
             return false;
 
 
         } else {
             
             //NOTE: Caller MUST free data pointer - lost reference to it here
-            data = queue->head;
+            *data = queue->head;
 
 
             queue->head = queue->head->next;

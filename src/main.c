@@ -44,12 +44,16 @@ int main(void) {
 
     for(int i = 0; i < 10; i++) {
 
-        if(queue_dequeue(&q1, (void*)ptr) == false) {
+        if(queue_dequeue(&q1, (void*)(&ptr)) == false) {
 
             printf("Failed to dequeue");
-            return false;
+            return -2;
         }
 
+        if(ptr == NULL) {
+            printf("Dequeued a NULL ptr\n");
+            return -3;
+        }
         printf("%d, ", *ptr);
 
     }
