@@ -119,9 +119,7 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex)
     }
 
     //Expressions: +,-,*,/,==,!=,>>,etc
-
-    
-
+    //Must check expression is one of these, then parse
 
 
 
