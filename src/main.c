@@ -28,14 +28,15 @@ int main(void) {
     }
     */
 
-   LinkedList l1;
+    LinkedList l1;
     LL_initialise(&l1, sizeof(int));
-    int data = 10;
-    LL_insert_front(&l1, &data);
-    LL_insert_front(&l1, &data);
 
-    if(LL_insert_index(&l1, 1, &data) == false) {
-        printf("Failed to insert\n");
+    for(int i = 0; i < 10; i++) {
+        printf("i = %d\n",i);
+        if(LL_insert_index(&l1, i, &i) == false) {
+            printf("Failed to insert\n");
+            return -1;
+        }
     }
 
 

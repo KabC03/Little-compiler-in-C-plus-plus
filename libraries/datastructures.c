@@ -521,6 +521,20 @@ bool LL_insert_index(LinkedList *const list, size_t index,const void *const data
         return false;
     } else {
 
+
+        //Check if inserting at front (special case)
+        if(index == 0) {
+            return LL_insert_front(list, data); //Pass down return value
+
+        }
+        //If list was empty, can only insert at index 0 - not allowed to insert anywhere else
+        if(list->head == NULL) {
+            return false;
+        }
+
+
+
+        //New node
         ListNode *newNode = malloc(sizeof(ListNode));
         if(newNode == NULL) {
             return false;
@@ -528,52 +542,50 @@ bool LL_insert_index(LinkedList *const list, size_t index,const void *const data
         newNode->next = NULL;
         newNode->back = NULL;
         newNode->data = malloc(list->datatypeSize);
+
         if(newNode->data == NULL) {
             free(newNode);
             return false;
         }
         memcpy(newNode->data, data, list->datatypeSize);
-        
 
-        ListNode **currentNode = &(list->head);
+
+        printf("Inserting at index: %zu\n", index);
+        LL_print(list);
+        printf("\n");
+
+        //Could use double pointer if didnt have to worry about end pointer 
+        ListNode *currentNode = list->head;
         for(size_t i = 0; i < index; i++) {
 
-            *(currentNode) = (*currentNode)->next;
-            if((*currentNode) == NULL) { //Out of range
-                free(newNode);
+            currentNode = currentNode->next;
+            if(currentNode == NULL) { //Index out of bounds
+                
+                //Check if trying to insert a node at the back
+                if(index - i == 1) {
+                    if(LL_insert_back(list, data) == false) {
+                        return false;
+                    }
+                    return true;
+                }
+
+
+
+
                 return false;
             }
-
         }
+        newNode->back = currentNode;
+        newNode->next = currentNode->next;
+        
+        if(currentNode->next == NULL) {
 
-
-
-        if(list->head == NULL) {
-            list->head = newNode;
-            list->end = newNode;
-
-        } else if(*currentNode == list->head) { //If inserting at the start of the list - must set the back ptr to NULL
-            newNode->back = NULL;
-            newNode->next = list->head;
-            list->head = newNode;
-
-        } else if(*currentNode == list->end) { //If inserting at the back must set the end ptr to NULL
-            newNode->next = NULL;
-            newNode->back = list->end;
-            list->end->next = newNode;
-            list->end = newNode;
-
+           //Do nothing 
         } else {
 
-            (*currentNode)->back = newNode;
-            newNode->next = (*currentNode)->next;
-            newNode->back = (*currentNode);
-            (*currentNode)->next = newNode;
+            currentNode->next->back = newNode;
         }
-
-
-
-
+        currentNode->next = newNode;
 
     }
 
