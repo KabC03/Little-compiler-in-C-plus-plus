@@ -522,8 +522,46 @@ bool LL_insert_index(LinkedList *const list, size_t index,const void *const data
         return false;
     } else {
 
+        ListNode *newNode = malloc(sizeof(ListNode));
+        if(newNode == NULL) {
+            return false;
+        }
+        newNode->next = NULL;
+        newNode->back = NULL;
+        newNode->data = malloc(list->datatypeSize);
+        if(newNode->data == NULL) {
+            free(newNode);
+            return false;
+        }
+        memcpy(newNode->data, data, list->datatypeSize);
+        
 
-    
+        ListNode **currentNode = &(list->head);
+        for(size_t i = 0; i < index; i++) {
+
+            if(*currentNode == NULL) { //Out of range
+                free(newNode);
+                return false;
+            }
+
+            *(currentNode) = (*currentNode)->next;
+        }
+        
+        if(*currentNode == list->head) { //If inserting at the start of the list - must set the back ptr to NULL
+
+
+        } else if(*currentNode == list->end) { //If inserting at the back must set the end ptr to NULL
+
+
+        } else {
+
+
+        }
+
+
+
+
+
     }
 
     return true;

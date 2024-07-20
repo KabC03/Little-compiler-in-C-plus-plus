@@ -111,15 +111,19 @@ RETURN_CODE internal_print_tokens(const Token *currentToken) {
 
 
 
-//Shunting yard algorithm for ordering tokens
-RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex) {
+//Shunting yard algorithm for ordering tokens - note outputQueue should be destroyed by consumer of token stack
+RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex, Queue *outputQueue) {
 
-    if(tokens == NULL || startIndex == NULL) {
+    if(tokens == NULL || startIndex == NULL || outputQueue == NULL) {
         return _INVALID_ARG_PASS_;
     }
 
     //Expressions: +,-,*,/,==,!=,>>,etc
     //Must check expression is one of these, then parse
+  
+
+    //Stack operatorStack;
+    //TODO: FINISH FROM HERE
 
 
 
@@ -221,13 +225,6 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
                 //Variable declaration
 
                 break;
-
-
-            case TOK_OPEN_ANGLE:
-                //Variable declaration
-
-                break;
-
 
 
             case TOK_IF:

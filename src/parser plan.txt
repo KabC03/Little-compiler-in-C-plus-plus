@@ -1,7 +1,7 @@
 
 
 1. Expression handling
-    - Shunting yard algorithm (in: token array, out: RPN token array)
+    - Shunting yard algorithm (in: token array, out: RPN stack)
     - Variable getter (in: variable, out: register number/stack address)
     - Expression evaluator (in: RPN token array, out: none - but writes asm to IR file)
 
