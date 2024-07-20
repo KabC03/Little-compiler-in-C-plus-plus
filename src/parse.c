@@ -108,6 +108,30 @@ RETURN_CODE internal_print_tokens(const Token *currentToken) {
     return _INTERNAL_ERROR_;
 }
 
+
+
+
+//Shunting yard algorithm for ordering tokens
+RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex) {
+
+    if(tokens == NULL || startIndex == NULL) {
+        return _INVALID_ARG_PASS_;
+    }
+
+    //Expressions: +,-,*,/,==,!=,>>,etc
+
+    
+
+
+
+
+    return _SUCCESS_;
+}
+
+
+
+
+
 /**
  * parse
  * ===============================================

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "../libraries/return codes.h"
+#include "../libraries/datastructures.h"
 #include "compiler data.h"
 #include "../libraries/string hashmap.h"
 #include "IR grammer.h"
