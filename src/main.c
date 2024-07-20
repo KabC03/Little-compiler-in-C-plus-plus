@@ -60,7 +60,7 @@ int main(void) {
 
 
     queue_print(&q1);
-
+    queue_destroy(&q1);
     return 0;
 }
 

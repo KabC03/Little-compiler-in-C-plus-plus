@@ -42,6 +42,42 @@ struct PriorityNode {
 };
 
 
+
+
+/**
+ * stack_print
+ * ===============================================
+ * Brief: Print a stack of integers 
+ * 
+ * Param: *stack - stack of interest
+ *
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool stack_print(const Stack *const stack) {
+
+    if(stack == NULL) {
+        return false;
+
+    } else {
+        
+        Node *currentNode = stack->head;
+
+        while(currentNode != NULL) {
+           
+            printf("%d, ", *(int*)(currentNode->data));
+
+            currentNode = currentNode->next;
+        }
+
+
+    }
+
+    return true;
+}
+
+
+
 //Stack
 /**
  * stack_initialise

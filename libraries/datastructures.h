@@ -78,6 +78,7 @@ typedef struct PriorityQueue {
 
 } PriorityQueue;
 
+bool stack_print(const Stack *const stack);
 bool stack_initialise(Stack *const stack, size_t dataSize);
 size_t stack_length(Stack *const stack);
 bool stack_push(Stack *const stack, const void *const data);
