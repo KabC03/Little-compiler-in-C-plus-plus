@@ -546,16 +546,28 @@ bool LL_insert_index(LinkedList *const list, size_t index,const void *const data
 
             *(currentNode) = (*currentNode)->next;
         }
-        
-        if(*currentNode == list->head) { //If inserting at the start of the list - must set the back ptr to NULL
 
+        if(list->head == NULL) {
+            list->head = newNode;
+            list->end = newNode;
+
+        } else if(*currentNode == list->head) { //If inserting at the start of the list - must set the back ptr to NULL
+            newNode->back = NULL;
+            newNode->next = list->head;
+            list->head = newNode;
 
         } else if(*currentNode == list->end) { //If inserting at the back must set the end ptr to NULL
-
+            newNode->next = NULL;
+            newNode->back = list->end;
+            list->end->next = newNode;
+            list->end = newNode;
 
         } else {
 
-
+            (*currentNode)->back = newNode;
+            newNode->next = (*currentNode)->next;
+            newNode->back = (*currentNode);
+            (*currentNode)->next = newNode;
         }
 
 
