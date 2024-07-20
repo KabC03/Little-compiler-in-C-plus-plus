@@ -188,19 +188,49 @@ bool stack_pop(Stack *const stack, void **const result) {
 
 
 
+/**
+ * stack_destroy 
+ * ===============================================
+ * Brief: Destroy a stack 
+ * 
+ * Param: *stack - stack of interest
+ *
+ * Return: bool - T/F depending on if initialisation was successful
+ * 
+ */
+bool stack_destroy(Stack *stack) {
+
+    if(stack == NULL) {
+        return false;
+
+
+    } else {
+    
+        Node *currentNode = stack->head;
+        Node *freeNode = stack->head;
+
+        while(freeNode != NULL) {
+            currentNode = currentNode->next;
+            free(freeNode);
+            freeNode = currentNode;
+        }
+
+    }
+
+
+    return true;
+}
+
+
+
+
+
+
+
+
+
 
 //Queue
-
-
-/*
-TODO:
-- Initialise
-- Length
-- Enqueue (with priority)
-- Dequeue
-
-- Destroy queue
-*/
 
 
 /**
@@ -357,6 +387,48 @@ bool queue_dequeue(Queue *const queue, void **data) {
 
     return true;
 }
+
+
+
+/**
+ * queue_destroy
+ * ===============================================
+ * Brief: Destroy a queue 
+ * 
+ * Param: *queue - Queue to destroy 
+ * 
+ * Return: bool - T/F depending on if list exists
+ * 
+ */
+bool queue_destroy(Queue *const queue) {
+
+    if(queue == NULL) {
+        return false;
+    } else {
+
+        Node *currentNode = queue->head;
+        Node *freeNode = queue->head;
+        while(freeNode != NULL) {
+            
+            currentNode = currentNode->next;
+            free(freeNode);
+            freeNode = currentNode;
+        }
+
+        queue->head = NULL;
+        queue->tail = NULL;
+    }
+
+    return true;
+}
+
+
+
+
+
+
+
+
 
 
 
