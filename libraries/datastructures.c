@@ -345,7 +345,7 @@ bool queue_dequeue(Queue *const queue, void **data) {
         } else {
             
             //NOTE: Caller MUST free data pointer - lost reference to it here
-            *data = queue->head;
+            *data = queue->head->data;
 
 
             queue->head = queue->head->next;

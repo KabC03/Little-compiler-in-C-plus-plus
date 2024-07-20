@@ -55,7 +55,7 @@ int main(void) {
             return -3;
         }
         printf("%d, ", *ptr);
-
+        free(ptr);
     }
 
 
