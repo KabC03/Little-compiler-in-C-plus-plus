@@ -7,7 +7,6 @@
 
 int main(void) {
 
-    /*
     Vector tokensOut;
 
     if(tokenise(TOKEN_PATH, &tokensOut) != _SUCCESS_) {
@@ -26,41 +25,7 @@ int main(void) {
         printf("Failed to parse tokens\n");
         return -3;
     }
-    */
-
-
-    Queue q1;
-    queue_initialise(&q1, sizeof(int));
-
-    for(int i = 0; i < 10; i++) {
-        if(queue_enqueue(&q1, &i) == false) {
-            printf("Failed to enqueue\n");
-            return -1;
-        }
-    }
-
-    printf("\n\n");
-    int *ptr = NULL;
-
-    for(int i = 0; i < 10; i++) {
-
-        if(queue_dequeue(&q1, (void*)(&ptr)) == false) {
-
-            printf("Failed to dequeue");
-            return -2;
-        }
-
-        if(ptr == NULL) {
-            printf("Dequeued a NULL ptr\n");
-            return -3;
-        }
-        printf("%d, ", *ptr);
-        free(ptr);
-    }
-
-
-    queue_print(&q1);
-    queue_destroy(&q1);
+    
     return 0;
 }
 
