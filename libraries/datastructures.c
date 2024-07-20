@@ -38,7 +38,7 @@ struct PriorityNode {
 
     uint8_t *data;
     struct PriorityNode *next;
-    struct Node *back;
+    struct PriorityNode *back;
 };
 
 
@@ -209,6 +209,127 @@ TODO:
 
 - Destroy queue
 */
+
+
+/**
+ * queue_print 
+ * ===============================================
+ * Brief: Print a queue (assumes integers)
+ * 
+ * Param: *queue - Queue to print 
+ * 
+ * Return: bool - T/F depending on if list exists
+ * 
+ */
+bool queue_print(const Queue *const queue) {
+
+    if(queue == NULL) {
+        return false;
+
+    } else {
+        
+        Node *currentNode = queue->head;
+
+        while(currentNode != NULL) {
+           
+            printf("%d, ", *(int*)(currentNode->data));
+
+            currentNode = currentNode->next;
+        }
+
+
+    }
+
+    return true;
+}
+
+
+
+
+
+
+/**
+ * queue_initialise 
+ * ===============================================
+ * Brief: Initialise a queue 
+ * 
+ * Param: *queue - Queue to initialise
+ *        dataSize - Size of data to be held within the queue
+ * 
+ * Return: bool - T/F depending on if list exists
+ * 
+ */
+bool queue_initialise(Queue *const queue, const size_t dataSize) {
+
+
+    if(queue == NULL || dataSize == 0) {
+        
+        return false;
+
+    } else {
+
+        queue->datatypeSize = dataSize;
+        queue->head = NULL;
+        queue->tail = NULL;
+
+    }
+
+    return true;
+}
+
+
+
+/**
+ * queue_enqueue 
+ * ===============================================
+ * Brief: Enqueue an item to a queue 
+ * 
+ * Param: *queue - Queue to enqueue to 
+ *        *data - Data to enqueue
+ * 
+ * Return: bool - T/F depending on if list exists
+ * 
+ */
+bool queue_enqueue(Queue *queue, const void *const data) {
+
+
+    if(queue == NULL || data == NULL) {
+        return false;
+    } else {
+
+        //Allocate space for a new node
+        Node *newNode = malloc(sizeof(Node));
+        if(newNode == NULL) {
+            return false;
+        }
+        newNode->data = malloc(queue->datatypeSize);
+        if(newNode->data ==NULL) {
+            free(newNode);
+            return false;
+        }
+        memcpy(newNode->data, data, queue->datatypeSize);
+
+        
+
+        //Insert at the END of the list
+        newNode->next = NULL;
+        if(queue->head == NULL) { //Queue was empty
+            queue->head = newNode;
+            queue->tail = newNode;
+
+        } else { //Queue is not empty
+            queue->tail->next = newNode;
+            queue->tail = newNode;
+        }
+    }
+
+    return false;
+}
+
+
+
+
+
 
 
 //Priority Queue
@@ -594,7 +715,6 @@ bool LL_insert_index(LinkedList *const list, size_t index,const void *const data
 /*
 TODO:
 
-- Insert at index
 - Delete at index
 
 - Get item at index
@@ -614,14 +734,9 @@ TODO:
 - First node is embedded allowing for quick access without dereference
 
 
-TODO
 - Mainly meant to be embedded in other libraries (e.g map)
 - Must pass the head NODE  Lnot aL
 - Singly linked list
-
-- Insert at front
-- Delete by key
-- Search for key
 
 */
 bool map_LL_print(MapList *const list) {

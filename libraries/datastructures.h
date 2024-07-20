@@ -68,6 +68,7 @@ typedef struct Queue {
 
     size_t datatypeSize;
     struct Node *head;
+    struct Node *tail;
 
 } Queue;
 typedef struct PriorityQueue {
@@ -82,6 +83,11 @@ size_t stack_length(Stack *const stack);
 bool stack_push(Stack *const stack, const void *const data);
 void* stack_peak(Stack *const stack);
 bool stack_pop(Stack *const stack, void *result);
+
+
+bool queue_print(const Queue *const queue);
+bool queue_initialise(Queue *const queue, const size_t dataSize);
+bool queue_enqueue(Queue *queue, const void *const data);
 
 bool LL_print(LinkedList *const linkedList);
 bool LL_initialise(LinkedList *const linkedList, size_t dataSize);

@@ -28,27 +28,18 @@ int main(void) {
     }
     */
 
-    LinkedList l1;
-    LL_initialise(&l1, sizeof(int));
 
+    Queue q1;
+    queue_initialise(&q1, sizeof(int));
 
-    int data = 1;
-    LL_insert_front(&l1, &data);
-    LL_insert_front(&l1, &data);
-    LL_insert_front(&l1, &data);
-    LL_insert_front(&l1, &data);
-    LL_insert_front(&l1, &data);
-    LL_insert_front(&l1, &data);
-    LL_insert_front(&l1, &data);
-
-    data =  2;
-    LL_insert_index(&l1, 1, &data);
-
-
-    
-    if(LL_print(&l1) == false) {
-        printf("Failed to print\n");
+    for(int i = 0; i < 10; i++) {
+        if(queue_enqueue(&q1, &i) == false) {
+            printf("Failed to enqueue\n");
+            return -1;
+        }
     }
+
+    queue_print(&q1);
 
     return 0;
 }
