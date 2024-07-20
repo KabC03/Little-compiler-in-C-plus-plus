@@ -111,7 +111,7 @@ RETURN_CODE internal_print_tokens(const Token *currentToken) {
 
 
 
-//Shunting yard algorithm for ordering tokens - note outputQueue should be destroyed by consumer of token stack
+//Shunting yard algorithm for ordering tokens - note outputQueue should be destroyed by consumer (but initialised) of token stack
 RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex, Queue *outputQueue) {
 
     if(tokens == NULL || startIndex == NULL || outputQueue == NULL) {
@@ -122,9 +122,65 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
     //Must check expression is one of these, then parse
   
 
-    //Stack operatorStack;
-    //TODO: FINISH FROM HERE
+    Stack operatorStack;
+    if(stack_initialise(&operatorStack, sizeof(Token)) == false) {
+        return _INTERNAL_ERROR_;
+    }
 
+
+
+    bool expectingOperator = false; //Used to specify if an operator or symbol is expected
+    const Token *currentToken = NULL;
+    while(1) {
+        //Loop until a non-arithmatic or operator is found (includes EOF token)
+
+        currentToken = (Token*)vector_get_index(tokens, *startIndex); 
+        if(currentToken == NULL) {
+            return _INTERNAL_ERROR_;
+        }
+
+
+        if(expectingOperator == true) {
+
+            switch(currentToken->tokenEnum) {
+
+            case TOK_ADD: 
+
+                break;     
+
+                //FINISH HERE
+
+            
+            default:
+                printf("Expected an operator but recieved: '");
+                internal_print_tokens(currentToken);
+                printf("'\n");
+            }
+
+
+        } else {
+
+            switch(currentToken->tokenEnum) {
+
+            case INT_IMMEDIATE:
+
+                break;     
+
+            
+                //FINISH HERE
+                
+
+
+            default:
+                printf("Expected a value but recieved: '");
+                internal_print_tokens(currentToken);
+                printf("'\n");
+            }
+
+
+        }
+
+    }
 
 
     return _SUCCESS_;
