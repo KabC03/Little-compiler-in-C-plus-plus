@@ -148,13 +148,24 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 
                 break;     
 
-                //FINISH HERE
+            case TOK_SUB: 
 
+                break;     
+
+            case TOK_MUL: 
+
+                break;     
+
+            case TOK_DIV: 
+
+                break;     
+
+            case TOK_MOD: 
+
+                break;     
             
             default:
-                printf("Expected an operator but recieved: '");
-                internal_print_tokens(currentToken);
-                printf("'\n");
+		return _SUCCESS_;
             }
 
 
@@ -163,13 +174,13 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
             switch(currentToken->tokenEnum) {
 
             case INT_IMMEDIATE:
-
-                break;     
-
-            
-                //FINISH HERE
-                
-
+            case FLOAT_IMMEDIATE:
+            case CHAR_IMMEDIATE:
+            case USER_STRING:
+		if(queue_enqueue(outputQueue, currentToken) == false) {
+			queue_destroy(outputQueue);
+			return _INTERNAL_ERROR_;
+		}
 
             default:
                 printf("Expected a value but recieved: '");
