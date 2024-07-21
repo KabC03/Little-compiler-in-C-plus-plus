@@ -211,7 +211,7 @@ bool stack_pop(Stack *const stack, void **const result) {
 
         } else {
             
-            *result = stack->head; //NOTE: CALLER MUST FREE THIS POINTER
+            *result = stack->head->data; //NOTE: CALLER MUST FREE THIS POINTER
 
             stack->head = stack->head->next;
         }

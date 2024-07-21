@@ -127,13 +127,14 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 		return _INTERNAL_ERROR_;
 	}
 
+	size_t stackLength;
     Token *popToken = NULL;
     const Token *peakToken = NULL;
 	bool expectingOperator = false; //Used to specify if an operator or symbol is expected
 	const Token *currentToken = NULL;
 	while(1) {
 		//Loop until a non-arithmatic or operator is found (includes EOF token)
-
+		//printf("Here\n");
 		currentToken = (Token*)vector_get_index(tokens, *startIndex); 
 		if(currentToken == NULL) {
 			return _INTERNAL_ERROR_;
@@ -145,7 +146,7 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 
 			case TOK_OPEN_PAREN:
 		 
-                if(stack_push(&operatorStack, &currentToken) == false) {
+                if(stack_push(&operatorStack, currentToken) == false) {
                     return _INTERNAL_ERROR_;
                 }
 				expectingOperator = false; //Expecting a value or parenthesis next
@@ -156,7 +157,7 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
                 //Pop until a matching open paren is found in the operator stack
                 while(1) {
 
-                    if(stack_pop(&operatorStack, (void*)(&popToken)) == false) {
+                    if(stack_pop(&operatorStack, (void**)(&popToken)) == false) {
                         return _INTERNAL_ERROR_;
                     }
                     if(popToken == NULL) {
@@ -200,22 +201,24 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 			case TOK_SUB: 
 
                 while(1) {
-
                     peakToken = stack_peak(&operatorStack);
                     if(peakToken == NULL) {
-                        return _INVALID_ARG_PASS_; //Means saw a operator first before any variables
-                    }
-                        free(popToken);
+						//First operator declared
+                        if(stack_push(&operatorStack, currentToken) == false) { 
+                            return _INTERNAL_ERROR_;
+                        }
 
-                    //Push higher precedence operator onto stack
-                    if(peakToken->tokenEnum != TOK_ADD && peakToken->tokenEnum != TOK_SUB) {
+                        break;
+                    
+					} else if(peakToken->tokenEnum != TOK_ADD && peakToken->tokenEnum != TOK_SUB) {
+                    	//Push higher precedence operator onto stack
                         if(stack_push(&operatorStack, peakToken) == false) { 
                             return _INTERNAL_ERROR_;
                         }
 
                     } else {
                         //Push current token onto stack and exit
-                        if(stack_push(&operatorStack, &currentToken) == false) { 
+                        if(stack_push(&operatorStack, currentToken) == false) { 
                             return _INTERNAL_ERROR_;
                         }
                         break;
@@ -233,14 +236,31 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 			case TOK_DIV: 
 			case TOK_MOD: 
                 //Assumed to have highest precedence
-                if(stack_push(&operatorStack, &currentToken) == false) {
+                if(stack_push(&operatorStack, currentToken) == false) {
                     return _INTERNAL_ERROR_;
                 }
 				continue;     
 
 			
 			default:
-		return _SUCCESS_;
+				//Pop off all items from stack and enqueue
+				stackLength = stack_length(&operatorStack);
+				for(size_t i = 0; i < stackLength; i++)	{
+                    if(stack_pop(&operatorStack, (void**)(&popToken)) == false) {
+                        return _INTERNAL_ERROR_;
+                    }
+
+				
+                    if(popToken == NULL) {
+                        return _INVALID_ARG_PASS_;
+                    }
+					if(queue_enqueue(outputQueue, (void*)popToken) == false) {
+						return _INTERNAL_ERROR_;
+					}
+					free(popToken);
+				}
+				
+				return _SUCCESS_;
 			}
 
 
