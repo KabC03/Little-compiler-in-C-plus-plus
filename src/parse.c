@@ -306,6 +306,27 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
 
+	//TEMPORARY
+	size_t index = 0;
+	Queue q1;
+	queue_initialise(&q1, sizeof(Token));
+	internal_shunting_yard_algorithm(tokens, &index, &q1);
+	printf("\n\n");
+
+	Token *token;
+	while(1) {
+		if(queue_dequeue(&q1, (void*)(&token)) == false) {
+			break;
+		}
+
+		internal_print_tokens(token);
+		printf(", ");
+	}
+	printf("\n\n");
+	return _SUCCESS_;
+	
+
+
 	//Read the stream of tokens
 	//First token will immediatly tell what type of operation it is
 
