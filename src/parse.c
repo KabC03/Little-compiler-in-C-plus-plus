@@ -127,7 +127,7 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 		return _INTERNAL_ERROR_;
 	}
 
-
+    const Token *popToken = NULL:
     const Token *peakToken = NULL;
 	bool expectingOperator = false; //Used to specify if an operator or symbol is expected
 	const Token *currentToken = NULL;
@@ -152,8 +152,36 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 				continue;
 
 			case TOK_CLOSE_PAREN:
+                
+                //Pop until a matching open paren is found in the operator stack
+                while(1) {
 
-				
+                    if(stack_pop(&operatorStack, &popToken) == false) {
+                        return _INTERNAL_ERROR_;
+                    }
+                    if(popToken == NULL) {
+                        return _INVALID_ARG_PASS_;
+                    }
+                    
+                    if(popToken->tokenEnum == TOK_OPEN_PAREN) {
+                        //Disguard the paren
+                        free(popToken->data);
+                        free(popToken);
+                        break;
+
+                    } else {
+                        //Push onto operator stack
+                        if(queue_enqueue(&outputQueue, popToken) == false) {
+
+                            return _INTERNAL_ERROR_;
+                        }
+                        free(popToken);
+                    }
+                }
+                
+
+
+
 				expectingOperator = false; //Expecting a value or parenthesis next
 				break;
 
@@ -178,6 +206,8 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
                     if(peakToken == NULL) {
                         return _INVALID_ARG_PASS_; //Means saw a operator first before any variables
                     }
+                        free(popToken->data);
+                        free(popToken);
 
                     //Push higher precedence operator onto stack
                     if(peakToken->tokenEnum != TOK_ADD && peakToken->tokenEnum != TOK_SUB) {
