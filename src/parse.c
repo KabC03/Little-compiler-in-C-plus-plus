@@ -310,7 +310,10 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 	size_t index = 0;
 	Queue q1;
 	queue_initialise(&q1, sizeof(Token));
-	internal_shunting_yard_algorithm(tokens, &index, &q1);
+	if(internal_shunting_yard_algorithm(tokens, &index, &q1) != _SUCCESS_) {
+		printf("SYA failed\n");
+		return -1;
+	}
 	printf("\n\n");
 
 	Token *token;
@@ -324,7 +327,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 	}
 	printf("\n\n");
 	return _SUCCESS_;
-	
+
 
 
 	//Read the stream of tokens
