@@ -149,7 +149,6 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
                 if(stack_push(&operatorStack, currentToken) == false) {
                     return _INTERNAL_ERROR_;
                 }
-				expectingOperator = false; //Expecting a value or parenthesis next
 				continue;
 
 			case TOK_CLOSE_PAREN:
@@ -178,12 +177,7 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
                         free(popToken);
                     }
                 }
-                
-
-
-
-				expectingOperator = false; //Expecting a value or parenthesis next
-				break;
+				continue;;
 
 
 
@@ -212,9 +206,14 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
                     
 					} else if(peakToken->tokenEnum != TOK_ADD && peakToken->tokenEnum != TOK_SUB) {
                     	//Push higher precedence operator onto stack
-                        if(stack_push(&operatorStack, peakToken) == false) { 
-                            return _INTERNAL_ERROR_;
-                        }
+
+						if(stack_pop(&operatorStack, (void**)(&popToken)) == false) {
+							return _INTERNAL_ERROR_;
+						}
+						if(queue_enqueue(outputQueue, popToken) == false) {
+							return _INTERNAL_ERROR_;
+						}
+						free(popToken);
 
                     } else {
                         //Push current token onto stack and exit
@@ -243,24 +242,7 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 
 			
 			default:
-				//Pop off all items from stack and enqueue
-				stackLength = stack_length(&operatorStack);
-				for(size_t i = 0; i < stackLength; i++)	{
-                    if(stack_pop(&operatorStack, (void**)(&popToken)) == false) {
-                        return _INTERNAL_ERROR_;
-                    }
-
-				
-                    if(popToken == NULL) {
-                        return _INVALID_ARG_PASS_;
-                    }
-					if(queue_enqueue(outputQueue, (void*)popToken) == false) {
-						return _INTERNAL_ERROR_;
-					}
-					free(popToken);
-				}
-				
-				return _SUCCESS_;
+				break;
 			}
 
 
@@ -278,13 +260,40 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 			}
                 continue;
 			default:
+
+				break;
+				/*
 				printf("Expected a value but recieved: '");
 				internal_print_tokens(currentToken);
 				printf("'\n");
+				return _INVALID_ARG_PASS_;
+				*/
 			}
 
 
 		}
+
+
+		//Pop off all items from stack and enqueue
+		stackLength = stack_length(&operatorStack);
+		for(size_t i = 0; i < stackLength; i++)	{
+			if(stack_pop(&operatorStack, (void**)(&popToken)) == false) {
+				return _INTERNAL_ERROR_;
+			}
+
+		
+			if(popToken == NULL) {
+				return _INVALID_ARG_PASS_;
+			}
+			if(queue_enqueue(outputQueue, (void*)popToken) == false) {
+				return _INTERNAL_ERROR_;
+			}
+			free(popToken);
+		}
+		
+		return _SUCCESS_;
+
+
 
 	}
 
