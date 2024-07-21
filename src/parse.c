@@ -139,9 +139,13 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
             return _INTERNAL_ERROR_;
         }
 
+        if(currentToken->tokenEnum == TOK_OPEN_PAREN || currentToken->tokenEnum == TOK_CLOSE_PAREN) {
+
+            expectingOperator = false; //Do not want an operator after a bracket
+        }
 
         if(expectingOperator == true) {
-
+            expectingOperator = false;
             switch(currentToken->tokenEnum) {
 
             case TOK_ADD: 
@@ -170,17 +174,17 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 
 
         } else {
-
+            expectingOperator = true;
             switch(currentToken->tokenEnum) {
 
             case INT_IMMEDIATE:
             case FLOAT_IMMEDIATE:
             case CHAR_IMMEDIATE:
             case USER_STRING:
-		if(queue_enqueue(outputQueue, currentToken) == false) {
-			queue_destroy(outputQueue);
-			return _INTERNAL_ERROR_;
-		}
+            if(queue_enqueue(outputQueue, currentToken) == false) {
+                queue_destroy(outputQueue);
+                return _INTERNAL_ERROR_;
+            }
 
             default:
                 printf("Expected a value but recieved: '");
@@ -325,6 +329,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
     return _SUCCESS_;
 }
+
 
 
 
