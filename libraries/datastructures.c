@@ -206,7 +206,7 @@ bool stack_pop(Stack *const stack, void **const result) {
 
         if(stack->head == NULL) {
             *result = NULL;
-            return false;
+            return true;
 
 
         } else {

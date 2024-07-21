@@ -157,10 +157,11 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
                 while(1) {
 
                     if(stack_pop(&operatorStack, (void**)(&popToken)) == false) {
-                        return _INTERNAL_ERROR_;
+                        return _INTERNAL_ERROR_; 
                     }
                     if(popToken == NULL) {
-                        return _INVALID_ARG_PASS_;
+
+                        return _INVALID_ARG_PASS_; //No matching (
                     }
                     
                     if(popToken->tokenEnum == TOK_OPEN_PAREN) {
@@ -204,11 +205,14 @@ RETURN_CODE internal_shunting_yard_algorithm(Vector *tokens, size_t *startIndex,
 
                         break;
                     
-					} else if(peakToken->tokenEnum != TOK_ADD && peakToken->tokenEnum != TOK_SUB) {
+					} else if(peakToken->tokenEnum != TOK_ADD && peakToken->tokenEnum != TOK_SUB && peakToken->tokenEnum != TOK_OPEN_PAREN) {
                     	//Push higher precedence operator onto stack
 
 						if(stack_pop(&operatorStack, (void**)(&popToken)) == false) {
 							return _INTERNAL_ERROR_;
+						}
+						if(popToken == NULL) {
+							return _INVALID_ARG_PASS_;
 						}
 						if(queue_enqueue(outputQueue, popToken) == false) {
 							return _INTERNAL_ERROR_;
