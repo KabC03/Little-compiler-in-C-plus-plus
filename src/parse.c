@@ -151,9 +151,6 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 		return -1;
 	}
 	printf("\n\n");
-    */
-
-
 	Token *token;
 	while(1) {
 		if(queue_dequeue(&q1, (void*)(&token)) == false) {
@@ -166,6 +163,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 	printf("\n\n");
 	return _SUCCESS_;
 
+    */
 
 
 	//Read the stream of tokens
