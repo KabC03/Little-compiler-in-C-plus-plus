@@ -1,4 +1,4 @@
-#Compile and run everything
+#Compile and run everything and check error codes
 
 
 clear
