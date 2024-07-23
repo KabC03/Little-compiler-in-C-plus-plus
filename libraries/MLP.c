@@ -22,7 +22,7 @@ bool MLP_randomise(Matrix *const matrix, float range, float min) {
 
         srand(time(NULL));
         for(size_t i = 0; i < (matrix->cols * matrix->rows); i++) {
-            matrix->data[(matrix->dataSize) * i] = (min + (range * (float)rand())/RAND_MAX);
+            matrix->data[(matrix->dataSize) * i] = (min + (range * (float)rand())/(float)RAND_MAX);
         }
 
     }
