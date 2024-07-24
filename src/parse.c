@@ -71,9 +71,14 @@ RETURN_CODE internal_write_variable_declaration_metadata(Vector *tokens, size_t 
 		return _INVALID_ARG_PASS_;
 	}
 
+
 	const Token *currentToken = NULL;
 	bool baseTypeDeclared = false;
 	bool looping = true;
+
+
+	//Assert a < before the declaration
+    internal_macro_assert_token(tokens, index, TOK_OPEN_ANGLE, "<"); //Assert '<'
     do {
 
     	currentToken = (Token*)vector_get_index(tokens, *(index)++);
@@ -138,7 +143,6 @@ RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
     // Functions take the form:             fn <basetype modifier, ...> name(<basetype modifier ...>variable, ...) {} 
 
     internal_macro_assert_token(tokens, index, TOK_FN, "fn"); //Assert 'fn'
-    internal_macro_assert_token(tokens, index, TOK_OPEN_ANGLE, "<"); //Assert '<'
 
 
     //Set up new function
@@ -151,7 +155,9 @@ RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
 		return _INTERNAL_ERROR_;
 	}
     //Set function return types
-
+	if(internal_write_variable_declaration_metadata(tokens, index, &(newFunction.returnTypeMetadata)) != _SUCCESS_) {
+		return _INVALID_ARG_PASS_;
+	}
 
 
 
