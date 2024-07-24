@@ -249,11 +249,13 @@ RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
 	const char *varName;
 	bool looping = true;
 	while(looping == true) {
+		
 		if(internal_write_variable_declaration_metadata(tokens, index, &(variableMetadata)) != _SUCCESS_) {
 			return _INVALID_ARG_PASS_;
 		}
 		//Got the type now get the variable name
 		internal_macro_get_next_token_and_set(currentToken, tokens, index);
+
 		if(currentToken->tokenEnum != USER_STRING) {
 			printf("Expected argument name\n");
 			return _INVALID_ARG_PASS_;
@@ -268,8 +270,6 @@ RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
 		&variableMetadata, sizeof(variableMetadata)) == false) {
 			return _INTERNAL_ERROR_;
 		}
-
-
 
 
 		internal_macro_get_next_token_and_set(currentToken, tokens, index);
@@ -289,6 +289,7 @@ RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
 				printf("Unexpected token during argument parsing\n");
 				return _INVALID_ARG_PASS_;
 		}
+		newFunction.numberOfVariables++;
 	} 
 
     //internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, ")"); //Assert ')' //Code automatically does this above
@@ -298,7 +299,6 @@ RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
 	if(string_hashmap_set(&functionNameToMetadataMap, functionName, strlen(functionName), &newFunction, sizeof(FunctionMetadata)) == false) {
 		return _INTERNAL_ERROR_;
 	}
-
     return _SUCCESS_;
 }
 
@@ -343,6 +343,11 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 		return _FILE_NOT_OPENED_;
 	}
 	fprintf(irOutputFilePtr, "::::::\n");
+
+	if(string_hashmap_initialise(&functionNameToMetadataMap, LOCAL_HASHMAP_SIZE) == false) {
+		printf("Failed to initialise function hashmap\n");
+		return _INTERNAL_ERROR_;
+	}
 
 
     /*

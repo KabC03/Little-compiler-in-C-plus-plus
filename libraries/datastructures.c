@@ -22,7 +22,6 @@
 
 
 
-
 struct ListNode {
 
     uint8_t *data;
@@ -1172,8 +1171,10 @@ bool string_map_LL_initilise(StringMapList *const list) {
 bool string_map_LL_set(StringMapList *const list, const void *const inputKey, const void *const inputValue, size_t inputKeySize, size_t inputValueSize) {
 
     if(list == NULL || inputKey == NULL || inputValue == NULL || inputKeySize == 0 || inputValueSize == 0) {
+
+        printf("List: %p\n", list);
+
         return false;
-        
     } else {
 
         //Search entire LL first before adding new node
@@ -1199,6 +1200,8 @@ bool string_map_LL_set(StringMapList *const list, const void *const inputKey, co
 
             currentNode = malloc(sizeof(StringMapListNode));
             if(currentNode == NULL) {
+
+
                 return false;
             }
             
@@ -1230,6 +1233,7 @@ bool string_map_LL_set(StringMapList *const list, const void *const inputKey, co
 
 
     }
+
 
     return true;
 }

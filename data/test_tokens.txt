@@ -1,4 +1,3 @@
-fn <int @ @>poop(<int> p) {
-
+fn <int>man() {
 
 
