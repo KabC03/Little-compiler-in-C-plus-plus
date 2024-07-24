@@ -9,12 +9,12 @@ bool allowedToExit = false;                   //If allowed to exit (if in the mi
 
 
 //Assert a single token (like ; at the end of a statement) - Also increments counter automatically
-#define internal_assert_token(INPUT_TOKENS, INPUT_TOKEN_INDEX, TOKEN_ASSERTED, SYMBOL_ASSERTED) \
+#define internal_macro_assert_token(INPUT_TOKENS, INPUT_TOKEN_INDEX, TOKEN_ASSERTED, SYMBOL_ASSERTED) \
 	/*SYMBOL - The symbol actually expected e.g - <*/\
 	/*INPUT_TOKEN_INDEX - Index into inputTokens*/\
 	/*INPUT_TOKENS - Vector of tokens*/\
 	do {\
-		const Token *currentToken = vector_get_index(INPUT_TOKENS, INPUT_TOKEN_INDEX);\
+		const Token *currentToken = (Token*)vector_get_index(INPUT_TOKENS, *INPUT_TOKEN_INDEX);\
 		if(currentToken == NULL) {\
 			return _INTERNAL_ERROR_; /*Should never happen*/\
 		}\
@@ -22,7 +22,7 @@ bool allowedToExit = false;                   //If allowed to exit (if in the mi
 			printf("Expected '%s'\n", SYMBOL_ASSERTED);\
 			return _INVALID_ARG_PASS_;\
 		}\
-		INPUT_TOKEN_INDEX++; /*Increment the counter*/\
+		*(INPUT_TOKEN_INDEX)++; /*Increment the counter*/\
 	} while(0);
 
 
@@ -49,7 +49,7 @@ typedef struct FunctionMetadata {
 	size_t numberOfVariables;                 //Used to keep track of the top of the stack from base pointer
 	Stack jumpMetadata;                       //Metadata for any jumps (labels)
 	//Static type checking
-	VariableMetadata returnTypeMetadata;      //Metadata for the return type
+	VariableMetadata returnTypeMetadata;      //Metadata for the return type - used for static type checking
 
 } FunctionMetadata;
 typedef struct JumpMetadata {
@@ -57,6 +57,114 @@ typedef struct JumpMetadata {
 	size_t labelID;                           //Label ID to write at the end of the if statement (preceded with a '.' to avoid collisions)
 
 } JumpMetadata;
+
+
+
+
+
+
+
+//Writes to a variable metadata struct
+RETURN_CODE internal_write_variable_declaration_metadata(Vector *tokens, size_t *index, VariableMetadata *variableMetadata) {
+
+	if(variableMetadata == NULL || index == NULL || variableMetadata == NULL) {
+		return _INVALID_ARG_PASS_;
+	}
+
+	const Token *currentToken = NULL;
+	bool baseTypeDeclared = false;
+	bool looping = true;
+    do {
+
+    	currentToken = (Token*)vector_get_index(tokens, *(index)++);
+		if(baseTypeDeclared == false) {
+
+			switch(currentToken->tokenEnum) {
+
+				case TOK_INT:
+					variableMetadata->baseType = TOK_INT;
+					break;
+
+				case TOK_FLT:
+					variableMetadata->baseType = TOK_FLT;
+					break;
+
+				case TOK_CHR:
+					variableMetadata->baseType = TOK_CHR;
+					break;
+				
+				default:
+					printf("Expected a base type declaration\n");
+					return _INVALID_ARG_PASS_;
+					break;
+			}
+			baseTypeDeclared = true;
+
+		} else { //Type modifiers
+
+			switch(currentToken->tokenEnum) {
+
+				case TOK_PTR:
+					variableMetadata->indirectionLevel++;
+					break;
+
+				case TOK_CLOSE_ANGLE: //End the declaration
+					looping = true;
+					break;
+
+				default:
+					printf("Expected a type modifier\n");
+					return _INVALID_ARG_PASS_;
+					break;
+			}
+
+
+		}
+
+    } while(looping == true);
+
+
+
+
+	return _SUCCESS_;
+}
+
+
+RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
+
+    if(tokens == NULL || index == NULL) {
+        return _INVALID_ARG_PASS_;
+    }
+    // Functions take the form:             fn <basetype modifier, ...> name(<basetype modifier ...>variable, ...) {} 
+
+    internal_macro_assert_token(tokens, index, TOK_FN, "fn"); //Assert 'fn'
+    internal_macro_assert_token(tokens, index, TOK_OPEN_ANGLE, "<"); //Assert '<'
+
+
+    //Set up new function
+    FunctionMetadata newFunction;
+	if(string_hashmap_initialise(&(newFunction.variableNameToMetadataMap), LOCAL_HASHMAP_SIZE) == false) { //String hashmap
+		return _INTERNAL_ERROR_;
+	}
+	newFunction.numberOfVariables = 0;
+	if(stack_initialise(&(newFunction.jumpMetadata), sizeof(size_t)) == false) {
+		return _INTERNAL_ERROR_;
+	}
+    //Set function return types
+
+
+
+
+    return _SUCCESS_;
+}
+
+
+
+
+
+
+
+
 
 
 //Print a single token
