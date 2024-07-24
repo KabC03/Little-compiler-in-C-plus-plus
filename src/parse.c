@@ -9,7 +9,7 @@ bool allowedToExit = false;                   //If allowed to exit (if in the mi
 
 
 //Assert a single token (like ; at the end of a statement) - Also increments counter automatically
-#define internal_macro_assert_token(INPUT_TOKENS, INPUT_TOKEN_INDEX, TOKEN_ASSERTED, SYMBOL_ASSERTED) \
+#define internal_macro_assert_token(INPUT_TOKENS, INPUT_TOKEN_INDEX, TOKEN_ASSERTED, SYMBOL_ASSERTED)\
 	/*SYMBOL - The symbol actually expected e.g - <*/\
 	/*INPUT_TOKEN_INDEX - Index into inputTokens*/\
 	/*INPUT_TOKENS - Vector of tokens*/\
@@ -25,6 +25,15 @@ bool allowedToExit = false;                   //If allowed to exit (if in the mi
 		*(INPUT_TOKEN_INDEX)++; /*Increment the counter*/\
 	} while(0);
 
+
+//Get a single token from a vector
+#define internal_macro_get_next_token_and_set(TOK_TO_WRITE_TO, TOK_TO_READ, INDEX_TO_INC)\
+	do {\
+		Token *TOK_TO_WRITE_TO = (Token*)vector_get_index(TOK_TO_READ, *(INDEX_TO_INC)++);\
+		if(TOK_TO_WRITE_TO == NULL) {\
+			return _INTERNAL_ERROR_;\
+		}\
+	} while(0); 
 
 
 
@@ -160,6 +169,81 @@ RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
 	}
 
 
+	//Get the function name - just save it in functionName for now - will be appended at the end
+	Token *currentToken = NULL;
+	internal_macro_get_next_token_and_set(currentToken, tokens, index);
+	if(currentToken->tokenEnum != USER_STRING) {
+		printf("Expected function name");
+		return _INVALID_ARG_PASS_;
+	}
+
+	const char *functionName = dynamic_string_read(&(currentToken->userString));
+	if(functionName == NULL) {
+		return _INTERNAL_ERROR_;
+	}
+	
+
+    internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, "("); //Assert '('
+
+
+
+	//Get function arguments
+	//Get types, expect a name, and then a comma or ), if its a ) then end the argument list
+
+	VariableMetadata variableMetadata;
+	const char *varName;
+	bool looping = true;
+	while(looping == true) {
+
+		if(internal_write_variable_declaration_metadata(tokens, index, &(variableMetadata)) != _SUCCESS_) {
+			return _INVALID_ARG_PASS_;
+		}
+		//Got the type now get the variable name
+		internal_macro_get_next_token_and_set(currentToken, tokens, index);
+		if(currentToken->tokenEnum != USER_STRING) {
+			printf("Expected argument name\n");
+			return _INVALID_ARG_PASS_;
+		}
+		varName = dynamic_string_read(&(currentToken->userString));
+		if(varName == NULL) {
+			return _INTERNAL_ERROR_;
+		}
+
+		//Store the variable name with its metadata
+		if(string_hashmap_set(&(newFunction.variableNameToMetadataMap), varName, strlen(varName), 
+		&variableMetadata, sizeof(variableMetadata)) == false) {
+			return _INTERNAL_ERROR_;
+		}
+
+
+
+
+		internal_macro_get_next_token_and_set(currentToken, tokens, index);
+		//Should either be a comma or close paren
+
+		switch(currentToken->tokenEnum) {
+
+			case TOK_COMMA:
+				break; //Continue
+
+
+			case TOK_CLOSE_PAREN:
+				looping = false;
+				break; 
+
+			default:
+				printf("Unexpected token during argument parsing\n");
+				return _INVALID_ARG_PASS_;
+		}
+	} 
+
+    //internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, ")"); //Assert ')' //Code automatically does this above
+    internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, "{"); //Assert '{'
+
+	//Append the function metadata
+	if(string_hashmap_set(&functionNameToMetadataMap, functionName, strlen(functionName), &newFunction, sizeof(FunctionMetadata)) == false) {
+		return _INTERNAL_ERROR_;
+	}
 
     return _SUCCESS_;
 }

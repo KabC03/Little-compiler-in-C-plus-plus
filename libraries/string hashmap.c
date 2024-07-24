@@ -157,7 +157,7 @@ bool string_hashmap_initialise(StringHashmap *stringhashmap, size_t initialHashm
  * Return: bool - T/F depending on if initialisation was successful
  * 
  */
-bool string_hashmap_set(StringHashmap *stringHashmap, void *key, size_t keySize, void *value, size_t valueSize) {
+bool string_hashmap_set(StringHashmap *stringHashmap, const void *key, const size_t keySize, const void *value, const size_t valueSize) {
 
     if(stringHashmap == NULL || key == NULL || value == NULL || keySize == 0 || valueSize == 0) {
         
