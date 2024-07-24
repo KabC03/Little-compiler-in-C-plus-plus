@@ -171,7 +171,7 @@ bool string_hashmap_set(StringHashmap *stringHashmap, const void *key, const siz
             return false;
         }
 
-
+        printf("HERE\n");
         StringMapList *listToInsertTo = (StringMapList*)vector_get_index(&(stringHashmap->stringMapListNode), hashIndex);
 
         if(string_map_LL_set(listToInsertTo, key, value, keySize, valueSize) == false) {
