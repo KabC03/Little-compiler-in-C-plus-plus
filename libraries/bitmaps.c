@@ -1,4 +1,4 @@
-//14, Jul, 2024
+//25, Jul, 2024
 #include "bitmaps.h"
 #define BITMAP_FILE_SIGNATURE 0x4D42
 #define BITS_PER_BYTE 8
@@ -110,9 +110,6 @@ RETURN_CODE bitmap_enstantiate(char *bitmapPath, BitmapImage *bitmapImageOutput)
 
     return _SUCCESS_;
 }
-
-
-
 
 
 
@@ -321,6 +318,31 @@ RETURN_CODE bitmap_destroy(BitmapImage *bitmapImage) {
     return _SUCCESS_;
 }
 
+
+
+/**
+ * bitmap_return_metadata
+ * ===============================================
+ * Brief: Return metadata for an image 
+ * 
+ * Param: *bitmapImage - Bitmap of interest 
+ *        *outputMetadata 
+ * 
+ * Return: bool - T/F depending on if addition was successful
+ * 
+ */
+RETURN_CODE bitmap_return_metadata(BitmapImage *bitmapImage, BitmapMetadata *outputMetadata) {
+
+    if(bitmapImage == NULL || outputMetadata == NULL) {
+        return _INVALID_ARG_PASS_;
+
+    } else {
+
+        *outputMetadata = bitmapImage->bitmapMetadata;
+    }
+
+    return _SUCCESS_;
+}
 
 
 
