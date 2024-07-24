@@ -1172,7 +1172,6 @@ bool string_map_LL_set(StringMapList *const list, const void *const inputKey, co
 
     if(list == NULL || inputKey == NULL || inputValue == NULL || inputKeySize == 0 || inputValueSize == 0) {
 
-        printf("List: %p\n", list);
 
         return false;
     } else {
