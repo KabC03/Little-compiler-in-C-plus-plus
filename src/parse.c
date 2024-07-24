@@ -299,6 +299,7 @@ RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
 	if(string_hashmap_set(&functionNameToMetadataMap, functionName, strlen(functionName), &newFunction, sizeof(FunctionMetadata)) == false) {
 		return _INTERNAL_ERROR_;
 	}
+	(*index)--; //Stops an issue 
     return _SUCCESS_;
 }
 
@@ -381,16 +382,14 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 	for(size_t i = 0; ;i++) {
 
 		//Get the newest token
-		const Token *currentToken = (Token*)vector_get_index(tokens, i); 
+		const Token *currentToken = (Token*)vector_get_index(tokens, i);
 		if(currentToken == NULL) {
 			return _INTERNAL_ERROR_;
 		}
 
-		
 		//Switch it to see what it is - call corrosponding function
 		//i acts like a program counter (can go back or forth depending on what is to be parsed
 		switch(currentToken->tokenEnum) {
-
 			case EOF_TOKEN:
 				//End of token stream reached
 				if(allowedToExit == true) {
@@ -410,6 +409,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 				if(internal_parse_funcion_declaration(tokens, &i) != _SUCCESS_) {
 					return _INVALID_ARG_PASS_;
 				}
+				allowedToExit = false;
 				break;
 			
 			case TOK_RET:
@@ -467,6 +467,7 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 
 		}
+
 	}
 
 	return _SUCCESS_;
