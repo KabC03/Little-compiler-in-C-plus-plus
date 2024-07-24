@@ -19,20 +19,23 @@ bool allowedToExit = false;                   //If allowed to exit (if in the mi
 			return _INTERNAL_ERROR_; /*Should never happen*/\
 		}\
 		if(currentToken->tokenEnum != TOKEN_ASSERTED) { /*Check if the symbols are equal*/\
-			printf("Expected '%s'\n", SYMBOL_ASSERTED);\
+			printf("Expected '%s' but got '", SYMBOL_ASSERTED);\
+			internal_print_tokens(currentToken);\
+			printf("'\n");\
 			return _INVALID_ARG_PASS_;\
 		}\
-		*(INPUT_TOKEN_INDEX)++; /*Increment the counter*/\
+		(*INPUT_TOKEN_INDEX)++; /*Increment the counter*/\
 	} while(0);
 
 
 //Get a single token from a vector
 #define internal_macro_get_next_token_and_set(TOK_TO_WRITE_TO, TOK_TO_READ, INDEX_TO_INC)\
 	do {\
-		Token *TOK_TO_WRITE_TO = (Token*)vector_get_index(TOK_TO_READ, *(INDEX_TO_INC)++);\
+		TOK_TO_WRITE_TO = (Token*)vector_get_index(TOK_TO_READ, *INDEX_TO_INC);\
 		if(TOK_TO_WRITE_TO == NULL) {\
 			return _INTERNAL_ERROR_;\
 		}\
+		(*INDEX_TO_INC)++;\
 	} while(0); 
 
 
@@ -66,194 +69,6 @@ typedef struct JumpMetadata {
 	size_t labelID;                           //Label ID to write at the end of the if statement (preceded with a '.' to avoid collisions)
 
 } JumpMetadata;
-
-
-
-
-
-
-
-//Writes to a variable metadata struct
-RETURN_CODE internal_write_variable_declaration_metadata(Vector *tokens, size_t *index, VariableMetadata *variableMetadata) {
-
-	if(variableMetadata == NULL || index == NULL || variableMetadata == NULL) {
-		return _INVALID_ARG_PASS_;
-	}
-
-
-	const Token *currentToken = NULL;
-	bool baseTypeDeclared = false;
-	bool looping = true;
-
-
-	//Assert a < before the declaration
-    internal_macro_assert_token(tokens, index, TOK_OPEN_ANGLE, "<"); //Assert '<'
-    do {
-
-    	currentToken = (Token*)vector_get_index(tokens, *(index)++);
-		if(baseTypeDeclared == false) {
-
-			switch(currentToken->tokenEnum) {
-
-				case TOK_INT:
-					variableMetadata->baseType = TOK_INT;
-					break;
-
-				case TOK_FLT:
-					variableMetadata->baseType = TOK_FLT;
-					break;
-
-				case TOK_CHR:
-					variableMetadata->baseType = TOK_CHR;
-					break;
-				
-				default:
-					printf("Expected a base type declaration\n");
-					return _INVALID_ARG_PASS_;
-					break;
-			}
-			baseTypeDeclared = true;
-
-		} else { //Type modifiers
-
-			switch(currentToken->tokenEnum) {
-
-				case TOK_PTR:
-					variableMetadata->indirectionLevel++;
-					break;
-
-				case TOK_CLOSE_ANGLE: //End the declaration
-					looping = true;
-					break;
-
-				default:
-					printf("Expected a type modifier\n");
-					return _INVALID_ARG_PASS_;
-					break;
-			}
-
-
-		}
-
-    } while(looping == true);
-
-
-
-
-	return _SUCCESS_;
-}
-
-
-RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
-
-    if(tokens == NULL || index == NULL) {
-        return _INVALID_ARG_PASS_;
-    }
-    // Functions take the form:             fn <basetype modifier, ...> name(<basetype modifier ...>variable, ...) {} 
-
-    internal_macro_assert_token(tokens, index, TOK_FN, "fn"); //Assert 'fn'
-
-
-    //Set up new function
-    FunctionMetadata newFunction;
-	if(string_hashmap_initialise(&(newFunction.variableNameToMetadataMap), LOCAL_HASHMAP_SIZE) == false) { //String hashmap
-		return _INTERNAL_ERROR_;
-	}
-	newFunction.numberOfVariables = 0;
-	if(stack_initialise(&(newFunction.jumpMetadata), sizeof(size_t)) == false) {
-		return _INTERNAL_ERROR_;
-	}
-    //Set function return types
-	if(internal_write_variable_declaration_metadata(tokens, index, &(newFunction.returnTypeMetadata)) != _SUCCESS_) {
-		return _INVALID_ARG_PASS_;
-	}
-
-
-	//Get the function name - just save it in functionName for now - will be appended at the end
-	Token *currentToken = NULL;
-	internal_macro_get_next_token_and_set(currentToken, tokens, index);
-	if(currentToken->tokenEnum != USER_STRING) {
-		printf("Expected function name");
-		return _INVALID_ARG_PASS_;
-	}
-
-	const char *functionName = dynamic_string_read(&(currentToken->userString));
-	if(functionName == NULL) {
-		return _INTERNAL_ERROR_;
-	}
-	
-
-    internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, "("); //Assert '('
-
-
-
-	//Get function arguments
-	//Get types, expect a name, and then a comma or ), if its a ) then end the argument list
-
-	VariableMetadata variableMetadata;
-	const char *varName;
-	bool looping = true;
-	while(looping == true) {
-
-		if(internal_write_variable_declaration_metadata(tokens, index, &(variableMetadata)) != _SUCCESS_) {
-			return _INVALID_ARG_PASS_;
-		}
-		//Got the type now get the variable name
-		internal_macro_get_next_token_and_set(currentToken, tokens, index);
-		if(currentToken->tokenEnum != USER_STRING) {
-			printf("Expected argument name\n");
-			return _INVALID_ARG_PASS_;
-		}
-		varName = dynamic_string_read(&(currentToken->userString));
-		if(varName == NULL) {
-			return _INTERNAL_ERROR_;
-		}
-
-		//Store the variable name with its metadata
-		if(string_hashmap_set(&(newFunction.variableNameToMetadataMap), varName, strlen(varName), 
-		&variableMetadata, sizeof(variableMetadata)) == false) {
-			return _INTERNAL_ERROR_;
-		}
-
-
-
-
-		internal_macro_get_next_token_and_set(currentToken, tokens, index);
-		//Should either be a comma or close paren
-
-		switch(currentToken->tokenEnum) {
-
-			case TOK_COMMA:
-				break; //Continue
-
-
-			case TOK_CLOSE_PAREN:
-				looping = false;
-				break; 
-
-			default:
-				printf("Unexpected token during argument parsing\n");
-				return _INVALID_ARG_PASS_;
-		}
-	} 
-
-    //internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, ")"); //Assert ')' //Code automatically does this above
-    internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, "{"); //Assert '{'
-
-	//Append the function metadata
-	if(string_hashmap_set(&functionNameToMetadataMap, functionName, strlen(functionName), &newFunction, sizeof(FunctionMetadata)) == false) {
-		return _INTERNAL_ERROR_;
-	}
-
-    return _SUCCESS_;
-}
-
-
-
-
-
-
-
 
 
 
@@ -305,6 +120,197 @@ RETURN_CODE internal_print_tokens(const Token *currentToken) {
 
 	return _INTERNAL_ERROR_;
 }
+
+
+
+
+//Writes to a variable metadata struct
+RETURN_CODE internal_write_variable_declaration_metadata(Vector *tokens, size_t *index, VariableMetadata *variableMetadata) {
+
+	if(variableMetadata == NULL || index == NULL || variableMetadata == NULL) {
+		return _INVALID_ARG_PASS_;
+	}
+
+
+	const Token *currentToken = NULL;
+	bool baseTypeDeclared = false;
+	bool looping = true;
+
+
+	//Assert a < before the declaration
+    internal_macro_assert_token(tokens, index, TOK_OPEN_ANGLE, "<"); //Assert '<'
+    do {
+
+    	currentToken = (Token*)vector_get_index(tokens, (*index)++);
+		if(baseTypeDeclared == false) {
+
+			switch(currentToken->tokenEnum) {
+
+				case TOK_INT:
+					variableMetadata->baseType = TOK_INT;
+					break;
+
+				case TOK_FLT:
+					variableMetadata->baseType = TOK_FLT;
+					break;
+
+				case TOK_CHR:
+					variableMetadata->baseType = TOK_CHR;
+					break;
+				
+				default:
+					printf("Expected a base type declaration\n");
+					return _INVALID_ARG_PASS_;
+					break;
+			}
+			baseTypeDeclared = true;
+
+		} else { //Type modifiers
+
+			switch(currentToken->tokenEnum) {
+
+				case TOK_PTR:
+					variableMetadata->indirectionLevel++;
+					break;
+
+				case TOK_CLOSE_ANGLE: //End the declaration
+					looping = false;
+					break;
+
+				default:
+					printf("Expected a type modifier ");
+					internal_print_tokens(currentToken);
+					printf("\n");
+					return _INVALID_ARG_PASS_;
+					break;
+			}
+
+
+		}
+
+    } while(looping == true);
+
+
+
+
+	return _SUCCESS_;
+}
+
+
+RETURN_CODE internal_parse_funcion_declaration(Vector *tokens, size_t *index) {
+
+    if(tokens == NULL || index == NULL) {
+        return _INVALID_ARG_PASS_;
+    }
+    // Functions take the form:             fn <basetype modifier, ...> name(<basetype modifier ...>variable, ...) {} 
+
+    internal_macro_assert_token(tokens, index, TOK_FN, "fn"); //Assert 'fn'
+
+
+    //Set up new function
+    FunctionMetadata newFunction;
+	if(string_hashmap_initialise(&(newFunction.variableNameToMetadataMap), LOCAL_HASHMAP_SIZE) == false) { //String hashmap
+		return _INTERNAL_ERROR_;
+	}
+	newFunction.numberOfVariables = 0;
+	if(stack_initialise(&(newFunction.jumpMetadata), sizeof(size_t)) == false) {
+		return _INTERNAL_ERROR_;
+	}
+    //Set function return types
+	if(internal_write_variable_declaration_metadata(tokens, index, &(newFunction.returnTypeMetadata)) != _SUCCESS_) {
+		return _INVALID_ARG_PASS_;
+	}
+
+
+	//Get the function name - just save it in functionName for now - will be appended at the end
+	Token *currentToken = NULL;
+	internal_macro_get_next_token_and_set(currentToken, tokens, index);
+	if(currentToken->tokenEnum != USER_STRING) {
+		printf("Expected function name\n");
+		internal_print_tokens(currentToken);
+		printf("\n");
+		return _INVALID_ARG_PASS_;
+	}
+
+	const char *functionName = dynamic_string_read(&(currentToken->userString));
+	if(functionName == NULL) {
+		return _INTERNAL_ERROR_;
+	}
+	
+
+    internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, "("); //Assert '('
+
+
+
+	//Get function arguments
+	//Get types, expect a name, and then a comma or ), if its a ) then end the argument list
+
+	VariableMetadata variableMetadata;
+	const char *varName;
+	bool looping = true;
+	while(looping == true) {
+		if(internal_write_variable_declaration_metadata(tokens, index, &(variableMetadata)) != _SUCCESS_) {
+			return _INVALID_ARG_PASS_;
+		}
+		//Got the type now get the variable name
+		internal_macro_get_next_token_and_set(currentToken, tokens, index);
+		if(currentToken->tokenEnum != USER_STRING) {
+			printf("Expected argument name\n");
+			return _INVALID_ARG_PASS_;
+		}
+		varName = dynamic_string_read(&(currentToken->userString));
+		if(varName == NULL) {
+			return _INTERNAL_ERROR_;
+		}
+
+		//Store the variable name with its metadata
+		if(string_hashmap_set(&(newFunction.variableNameToMetadataMap), varName, strlen(varName), 
+		&variableMetadata, sizeof(variableMetadata)) == false) {
+			return _INTERNAL_ERROR_;
+		}
+
+
+
+
+		internal_macro_get_next_token_and_set(currentToken, tokens, index);
+		//Should either be a comma or close paren
+
+		switch(currentToken->tokenEnum) {
+
+			case TOK_COMMA:
+				break; //Continue
+
+
+			case TOK_CLOSE_PAREN:
+				looping = false;
+				break; 
+
+			default:
+				printf("Unexpected token during argument parsing\n");
+				return _INVALID_ARG_PASS_;
+		}
+	} 
+
+    //internal_macro_assert_token(tokens, index, TOK_OPEN_PAREN, ")"); //Assert ')' //Code automatically does this above
+    internal_macro_assert_token(tokens, index, TOK_OPEN_CURLEY, "{"); //Assert '{'
+
+	//Append the function metadata
+	if(string_hashmap_set(&functionNameToMetadataMap, functionName, strlen(functionName), &newFunction, sizeof(FunctionMetadata)) == false) {
+		return _INTERNAL_ERROR_;
+	}
+
+    return _SUCCESS_;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
