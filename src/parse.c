@@ -396,7 +396,9 @@ RETURN_CODE parse(Vector *tokens, char *irOutputFileName) {
 
 			case TOK_FN:
 				//Function declaration
-
+				if(internal_parse_funcion_declaration(tokens, &i) != _SUCCESS_) {
+					return _INVALID_ARG_PASS_;
+				}
 				break;
 			
 			case TOK_RET:
