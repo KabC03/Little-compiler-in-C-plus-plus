@@ -198,16 +198,6 @@ RETURN_CODE internal_write_variable_declaration_metadata(Vector *tokens, size_t 
 
 
 
-
-
-
-
-
-
-
-
-
-
 //Declare a variable
 RETURN_CODE internal_parse_variable_declaration(Vector *tokens, size_t *index) {
 
@@ -235,6 +225,7 @@ RETURN_CODE internal_parse_variable_declaration(Vector *tokens, size_t *index) {
 		printf("\n");
 		return _INVALID_ARG_PASS_;
 	}
+
 	const char *variableName = dynamic_string_read(&(currentToken->userString));
 	if(variableName == NULL) {
 		return _INTERNAL_ERROR_;
@@ -242,11 +233,6 @@ RETURN_CODE internal_parse_variable_declaration(Vector *tokens, size_t *index) {
 
 
 
-    internal_macro_assert_token(tokens, index, TOK_EQUALS_ASSIGNMENT, "="); //Assert a '='
-
-
-    //HANDLE EXPRESSION HERE
-    
 
 
 
