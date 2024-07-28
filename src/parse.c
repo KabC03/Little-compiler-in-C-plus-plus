@@ -1,4 +1,4 @@
-//20, Jun, 2024
+//28, Jun, 2024
 #include "parse.h"
 
 bool allowedToExit = false;                   //If allowed to exit (if in the middle of a declaration cannot exit)
