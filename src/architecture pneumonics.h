@@ -93,7 +93,7 @@ je my_label
     if(fprintf(destFptr, "call %s\n",labelToCall) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_return_function()\
-    if(fprintf(destFptr, "ret\n") < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "ret\n\n") < 0) {return _INTERNAL_ERROR_;}
 
 
 
