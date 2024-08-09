@@ -60,22 +60,22 @@ je my_label
 */
 
 #define internal_macro_equal_to(labelToJumpTo, regSrc1, regSrc2)\
-    if(fprintf(destFptr, "EQA R%zu R%zu %s\n",regSrc1, regSrc1, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "EQA R%zu R%zu %s\n",regSrc1, regSrc2, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_not_equal_to(labelToJumpTo, regSrc1, regSrc2)\
-    if(fprintf(destFptr, "NEQ R%zu R%zu %s\n",regSrc1, regSrc1, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "NEQ R%zu R%zu %s\n",regSrc1, regSrc2, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_less_than(labelToJumpTo, regSrc1, regSrc2)\
-    if(fprintf(destFptr, "LES R%zu R%zu %s\n",regSrc1, regSrc1, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "LES R%zu R%zu %s\n",regSrc1, regSrc2, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_greater_than(labelToJumpTo, regSrc1, regSrc2)\
-    if(fprintf(destFptr, "GRT R%zu R%zu %s\n",regSrc1, regSrc1, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "GRT R%zu R%zu %s\n",regSrc1, regSrc2, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_greater_equal(labelToJumpTo, regSrc1, regSrc2)\
-    if(fprintf(destFptr, "GRE R%zu R%zu %s\n",regSrc1, regSrc1, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "GRE R%zu R%zu %s\n",regSrc1, regSrc2, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_less_equal(labelToJumpTo, regSrc1, regSrc2)\
-    if(fprintf(destFptr, "LTE R%zu R%zu %s\n",regSrc1, regSrc1, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "LTE R%zu R%zu %s\n",regSrc1, regSrc2, labelToJumpTo) < 0) {return _INTERNAL_ERROR_;}
 
 
 
