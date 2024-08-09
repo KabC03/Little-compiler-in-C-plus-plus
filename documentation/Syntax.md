@@ -163,17 +163,29 @@ if(x == 1): //This is another comment after an instruction
 
 
 '+' - Addition
+
 '-' - Subtraction
+
 '/' - Division
+
 '\*' - Multiplication
+
 '%' - Modulo
+
 '==' - Equal to
+
 '!=' - Not equal to
+
 '>>' - Greater than
+
 '<<' - Less than
+
 '>=' - Greater or equal to
+
 '<=' - Less or equal to
+
 '?' - Pointer dereference
+
 
 
 
