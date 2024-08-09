@@ -33,6 +33,8 @@ RETURN_CODE parse(Vector *Tokens) {
 
         switch(*instructionToken) {
 
+        //NOTE: For each instruction fill out  a 'struct' containing all data, then pass the struct to a macro which generates assembly
+
         case TOK_SET: //Variable change
 
             break;

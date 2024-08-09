@@ -13,7 +13,7 @@
 #include "../libraries/datastructures.h"
 #include "compiler data.h"
 #include "../libraries/string hashmap.h"
-#include "IR grammer.h"
+#include "architecture pneumonics.h"
 #include "tokenise.h"
 
 RETURN_CODE parse(Vector *Tokens);

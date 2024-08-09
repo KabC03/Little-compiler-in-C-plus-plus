@@ -166,9 +166,9 @@ if(x == 1): //This is another comment after an instruction
 
 '-' - Subtraction
 
-'/' - Division
-
 '\*' - Multiplication
+
+'/' - Division
 
 '%' - Modulo
 
