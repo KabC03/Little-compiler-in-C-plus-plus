@@ -1,3 +1,4 @@
-fn <int>man(<int> x) {
+int main void
 
+main void int
 

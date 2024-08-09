@@ -1,4 +1,4 @@
-//14, Jul, 24
+//10, Aug, 24
 #include "tokenise.h"
 #define DECIMAL_POINT '.'
 #define SINGLE_QUOTE '\''
@@ -398,10 +398,6 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
     if(inputString == NULL || tokensOut == NULL) {
 
         return _INVALID_ARG_PASS_;
-        
-
-
-
 
     } else {
 
