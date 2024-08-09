@@ -17,7 +17,7 @@ typedef struct CurrentTokenMetadata {
 } CurrentTokenMetadata;
 CurrentTokenMetadata currentTokenMetadata; //Global since many functions will need to access this
 StringHashmap tokeniserValidTokenHashmap;
-char *tempTokenBuffer; 
+char *tempTokenBuffer = NULL;
 
 
 
@@ -242,6 +242,9 @@ bool internal_catagorise_character(char character) {
 //Determines if a token can be considered complete or not based on metadata and the next char
 bool internal_is_complete_token(char nextChar) {
 
+
+
+
     //EOL-type whitespace indicates the current token should end
     switch (nextChar) {
     case EOF:
@@ -257,7 +260,6 @@ bool internal_is_complete_token(char nextChar) {
     //If the character is a symbol then next token should not be a symbol or whitespace for the token to be complete
     //If the character is NOT a symbol then the next token should be a symbol or whitespace for the token to be complete
     //Whitespace for both cases is already filtered out in the above switch statement
-
 
     if(internal_is_lone_token(nextChar) == true) {
         //If the next char is a lone token then the token is complete
@@ -405,7 +407,6 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
 
         Token currentToken;
 
-
         //char charFromSrcFile = fgetc(srcFilePtr); //have to do this here because this needs to be one char behind nextCharFromSrcFile
        
         char charFromSrcFile = inputString[0];
@@ -444,23 +445,20 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
             nextCharFromSrcFile = inputString[j];
             //printf("letter: %c\n", nextCharFromSrcFile);
 
+            //Append the new character to the buffer
+            tempTokenBuffer[i] = charFromSrcFile;
 
 
-            if(isspace(charFromSrcFile) != 0) { //Skip whitespace
+
+            //Only do these checks if not declaring a comment
+
+            if(isspace(charFromSrcFile) != 0) { //Skip whitespace only if a comment isnt declared
                 charFromSrcFile = nextCharFromSrcFile;
                 i--; //Preserve index by decrementing
                 continue;
             }
 
-
-            //Append the new character to the buffer
-            tempTokenBuffer[i] = charFromSrcFile;
-            
-
             //Update the metadata based on the type of character present
-
-
-
             if(internal_catagorise_character(charFromSrcFile) == false) {
                 printf("Unexpected character: '%c' with ASCII '%d'\n", charFromSrcFile, (unsigned char)(charFromSrcFile));
 
@@ -472,6 +470,13 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
                 return _INVALID_ARG_PASS_;
             }
 
+
+
+
+
+
+
+
             //printf("%s, %zu\n",tempTokenBuffer, j);
             //Only if the token is complete should it be hashed
             if(internal_is_complete_token(nextCharFromSrcFile) == false) {
@@ -479,6 +484,9 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
 
                 continue;
             }
+        
+
+
             //if the token is complete - should add a NULL terminator to the end for propper string handling
             tempTokenBuffer[i + 1] = '\0';
 
@@ -489,7 +497,12 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
             //Do hashing here
             //Hash, if not in map then check for immediate or user string
 
-            const void *validTokenHashmapOutput = string_hashmap_get_value(&tokeniserValidTokenHashmap, tempTokenBuffer, strlen(tempTokenBuffer) + 1);
+
+
+
+            const void *validTokenHashmapOutput = string_hashmap_get_value(&tokeniserValidTokenHashmap, tempTokenBuffer, strlen(tempTokenBuffer) + 1);;
+            
+
 
             if(validTokenHashmapOutput == NULL) {
                 //Must be an immediate or user string
@@ -504,6 +517,38 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
 
                 //printf("KEYWORD WAS FOUND: '%s'\n",tempTokenBuffer);
                 currentToken.tokenEnum = *(VALID_TOKEN_ENUM*)(validTokenHashmapOutput);
+
+
+
+
+                //Handle comments
+                if(currentToken.tokenEnum == TOK_COMMENT) {
+
+                    currentToken.tokenEnum = USER_STRING; 
+                    if(dynamic_string_initialise(&(currentToken.userString)) == false) {
+                        return _INTERNAL_ERROR_;
+                    }
+
+                    //Append the rest of the line to the token buffer then exit
+
+                    if(dynamic_string_set(&(currentToken.userString), (char*)(inputString + j)) == false) {
+                        
+                        return _INTERNAL_ERROR_;
+                    }
+
+
+                    //Append to the vector
+                    if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
+                        
+                        /*
+                        if(fclose(srcFilePtr) != 0) {
+                            return _FILE_NOT_CLOSED_;
+                        }
+                        */
+                        return _INTERNAL_ERROR_;
+                    }
+                    return _SUCCESS_;
+                }
             }
 
 

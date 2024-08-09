@@ -71,7 +71,7 @@ tokens = {
     "allocate" : "TOK_ALLOCATE", "free" : "TOK_FREE", "sizeof" : "TOK_SIZEOF",
 
     #Organisation
-    #"//" : "TOK_COMMENT",
+    "//" : "TOK_COMMENT",
 
     #Misc
     "<" : "TOK_OPEN_ANGLE", ">" : "TOK_CLOSE_ANGLE", "[" : "TOK_OPEN_SQUAER", "]" : "TOK_CLOSE_SQUARE", 
