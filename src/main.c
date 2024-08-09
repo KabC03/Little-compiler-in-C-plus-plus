@@ -9,7 +9,7 @@ int main(void) {
 
     Vector tokensOut;
 
-    if(tokenise("a 123 abcd //hello I am a person", &tokensOut) != _SUCCESS_) {
+    if(tokenise("a", &tokensOut) != _SUCCESS_) {
         
         printf("Failed to tokenise\n");
         return -1;
