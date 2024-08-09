@@ -135,7 +135,7 @@ __Example:__
 Declare a label 'my_label'
 
 ```
-lbl my_label;
+lbl my_label; //Assuming label is defined elsewhere
 ```
 
 
