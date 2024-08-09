@@ -16,7 +16,7 @@
 #include "IR grammer.h"
 #include "tokenise.h"
 
-RETURN_CODE parse(Vector *tokens, char *irOutputFileName);
+
 
 
 #endif //PARSE_H
