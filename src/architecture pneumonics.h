@@ -33,6 +33,9 @@ add eax ecx //Add second argument
 #define internal_macro_load_immediate(regDest, immediate)\
     if(fprintf(destFptr, "LOD R%zu %zu\n",regDest, immediate)) {return _INTERNAL_ERROR_;}
 
+#define internal_macro_move(regDest, rSrc1)\
+    if(fprintf(destFptr, "LOD R%zu R%zu\n",regDest, rSrc1)) {return _INTERNAL_ERROR_;}
+
 #define internal_macro_addition(regDest, regSrc1, regSrc2, destFptr)\
     if(fprintf(destFptr, "ADD R%zu R%zu R%zu\n",regDest, regSrc1, regSrc2) < 0) {return _INTERNAL_ERROR_;}
 
