@@ -108,22 +108,6 @@ if (x == 1 + 2 + y): //Assuming values are defined elsewhere
 endif;
 ```
 
-
-
-#### goto statements ####
-
-Unconditionally jumps to a label by use of the 'gto' keyword
-
-
-__Example:__
-Go to the label 'my_label'
-
-```
-gto my_label;
-```
-
-
-
 #### Label declaration ####
 
 Declare a label for jumping to by use of the 'lbl' keyword
@@ -135,8 +119,24 @@ __Example:__
 Declare a label 'my_label'
 
 ```
-lbl my_label; //Assuming label is defined elsewhere
+lbl my_label;
 ```
+
+
+
+
+#### goto statements ####
+
+Unconditionally jumps to a label by use of the 'gto' keyword
+
+
+__Example:__
+Go to the label 'my_label'
+
+```
+gto my_label;  //Assuming label is defined elsewhere
+```
+
 
 
 
