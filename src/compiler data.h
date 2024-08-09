@@ -2,7 +2,7 @@
 #define COMPILE_H
 
 
-#define NUMBER_OF_TOKENS 40
+#define NUMBER_OF_TOKENS 45
 #define MAX_TOKEN_LENGTH 9
 
 
@@ -30,59 +30,66 @@ typedef enum VALID_TOKEN_ENUM {
 
 
     INVALID_TOKEN = 0,
-    TOK_INT = 1,
-    TOK_FLT = 2,
-    TOK_CHR = 3,
-    TOK_PTR = 4,
+    TOK_SET = 1,
+    TOK_VAR_DECL = 2,
+    TOK_FUN_CALL = 3,
+    TOK_FUN_DECL = 4,
 
 
-    TOK_EQUALS_ASSIGNMENT = 5,
-    TOK_ADD = 6,
-    TOK_SUB = 7,
-    TOK_MUL = 8,
-    TOK_DIV = 9,
+    TOK_IF = 5,
+    TOK_GTO = 6,
+    TOK_LBL = 7,
+    TOK_END_FN = 8,
+    TOK_ENDIF = 9,
 
 
-    TOK_MOD = 10,
-    TOK_OR = 11,
-    TOK_AND = 12,
-    TOK_EQUAL_TO = 13,
-    TOK_NOT_EQUAL_TO = 14,
+    TOK_INT = 10,
+    TOK_FLT = 11,
+    TOK_CHR = 12,
+    TOK_PTR = 13,
+    TOK_EQUALS_ASSIGNMENT = 14,
 
 
-    TOK_GREATER_EQUAL_TO = 15,
-    TOK_LESS_EQUAL_TO = 16,
-    TOK_GREATER_TO = 17,
-    TOK_LESS_TO = 18,
-    TOK_IF = 19,
+    TOK_ADD = 15,
+    TOK_SUB = 16,
+    TOK_MUL = 17,
+    TOK_DIV = 18,
+    TOK_MOD = 19,
 
 
-    TOK_GTO = 20,
-    TOK_LBL = 21,
-    TOK_FN = 22,
-    TOK_RET = 23,
-    TOK_ALLOCATE = 24,
+    TOK_OR = 20,
+    TOK_AND = 21,
+    TOK_EQUAL_TO = 22,
+    TOK_NOT_EQUAL_TO = 23,
+    TOK_GREATER_EQUAL_TO = 24,
 
 
-    TOK_FREE = 25,
-    TOK_SIZEOF = 26,
-    TOK_COMMENT = 27,
-    TOK_OPEN_ANGLE = 28,
-    TOK_CLOSE_ANGLE = 29,
+    TOK_LESS_EQUAL_TO = 25,
+    TOK_GREATER_TO = 26,
+    TOK_LESS_TO = 27,
+    TOK_DEREFERENCE_PTR = 28,
+    TOK_ALLOCATE = 29,
 
 
-    TOK_OPEN_SQUAER = 30,
-    TOK_CLOSE_SQUARE = 31,
-    TOK_OPEN_PAREN = 32,
-    TOK_CLOSE_PAREN = 33,
-    TOK_OPEN_CURLEY = 34,
+    TOK_FREE = 30,
+    TOK_SIZEOF = 31,
+    TOK_COMMENT = 32,
+    TOK_OPEN_ANGLE = 33,
+    TOK_CLOSE_ANGLE = 34,
 
 
-    TOK_CLOSE_CURLEY = 35,
-    TOK_COMMA = 36,
-    TOK_DOT = 37,
-    TOK_SEMICOLEN = 38,
-    TOK_SINGLE_QUOTE = 39,
+    TOK_OPEN_SQUAER = 35,
+    TOK_CLOSE_SQUARE = 36,
+    TOK_OPEN_PAREN = 37,
+    TOK_CLOSE_PAREN = 38,
+    TOK_OPEN_CURLEY = 39,
+
+
+    TOK_CLOSE_CURLEY = 40,
+    TOK_COMMA = 41,
+    TOK_DOT = 42,
+    TOK_SEMICOLEN = 43,
+    TOK_SINGLE_QUOTE = 44,
 
 
 } VALID_TOKEN_ENUM;

@@ -6,23 +6,27 @@ const char validTokens[NUMBER_OF_TOKENS][MAX_TOKEN_LENGTH] = {
 
 
 
-    "invalid","int","flt","chr","@",
+    "invalid","set","dec","cal","fnc",
 
 
 
-    "=","+","-","*","/",
+    "if","gto","lbl","endfn","endif",
 
 
 
-    "\%","||","&&","==","!=",
+    "int","flt","chr","@","=",
 
 
 
-    ">=","<=",">>","<<","if",
+    "+","-","*","/","\%",
 
 
 
-    "gto","lbl","fn","ret","allocate",
+    "||","&&","==","!=",">=",
+
+
+
+    "<=",">>","<<","?","allocate",
 
 
 

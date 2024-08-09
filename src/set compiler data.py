@@ -53,19 +53,27 @@ tokens = {
     #Internal types
     "invalid" : "INVALID_TOKEN",
 
+    #Instructions
+    "set" : "TOK_SET", "dec" : "TOK_VAR_DECL", "cal" : "TOK_FUN_CALL", "fnc" : "TOK_FUN_DECL", 
+    "if" : "TOK_IF", "gto" : "TOK_GTO", "lbl" : "TOK_LBL", "endfn" : "TOK_END_FN", "endif" : "TOK_ENDIF",
+
+
+
+
     #Datatypes
     "int" : "TOK_INT", "flt" : "TOK_FLT", "chr" : "TOK_CHR", "@" : "TOK_PTR", "=" : "TOK_EQUALS_ASSIGNMENT",
 
     #Operators
     "+" : "TOK_ADD", "-" : "TOK_SUB", "*" : "TOK_MUL", "/" : "TOK_DIV","\%" : "TOK_MOD","||" : "TOK_OR", "&&" : "TOK_AND",
-    "==" : "TOK_EQUAL_TO", "!=" : "TOK_NOT_EQUAL_TO", ">=" : "TOK_GREATER_EQUAL_TO", "<=" : "TOK_LESS_EQUAL_TO", ">>" : "TOK_GREATER_TO", "<<" : "TOK_LESS_TO", 
+    "==" : "TOK_EQUAL_TO", "!=" : "TOK_NOT_EQUAL_TO", ">=" : "TOK_GREATER_EQUAL_TO", "<=" : "TOK_LESS_EQUAL_TO", ">>" : "TOK_GREATER_TO", "<<" : "TOK_LESS_TO",
+    "?" : "TOK_DEREFERENCE_PTR",
 
 
     #Control flow
-    "if" : "TOK_IF", "gto" : "TOK_GTO", "lbl" : "TOK_LBL",
+    #"if" : "TOK_IF", "gto" : "TOK_GTO", "lbl" : "TOK_LBL",
 
     #Functions
-    "fn" : "TOK_FN", "ret" : "TOK_RET",
+    #"fn" : "TOK_FN", "ret" : "TOK_RET",
 
     #Inbuilt functions
     "allocate" : "TOK_ALLOCATE", "free" : "TOK_FREE", "sizeof" : "TOK_SIZEOF",

@@ -23,15 +23,51 @@ RETURN_CODE parse(Vector *Tokens) {
         return _INVALID_ARG_PASS_; 
     
     } else {
-
+    
+        //First token determines what the line does
+        VALID_TOKEN_ENUM *instructionToken = (VALID_TOKEN_ENUM*)vector_get_index(Tokens, 0);
         
+        if(instructionToken == NULL) {
+            return _INTERNAL_ERROR_;
+        }
+
+        switch(*instructionToken) {
+
+        case TOK_SET: //Variable change
+
+            break;
+        case TOK_VAR_DECL: //Variable declaration
+
+            break;
+        case TOK_FUN_CALL: //Function call
+
+            break;
+        case TOK_FUN_DECL: //Function declaration
+
+            break;
+
+        case TOK_END_FN: //End a function declaration
+
+        break; 
+        case TOK_IF: //If statement
+
+            break;
+
+        case TOK_ENDIF: //End if statement
+
+            break;
+        case TOK_GTO: //Goto statement
+
+            break;
+        case TOK_LBL: //Label declaration
+
+            break;
 
 
-
-
-
-
-
+        default:
+            printf("Unrecognised instruction\n");
+            return _INVALID_ARG_PASS_;
+        }
     }
             
     return _SUCCESS_; 
