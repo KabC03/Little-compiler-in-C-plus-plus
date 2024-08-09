@@ -22,22 +22,24 @@ int main(void) {
 
     for(size_t i = 0; fgets(lineInputBuffer, SRC_BUFFER_SIZE, fptr) != NULL; i++) {
 
-        printf("Line: %zu\n",i);
         if(tokenise(lineInputBuffer, &tokensOut) != _SUCCESS_) {
             
-            printf("Failed to tokenise\n");
+            printf("Error occured on line %zu\n", i);
             return -2;
         }
+        /*
         if(print_tokens(&tokensOut) != _SUCCESS_) {
 
             printf("Failed to print tokens\n");
             return -3;
         }
+        */
+
+       if(parse(&tokensOut) != _SUCCESS_) {
+            printf("Error occured on line %zu\n", i);
+            return -3;
+        }
     }
-
-
-
-
     
     return 0;
 }

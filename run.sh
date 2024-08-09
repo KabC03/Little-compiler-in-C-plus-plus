@@ -30,7 +30,7 @@ fi
 ./output/executable
 if [[ $? -ne 0 ]]; then
 
-    printf "\n\n[SHELL] Program did not successfully execute\n\n"
+    printf "\n\n[SHELL] Compiler did not successfully execute\n\n"
     exit -3
 
 fi
