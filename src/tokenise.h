@@ -13,7 +13,7 @@
 
 
 RETURN_CODE print_tokens(Vector *tokensToPrint);
-RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut);
+RETURN_CODE tokenise(char *inputString, Vector *tokensOut);
  
 #endif // TOKENISE_H 
 

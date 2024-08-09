@@ -5,7 +5,6 @@
 #define CHAR_IMMEDIATE_SIZE 3
 #define CHAR_IMMEDIATE_INDEX 1
 
-
 typedef struct CurrentTokenMetadata {
 
     size_t numberOfDecimals;     //Number of decimal points encountered
@@ -18,7 +17,7 @@ typedef struct CurrentTokenMetadata {
 } CurrentTokenMetadata;
 CurrentTokenMetadata currentTokenMetadata; //Global since many functions will need to access this
 StringHashmap tokeniserValidTokenHashmap;
-char tempTokenBuffer[MAX_TOKEN_LENGTH + 1]; 
+char *tempTokenBuffer; 
 
 
 
@@ -360,13 +359,19 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
  * ===============================================
  * Brief: Tokenises an input stream 
  * 
- * Param: *srcFilename - Source file name to be tokenised
+ * Param: inputString - Input buffer line to be tokenised 
  *        *tokensOut - Uninitialised output vector for tokens (points to a pre-allocated token array)
  * 
  * Return: RETURN_CODE - Indicating succes or type of failure 
  * 
  */
-RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
+RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
+
+
+    /*
+    //Used to accept the file ptr but now decided it should take each line directly
+    
+
 
     if(srcFilename == NULL || tokensOut == NULL) {
         return _INVALID_ARG_PASS_;
@@ -382,24 +387,52 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
         if(srcFilePtr == NULL) {
             return _FILE_NOT_OPENED_;
         }
+    */
+
+    RETURN_CODE returnCode = internal_tokeniser_initialiser(tokensOut);
+    if(returnCode != _SUCCESS_) {
+        return returnCode;
+    }
+    if(inputString == NULL || tokensOut == NULL) {
+
+        return _INVALID_ARG_PASS_;
+        
+
+
+
+
+    } else {
 
         Token currentToken;
-        char charFromSrcFile = fgetc(srcFilePtr); //have to do this here because this needs to be one char behind nextCharFromSrcFile
-        if(charFromSrcFile == EOF) {
+
+
+        //char charFromSrcFile = fgetc(srcFilePtr); //have to do this here because this needs to be one char behind nextCharFromSrcFile
+       
+        char charFromSrcFile = inputString[0];
+
+        if(charFromSrcFile == '\0') {
             currentToken.tokenEnum = EOF_TOKEN;
             if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
                 return _INTERNAL_ERROR_;
             }
+            /*
             if(fclose(srcFilePtr) != 0) {
                 return _FILE_NOT_CLOSED_;
             }
+            */
             return _SUCCESS_;
         }
         
-        char nextCharFromSrcFile = '0';
-        for(size_t i = 0; i < MAX_TOKEN_LENGTH; i++) {
 
-            if(charFromSrcFile == EOF) {
+        tempTokenBuffer = malloc(sizeof(char) * strlen(inputString));
+        if(tempTokenBuffer == NULL) {
+            return _INTERNAL_ERROR_;
+        }
+
+
+        char nextCharFromSrcFile = '0';
+        for(size_t i = 0, j = 0; strlen(inputString); i++, j++) {
+            if(charFromSrcFile == '\0') {
                 currentToken.tokenEnum = EOF_TOKEN;
                 if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
                     return _INTERNAL_ERROR_;
@@ -407,8 +440,8 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
                 break;
             }
 
-            nextCharFromSrcFile = fgetc(srcFilePtr);
-
+            //nextCharFromSrcFile = fgetc(srcFilePtr);
+            nextCharFromSrcFile = inputString[j];
 
             if(isspace(charFromSrcFile) != 0) { //Skip whitespace
                 charFromSrcFile = nextCharFromSrcFile;
@@ -425,9 +458,11 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
             if(internal_catagorise_character(charFromSrcFile) == false) {
                 printf("Unexpected character: '%c' with ASCII '%d'\n", charFromSrcFile, (unsigned char)(charFromSrcFile));
 
+                /*
                 if(fclose(srcFilePtr) != 0) {
                     return _FILE_NOT_CLOSED_;
                 }
+                */
                 return _INVALID_ARG_PASS_;
             }
 
@@ -467,10 +502,13 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
 
 
             if(vector_quick_append(tokensOut,&currentToken, 1) == false) {
-
+                
+                /*
                 if(fclose(srcFilePtr) != 0) {
                     return _FILE_NOT_CLOSED_;
                 }
+                */
+
                 return _INTERNAL_ERROR_;
             }
 
@@ -480,10 +518,11 @@ RETURN_CODE tokenise(char *srcFilename, Vector *tokensOut) {
         }
 
 
-
+        /*
         if(fclose(srcFilePtr) != 0) {
             return _FILE_NOT_CLOSED_;
         }
+        */
     }
 
 
