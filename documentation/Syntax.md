@@ -142,7 +142,7 @@ lbl my_label; //Assuming label is defined elsewhere
 
 #### Comments ####
 
-Everything after a '//' to a '\n' delimeter is considered a comment
+Everything between a '//' to a '\n' delimeter is considered a comment
 
 - There are no character limitations of what can be placed within a comment
 - Comments may appear after another instruction
@@ -152,6 +152,8 @@ Write a comment with the text 'hello this is a comment'
 
 ```
 //Hello this is a comment
+if(x == 1): //This is another comment after an instruction
+...something
 ```
 
 
