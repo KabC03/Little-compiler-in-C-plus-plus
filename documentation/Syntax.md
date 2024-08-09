@@ -25,15 +25,14 @@ Declare a variable with the 'dec' keyword.
 
 - Variables cannot be declared more than once
 - Variables may be initialised with expressions (expressions are evaluated left to right)
-- Only one type (int, ptr) may be specified in the type field
 - All types have the same size
-
+- Note due to no typechecking it is possible to dereference a standard integer as a pointer
 
     Example:
 Declare an integer variable named 'myVar123' that is initialised with a value of 10
 
 ```
-dec <int> myVar123 = 10;
+dec myVar123 = 10;
 ```
 
 
