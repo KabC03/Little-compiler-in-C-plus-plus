@@ -1,10 +1,18 @@
+//10 Aug 2024
 //Includes macros for assembly generation by parser
+//Some architectures may require multiple lines to perform the same operations as others
 
 #ifndef ARCHITECTURE_PNEUMONICS_H
 #define ARCHITECTURE_PNEUMONICS_H
 
 #define NUMBER_OF_REGISTERS 5 //Number of general purpose registers
-#define AVAILABLE_STACK_PTR true //State that there is a seperate stack pointer register (not counted as general purpose)
+/*
+Note: 
+If stack pointer is not available,
+should use one of the general purpose registers in macros below (not allow compiler to use it for storage)
+*/
+
+
 
 
 
@@ -12,6 +20,19 @@
 
 
 //Arithmatic - Assign a destination register to a src register
+/*
+If in architecture that has accumulator registers only (e.g x86) can do this:
+
+E.g add ebx, ecx into eax
+
+add eax 0   //Zero the destination
+add eax ebx //Add first argument
+add eax ecx //Add second argument
+*/
+
+#define internal_macro_load_immediate(regDest, immediate)\
+    fprintf(destFptr, "LOD R%zu %zu\n",regDest, immediate);
+
 #define internal_macro_addition(regDest, regSrc1, regSrc2, destFptr)\
     fprintf(destFptr, "ADD R%zu R%zu R%zu\n",regDest, regSrc1, regSrc2);
 
@@ -29,6 +50,15 @@
 
 
 //Conditional logic - Jump to a label if the condition is met
+/*
+NOTE: If in architecture that requires flags (e.g x86) can do the following:
+
+E.g - compare eax and ebx, if equal jump to my_label
+
+cmp eax ebx
+je my_label
+*/
+
 #define internal_macro_equal_to(labelToJumpTO, regSrc1, regSrc2)\
     fprintf(destFptr, "EQA R%zu R%zu %s\n",regSrc1, regSrc1, labelToJumpTo);
 
@@ -63,7 +93,7 @@
     fprintf(destFptr, "call %s\n",labelToCall);
 
 #define internal_macro_return_function()\
-    fprintf(destFptr, "ret\n";
+    fprintf(destFptr, "ret\n");
 
 
 
