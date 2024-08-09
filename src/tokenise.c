@@ -424,14 +424,14 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
         }
         
 
-        tempTokenBuffer = malloc(sizeof(char) * strlen(inputString));
+        tempTokenBuffer = calloc(strlen(inputString) + 2, sizeof(char));
         if(tempTokenBuffer == NULL) {
             return _INTERNAL_ERROR_;
         }
 
 
-        char nextCharFromSrcFile = '0';
-        for(size_t i = 0, j = 0; strlen(inputString); i++, j++) {
+        char nextCharFromSrcFile = '\0';
+        for(size_t i = 0, j = 1; strlen(inputString); i++, j++) {
             if(charFromSrcFile == '\0') {
                 currentToken.tokenEnum = EOF_TOKEN;
                 if(vector_quick_append(tokensOut, &currentToken, 1) == false) {
@@ -442,6 +442,9 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
 
             //nextCharFromSrcFile = fgetc(srcFilePtr);
             nextCharFromSrcFile = inputString[j];
+            //printf("letter: %c\n", nextCharFromSrcFile);
+
+
 
             if(isspace(charFromSrcFile) != 0) { //Skip whitespace
                 charFromSrcFile = nextCharFromSrcFile;
@@ -452,9 +455,12 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
 
             //Append the new character to the buffer
             tempTokenBuffer[i] = charFromSrcFile;
-
+            
 
             //Update the metadata based on the type of character present
+
+
+
             if(internal_catagorise_character(charFromSrcFile) == false) {
                 printf("Unexpected character: '%c' with ASCII '%d'\n", charFromSrcFile, (unsigned char)(charFromSrcFile));
 
@@ -466,18 +472,18 @@ RETURN_CODE tokenise(char *inputString, Vector *tokensOut) {
                 return _INVALID_ARG_PASS_;
             }
 
-
+            //printf("%s, %zu\n",tempTokenBuffer, j);
             //Only if the token is complete should it be hashed
             if(internal_is_complete_token(nextCharFromSrcFile) == false) {
                 charFromSrcFile = nextCharFromSrcFile;
+
                 continue;
             }
-
             //if the token is complete - should add a NULL terminator to the end for propper string handling
             tempTokenBuffer[i + 1] = '\0';
+
             charFromSrcFile = nextCharFromSrcFile;
             i = -1; //Set to -1 so it increments to 0 next loop
-
 
 
             //Do hashing here

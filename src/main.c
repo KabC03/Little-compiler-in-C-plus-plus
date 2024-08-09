@@ -9,7 +9,7 @@ int main(void) {
 
     Vector tokensOut;
 
-    if(tokenise("fn <int>man(<int> x) {", &tokensOut) != _SUCCESS_) {
+    if(tokenise("a 123 abcd", &tokensOut) != _SUCCESS_) {
         
         printf("Failed to tokenise\n");
         return -1;
