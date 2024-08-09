@@ -33,7 +33,7 @@ Declare a variable with the 'dec' keyword.
 Declare an integer variable named 'myVar123' that is initialised with a value of 10
 
 ```
-decl <int> myVar123 = 10;
+dec <int> myVar123 = 10;
 ```
 
 
@@ -87,7 +87,7 @@ Call a function called 'my_function'
 
 
 ```
-call my_function //Assuming the function is defined above this statement
+cal my_function //Assuming the function is defined above this statement
 ```
 
 
