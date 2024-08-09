@@ -65,6 +65,8 @@ RETURN_CODE parse(Vector *Tokens) {
 
             break;
 
+        case EOF_TOKEN: //Blank line - skip
+            return _SUCCESS_;
 
         default:
             printf("Unrecognised instruction\n");
