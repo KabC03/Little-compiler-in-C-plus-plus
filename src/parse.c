@@ -50,7 +50,7 @@ RETURN_CODE parse(Vector *Tokens) {
 
         case TOK_END_FN: //End a function declaration
 
-        break; 
+            break; 
         case TOK_IF: //If statement
 
             break;
@@ -67,10 +67,12 @@ RETURN_CODE parse(Vector *Tokens) {
 
         case EOF_TOKEN: //Blank line - skip
             return _SUCCESS_;
+            break;
 
         default:
             printf("Unrecognised instruction\n");
             return _INVALID_ARG_PASS_;
+            break;
         }
     }
             
