@@ -12,18 +12,52 @@
         return _INVALID_ARG_PASS_;\
     }
 
-typedef struct RegisterData {
+typedef struct RegisterData { //Could definitely optimise the 'inUse' member but make it more readable for now
     //Held within the variableStorage string hashmap
-    size_t stackOffset;    //Where the variable is stored on the stack
+    size_t baseOffset;    //Where the variable is stored on the stack
     size_t registerNumber; //Which register the variable is stoed in (-1 if not stored in register)
+    size_t timesRequested; //Times this variable has been used (higher usage means it will stay in registers longer)
+    bool inUse;            //If this register space is in use (to specify empty space in register state vector)
 
 } RegisterData;
 
 
 
 StringHashmap variableStorage;  //Hashmap containing name -> RegisterData
-Vector registerStates;          //Registers storing data, index -> variable name
-size_t nextFreeStackOffset = 0; //Next free stack offset available
+Vector registerStates;          //Registers storing data, index -> RegisterData
+size_t nextFreebaseOffset = 0; //Next free stack offset available
+FILE *globalIROut = NULL;
+
+
+//Request a free register and return its index - save the register overwritten
+RETURN_CODE internal_request_free_register(size_t *indexOut) {
+
+    if(indexOut == NULL) {
+        return _INVALID_ARG_PASS_;
+    }
+
+    size_t minUsedRegisterIndex = 0;
+    for(size_t i = 0; i < vector_get_length(&registerStates) + 1; i++) {
+        RegisterData *currentRegister = (RegisterData*)vector_get_index(&registerStates, i);
+        if(currentRegister == NULL) {
+            return _INTERNAL_ERROR_;
+        }
+
+        if(currentRegister->inUse == false) { //If register isnt being used then allow it to be used
+            *indexOut = i;
+            return _SUCCESS_;
+
+        } else if(currentRegister->timesRequested < minUsedRegisterIndex) {
+            *indexOut = i;
+        }
+    }
+
+    //Save the register being pushed out
+    internal_macro_save(minUsedRegisterIndex, ((RegisterData*)vector_get_index(&registerStates, minUsedRegisterIndex))->baseOffset, globalIROut);
+
+
+    return _SUCCESS_;
+}
 
 
 
@@ -45,8 +79,11 @@ RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, Registe
     
 
 
-    
 
+    //TODO:
+    //Set up source and destination registers
+    //Should be based on how much its been used
+    //Save the register that is pushed out to its stack address
 
 
 
@@ -134,9 +171,11 @@ RETURN_CODE internal_parse_dec(Vector *tokens) {
     }
 
     RegisterData newVariableMetadata;
-    newVariableMetadata.stackOffset = nextFreeStackOffset;
-    nextFreeStackOffset += STACK_DATASIZE;
+    newVariableMetadata.baseOffset = nextFreebaseOffset;
+    nextFreebaseOffset += STACK_DATASIZE;
     newVariableMetadata.registerNumber = -1; //Specify new variable is not in a register
+    newVariableMetadata.timesRequested = 0;
+    newVariableMetadata.inUse = true;
 
 
     //Assert '='
@@ -179,8 +218,16 @@ RETURN_CODE parse_initialise(void) {
     if(string_hashmap_initialise(&variableStorage, VARIABLE_HASHMAP_SIZE) != true) {
         return _INTERNAL_ERROR_;
     }
-    if(vector_initialise(&registerStates, sizeof(DynamicString)) != true) {
+    if(vector_initialise(&registerStates, sizeof(RegisterData)) != true) {
         return _INTERNAL_ERROR_;
+    }
+
+    RegisterData padding;
+    padding.inUse = false;
+    for(size_t i = 0; i < NUMBER_OF_REGISTERS; i++) { //Pad it with empty data
+        if(vector_quick_append(&registerStates, &padding, 1) == false) {
+            return _INTERNAL_ERROR_;
+        }
     }
 
     return _SUCCESS_;
@@ -197,17 +244,20 @@ RETURN_CODE parse_initialise(void) {
  * Brief: Tokenise a line 
  * 
  * Param: *Tokens - Input vector of tokens  
+ *        *irOut - Opened file pointer to output
  * 
  * Return: RETURN_CODE - Indicating succes or type of failure 
  * 
  */
-RETURN_CODE parse(Vector *tokens) {
+RETURN_CODE parse(Vector *tokens, FILE *irOut) {
 
-    if(tokens == NULL) {
+    if(tokens == NULL || irOut == NULL) {
         return _INVALID_ARG_PASS_; 
     
     } else {
     
+        globalIROut = irOut;
+
         //First token determines what the line does
         VALID_TOKEN_ENUM *instructionToken = (VALID_TOKEN_ENUM*)vector_get_index(tokens, 0);
         

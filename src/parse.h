@@ -17,7 +17,7 @@
 #include "tokenise.h"
 
 RETURN_CODE parse_initialise(void);
-RETURN_CODE parse(Vector *Tokens);
+RETURN_CODE parse(Vector *tokens, FILE *irOut);
 
 
 #endif //PARSE_H
