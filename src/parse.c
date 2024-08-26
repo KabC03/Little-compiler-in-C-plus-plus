@@ -37,7 +37,16 @@ Vector registerStates;         //Registers storing data, index -> variable name
 RETURN_CODE internal_parse_set(Vector *tokens) {
 
     Token *tokenOut;
+
+    //Variable to write to
     internal_macro_assert_token(tokens, 1, USER_STRING, "Expected a variable name", tokenOut);
+    //Check variable is declared
+    char *variableStr = dynamic_string_read(&(tokenOut->userString));
+    if(variableStr == NULL) {
+        printf("Undeclared variable - \n");
+        return _INTERNAL_ERROR_;
+    }
+
     internal_macro_assert_token(tokens, 2, TOK_EQUALS_ASSIGNMENT, "Expected '='", tokenOut);
 
     return _SUCCESS_;
