@@ -6,6 +6,7 @@
 #define ARCHITECTURE_PNEUMONICS_H
 
 #define NUMBER_OF_REGISTERS 5 //Number of general purpose registers
+#define STACK_DATASIZE 4
 /*
 Note: 
 If stack pointer is not available,

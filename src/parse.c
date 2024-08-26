@@ -21,16 +21,16 @@ typedef struct RegisterData {
 
 
 
-StringHashmap variableStorage; //Hashmap containing name -> RegisterData
-Vector registerStates;         //Registers storing data, index -> variable name
-size_t nextFreeStackOffset;    //Next free stack offset available
+StringHashmap variableStorage;  //Hashmap containing name -> RegisterData
+Vector registerStates;          //Registers storing data, index -> variable name
+size_t nextFreeStackOffset = 0; //Next free stack offset available
 
 
 
 //Parse an expression
-RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, RegisterData *destinationRegister) {
+RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, RegisterData *destRegMetadata) {
 
-    if(tokens == NULL || destinationRegister == NULL) {
+    if(tokens == NULL || destRegMetadata == NULL) {
         return _INVALID_ARG_PASS_;
     }
     //NOTE: Order matters
@@ -39,6 +39,15 @@ RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, Registe
 
     //NOTE: Automatically saves registers before overwritting them
     //If not in registers, load from stack
+
+
+    //Expect num, op, num, op, ...
+    
+
+
+    
+
+
 
 
 
@@ -67,7 +76,7 @@ RETURN_CODE internal_parse_set(Vector *tokens) {
     const char *variableStr = dynamic_string_read(&(tokenOut->userString));
 
     //Get metadata
-    RegisterData *varWriteMetadata = (RegisterData*)string_hashmap_get_value(&variableStorage, (void*)variableStr, strlen(variableStr));
+    RegisterData *varWriteMetadata = (RegisterData*)string_hashmap_get_value(&variableStorage, (void*)variableStr, strlen(variableStr) + 1);
     if(varWriteMetadata == NULL) {
         printf("Undeclared variable '%s' - ", variableStr);
         return _INTERNAL_ERROR_;
@@ -87,7 +96,7 @@ RETURN_CODE internal_parse_set(Vector *tokens) {
     }
 
     //Assert ';'
-    internal_macro_assert_token(tokens, 2, TOK_SEMICOLEN, "Expected ';'", tokenOut);
+    //internal_macro_assert_token(tokens, 3, TOK_SEMICOLEN, "Expected ';'", tokenOut);
 
     return _SUCCESS_;
 }
@@ -125,9 +134,9 @@ RETURN_CODE internal_parse_dec(Vector *tokens) {
     }
 
     RegisterData newVariableMetadata;
-    newVariableMetadata.stackOffset = 
-
-
+    newVariableMetadata.stackOffset = nextFreeStackOffset;
+    nextFreeStackOffset += STACK_DATASIZE;
+    newVariableMetadata.registerNumber = -1; //Specify new variable is not in a register
 
 
     //Assert '='
@@ -135,16 +144,19 @@ RETURN_CODE internal_parse_dec(Vector *tokens) {
 
     //Calculate expression
     //Write the result to wherever the variable is stored
-    RETURN_CODE returnVal = internal_parse_expression(tokens, 3, varWriteMetadata);
+    RETURN_CODE returnVal = internal_parse_expression(tokens, 3, &newVariableMetadata);
     if(returnVal != _SUCCESS_) {
         return _INVALID_ARG_PASS_;
     }
 
+
+    //Add new variable to hashmap
+    if(string_hashmap_set(&variableStorage, variableStr, strlen(variableStr) + 1, &newVariableMetadata, sizeof(RegisterData)) == false) {
+        return _INTERNAL_ERROR_;
+    }
+
     //Assert ';'
-    internal_macro_assert_token(tokens, 2, TOK_SEMICOLEN, "Expected ';'", tokenOut);
-
-
-
+    //internal_macro_assert_token(tokens, 3, TOK_SEMICOLEN, "Expected ';'", tokenOut);
 
 
     return _SUCCESS_;

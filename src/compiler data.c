@@ -38,7 +38,7 @@ const char validTokens[NUMBER_OF_TOKENS][MAX_TOKEN_LENGTH] = {
 
 
 
-    "}",",",".",";","'",
+    "}",",",".","'",
 
 };
 

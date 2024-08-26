@@ -2,7 +2,7 @@
 #define COMPILE_H
 
 
-#define NUMBER_OF_TOKENS 45
+#define NUMBER_OF_TOKENS 44
 #define MAX_TOKEN_LENGTH 9
 
 
@@ -88,8 +88,7 @@ typedef enum VALID_TOKEN_ENUM {
     TOK_CLOSE_CURLEY = 40,
     TOK_COMMA = 41,
     TOK_DOT = 42,
-    TOK_SEMICOLEN = 43,
-    TOK_SINGLE_QUOTE = 44,
+    TOK_SINGLE_QUOTE = 43,
 
 
 } VALID_TOKEN_ENUM;

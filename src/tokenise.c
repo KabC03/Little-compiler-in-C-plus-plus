@@ -2,13 +2,16 @@
 #include "tokenise.h"
 #define DECIMAL_POINT '.'
 #define SINGLE_QUOTE '\''
+#define NEG_SIGN '-'
 #define CHAR_IMMEDIATE_SIZE 3
 #define CHAR_IMMEDIATE_INDEX 1
+#define NEG_INDEX 0
 
 typedef struct CurrentTokenMetadata {
 
     size_t numberOfDecimals;     //Number of decimal points encountered
     size_t numberOfSingleQuotes; //Number of single quotes encountered
+    size_t numberOfNegatives;    //Number of '-' in the string
     bool containsLoneTokens;     //Braces, commas, dots, etc
     bool containsSymbol;         //Symbol, but not a lone token
     bool containsNumbers;        //Contains 0-9
@@ -136,6 +139,7 @@ void internal_reset_token_metadata(void) {
     currentTokenMetadata.containsSymbol = false;
     currentTokenMetadata.numberOfDecimals = 0;
     currentTokenMetadata.numberOfSingleQuotes = 0;
+    currentTokenMetadata.numberOfNegatives = 0;
 
     return;
 }
@@ -221,6 +225,10 @@ bool internal_catagorise_character(char character) {
         //Contains a decimal point
         currentTokenMetadata.numberOfSingleQuotes++;
 
+    } else if(character == NEG_SIGN) {
+        //Contains a decimal point
+        currentTokenMetadata.numberOfNegatives++;
+
     } else if(internal_is_symbol(character) == true) {
         //Is a symbol
         currentTokenMetadata.containsSymbol = true;
@@ -271,9 +279,17 @@ bool internal_is_complete_token(char nextChar) {
     
         return true;
 
+
+    } else if(currentTokenMetadata.numberOfNegatives == 1 && isdigit(nextChar) == false) { //EXPERIMENTAL
+        //Special check for negative numbers
+        //If 1 negative number and the next number is not a digit
+        return true;
+
+
     } else if(currentTokenMetadata.containsSymbol == true && internal_is_symbol(nextChar) == false) {
         //Regular symbols need to be followed by a non-symbol to be complete
         return true;
+
 
     } else if((currentTokenMetadata.containsLetters == true || currentTokenMetadata.containsNumbers) \
     && (internal_is_symbol(nextChar) == true || internal_is_lone_token(nextChar) == true)) {
@@ -301,25 +317,27 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
     } else {
 
         //Check for integer immediate
-        //Only numbers allowed
+        //Only numbers allowed and '-'
         if(currentTokenMetadata.containsLetters == false && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
-        currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true) {
+        currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true && 
+        ((strlen(tempTokenBuffer) > 1 && currentTokenMetadata.numberOfNegatives == 1 && tempTokenBuffer[NEG_INDEX] == NEG_SIGN) || currentTokenMetadata.numberOfNegatives == 0)) {
             tokenToAppendTo->tokenEnum = INT_IMMEDIATE; 
             tokenToAppendTo->intImmediate = atoi(tempTokenBuffer);
             
             //printf("DETECTED INT IMMEDIATE: %s\n", tempTokenBuffer);
 
         } else if(currentTokenMetadata.containsLetters == false && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
-        currentTokenMetadata.numberOfDecimals == 1 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true) {
+        currentTokenMetadata.numberOfDecimals == 1 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.containsNumbers == true && 
+        ((strlen(tempTokenBuffer) > 1 && currentTokenMetadata.numberOfNegatives == 1 && tempTokenBuffer[NEG_INDEX] == NEG_SIGN) || currentTokenMetadata.numberOfNegatives == 0)) {
             //Check for float immediate
-            //Only numbers AND a single '.'
+            //Only numbers AND a single '.' and '-'
 
             tokenToAppendTo->tokenEnum = FLOAT_IMMEDIATE; 
             tokenToAppendTo->floatImmediate = atof(tempTokenBuffer);
             //printf("DETECTED FLOAT IMMEDIATEL %s\n",tempTokenBuffer);
 
         } else if(currentTokenMetadata.containsLetters == true && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
-        currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 2 && currentTokenMetadata.containsNumbers == false && strlen(tempTokenBuffer) == CHAR_IMMEDIATE_SIZE &&
+        currentTokenMetadata.numberOfSingleQuotes == 2 && currentTokenMetadata.containsNumbers == false && strlen(tempTokenBuffer) == CHAR_IMMEDIATE_SIZE &&
         tempTokenBuffer[CHAR_IMMEDIATE_INDEX] != SINGLE_QUOTE) { //Use short circuit && (left evaluated before right so technically safe)
             //Check for char immediate
             //Single character surrounded by ''' quotes, size of the immediate == 3 
@@ -328,7 +346,7 @@ RETURN_CODE internal_attempt_set_immediate_or_user_string(Token *tokenToAppendTo
             //printf("DETECTED CHAR IMMEDIATE: %c\n",tempTokenBuffer[1]);
 
         } else if(currentTokenMetadata.containsLetters == true && currentTokenMetadata.containsLoneTokens == false && currentTokenMetadata.containsSymbol == false &&
-        currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0) {
+        currentTokenMetadata.numberOfDecimals == 0 && currentTokenMetadata.numberOfSingleQuotes == 0 && currentTokenMetadata.numberOfNegatives == 0) {
             //Check for user string
             //Contains letters and possibly a number
             //printf("DETECTED INPUT STRING: %s\n", tempTokenBuffer);
