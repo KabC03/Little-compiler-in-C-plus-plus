@@ -12,42 +12,140 @@
         return _INVALID_ARG_PASS_;\
     }
 
+typedef struct RegisterData {
+    //Held within the variableStorage string hashmap
+    size_t stackOffset;    //Where the variable is stored on the stack
+    size_t registerNumber; //Which register the variable is stoed in (-1 if not stored in register)
+
+} RegisterData;
 
 
 
-typedef struct Expression {
-    //Vector of tokens
-    Vector tokens;
-
-} Expression;
-
-typedef struct TokenSetData {
-    //set x = 10 + y + 2;
-    StringHashmap variableAssigned;     
-    Expression expression;     
-
-} TokenSetData;
-
-
-
-StringHashmap variableStorage; //Hashmap containing name -> stack offset
+StringHashmap variableStorage; //Hashmap containing name -> RegisterData
 Vector registerStates;         //Registers storing data, index -> variable name
+size_t nextFreeStackOffset;    //Next free stack offset available
+
+
+
+//Parse an expression
+RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, RegisterData *destinationRegister) {
+
+    if(tokens == NULL || destinationRegister == NULL) {
+        return _INVALID_ARG_PASS_;
+    }
+    //NOTE: Order matters
+    //x = x*3 IS NOT THE SAME as x = 3*x
+    //Second case sets x = 3 first then does 3*3 = 9, First case does x = x, then x = x*3
+
+    //NOTE: Automatically saves registers before overwritting them
+    //If not in registers, load from stack
+
+
+
+    return _SUCCESS_;
+}
+
+
+
+
+
+
 
 //Parse a 'set' statement
 RETURN_CODE internal_parse_set(Vector *tokens) {
 
+    if(tokens == NULL) {
+        return _INVALID_ARG_PASS_;
+    }
+
+    //set x = 10 + y + 2;
     Token *tokenOut;
 
     //Variable to write to
     internal_macro_assert_token(tokens, 1, USER_STRING, "Expected a variable name", tokenOut);
     //Check variable is declared
-    char *variableStr = dynamic_string_read(&(tokenOut->userString));
-    if(variableStr == NULL) {
-        printf("Undeclared variable - \n");
+    const char *variableStr = dynamic_string_read(&(tokenOut->userString));
+
+    //Get metadata
+    RegisterData *varWriteMetadata = (RegisterData*)string_hashmap_get_value(&variableStorage, (void*)variableStr, strlen(variableStr));
+    if(varWriteMetadata == NULL) {
+        printf("Undeclared variable '%s' - ", variableStr);
         return _INTERNAL_ERROR_;
     }
 
+
+    //Assert '='
     internal_macro_assert_token(tokens, 2, TOK_EQUALS_ASSIGNMENT, "Expected '='", tokenOut);
+
+
+
+    //Calculate expression
+    //Write the result to wherever the variable is stored
+    RETURN_CODE returnVal = internal_parse_expression(tokens, 3, varWriteMetadata);
+    if(returnVal != _SUCCESS_) {
+        return _INVALID_ARG_PASS_;
+    }
+
+    //Assert ';'
+    internal_macro_assert_token(tokens, 2, TOK_SEMICOLEN, "Expected ';'", tokenOut);
+
+    return _SUCCESS_;
+}
+
+
+
+
+
+
+
+
+//Parse declaration of a value
+RETURN_CODE internal_parse_dec(Vector *tokens) {
+
+    if(tokens == NULL) {
+        return _INVALID_ARG_PASS_;
+    }
+    //Make space on the stack, parse the expression
+
+    //dec x = 10 + 2;
+
+    Token *tokenOut;
+
+
+    //Variable to write to
+    internal_macro_assert_token(tokens, 1, USER_STRING, "Expected a variable name", tokenOut);
+    //Check variable is declared
+    const char *variableStr = dynamic_string_read(&(tokenOut->userString));
+
+    //Get metadata
+    RegisterData *varWriteMetadata = (RegisterData*)string_hashmap_get_value(&variableStorage, (void*)variableStr, strlen(variableStr));
+    if(varWriteMetadata != NULL) {
+        printf("Redeclaration of variable '%s' - ", variableStr);
+        return _INTERNAL_ERROR_;
+    }
+
+    RegisterData newVariableMetadata;
+    newVariableMetadata.stackOffset = 
+
+
+
+
+    //Assert '='
+    internal_macro_assert_token(tokens, 2, TOK_EQUALS_ASSIGNMENT, "Expected '='", tokenOut);
+
+    //Calculate expression
+    //Write the result to wherever the variable is stored
+    RETURN_CODE returnVal = internal_parse_expression(tokens, 3, varWriteMetadata);
+    if(returnVal != _SUCCESS_) {
+        return _INVALID_ARG_PASS_;
+    }
+
+    //Assert ';'
+    internal_macro_assert_token(tokens, 2, TOK_SEMICOLEN, "Expected ';'", tokenOut);
+
+
+
+
 
     return _SUCCESS_;
 }
@@ -116,7 +214,9 @@ RETURN_CODE parse(Vector *tokens) {
             }
             break;
         case TOK_VAR_DECL: //Variable declaration
-
+            if(internal_parse_dec(tokens) != _SUCCESS_) {
+                return _INVALID_ARG_PASS_;
+            }
             break;
         case TOK_FUN_CALL: //Function call
 

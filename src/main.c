@@ -29,13 +29,14 @@ int main(void) {
             printf("Error occured on line %zu\n", i);
             return 1;
         }
-        /*
+
+        printf("\n\n");
         if(print_tokens(&tokensOut) != _SUCCESS_) {
 
             printf("Failed to print tokens\n");
             return 1;
         }
-        */
+        printf("\n\n");
 
        if(parse(&tokensOut) != _SUCCESS_) {
             printf("Line: %zu\n", i);
