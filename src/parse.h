@@ -16,6 +16,7 @@
 #include "architecture pneumonics.h"
 #include "tokenise.h"
 
+RETURN_CODE parse_initialise(void);
 RETURN_CODE parse(Vector *Tokens);
 
 

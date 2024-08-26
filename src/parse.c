@@ -1,11 +1,18 @@
 #include "parse.h"
+#define VARIABLE_HASHMAP_SIZE 100
 
-#define internal_macro_assert_token(index, assert, assertString, tokenOutput)\
-        VALID_TOKEN_ENUM* tokenOutput = (VALID_TOKEN_ENUM*)vector_get_index(Tokens, index);\
-        if(tokenOutput != assert) {\
-            printf("%s", assertString);\
-            return _INVALID_ARG_PASS_;\
-        }
+
+#define internal_macro_assert_token(tokenStream, index, assertedToken, assertedTokenAsStr, tokenOut)\
+    tokenOut = (Token*)vector_get_index(tokenStream, index);\
+    if(tokenOut == NULL) {\
+        printf("%s - ", assertedTokenAsStr);\
+        return _INVALID_ARG_PASS_;\
+    } else if(tokenOut->tokenEnum != assertedToken) {\
+        printf("%s - ", assertedTokenAsStr);\
+        return _INVALID_ARG_PASS_;\
+    }
+
+
 
 
 typedef struct Expression {
@@ -23,43 +30,43 @@ typedef struct TokenSetData {
 
 
 
-StringHashmap knownVariables; //Hashmap containing name -> stack offset
+StringHashmap variableStorage; //Hashmap containing name -> stack offset
+Vector registerStates;         //Registers storing data, index -> variable name
 
-
+//Parse a 'set' statement
 RETURN_CODE internal_parse_set(Vector *tokens) {
 
-    if(tokens == NULL) {
-        return _INVALID_ARG_PASS_;
+    Token *tokenOut;
+    internal_macro_assert_token(tokens, 1, USER_STRING, "Expected a variable name", tokenOut);
+    internal_macro_assert_token(tokens, 2, TOK_EQUALS_ASSIGNMENT, "Expected '='", tokenOut);
 
-    } else {
-
-        Token currentToken;
-
-
-
-        //Assert variable name
-        internal_macro_assert_token(1, TOK_USER_STRING, "Expected variable name delimeter in set instruction", currentToken);
-        char *variableName = dynamic_string_read(&(currentToken.userString));
-        if(variableName == NULL) {
-            return _INTERNAL_ERROR_; //Shouldnt happen
-        }
-        size_t variableStackOffset* = string_hashmap_get_value(&knownVariables, variableName, strlen(variableName) + 1); 
-
-
-        //Assert '='
-        internal_macro_assert_token(2, TOK_EQUALS_ASSIGNMENT, "Expected '=' delimeter in set instruction", currentToken);
+    return _SUCCESS_;
+}
 
 
 
-        //Assert expression
-        //TODO
+/**
+ * parse_initialise 
+ * ===============================================
+ * Brief: Initialise the parser 
+ * 
+ * Param: void
+ * 
+ * Return: RETURN_CODE - Indicating succes or type of failure 
+ * 
+ */
+RETURN_CODE parse_initialise(void) {
 
-
-        //Assign expression to variable
+    if(string_hashmap_initialise(&variableStorage, VARIABLE_HASHMAP_SIZE) != true) {
+        return _INTERNAL_ERROR_;
+    }
+    if(vector_initialise(&registerStates, sizeof(DynamicString)) != true) {
+        return _INTERNAL_ERROR_;
     }
 
     return _SUCCESS_;
 }
+
 
 
 
@@ -75,15 +82,15 @@ RETURN_CODE internal_parse_set(Vector *tokens) {
  * Return: RETURN_CODE - Indicating succes or type of failure 
  * 
  */
-RETURN_CODE parse(Vector *Tokens) {
+RETURN_CODE parse(Vector *tokens) {
 
-    if(Tokens == NULL) {
+    if(tokens == NULL) {
         return _INVALID_ARG_PASS_; 
     
     } else {
     
         //First token determines what the line does
-        VALID_TOKEN_ENUM *instructionToken = (VALID_TOKEN_ENUM*)vector_get_index(Tokens, 0);
+        VALID_TOKEN_ENUM *instructionToken = (VALID_TOKEN_ENUM*)vector_get_index(tokens, 0);
         
         if(instructionToken == NULL) {
             return _INTERNAL_ERROR_;
@@ -95,7 +102,7 @@ RETURN_CODE parse(Vector *Tokens) {
 
         case TOK_SET: //Variable change
 
-            if(internal_parse_set(Vector *tokens) != _SUCCESS_) {
+            if(internal_parse_set(tokens) != _SUCCESS_) {
                 return _INVALID_ARG_PASS_;
             }
             break;

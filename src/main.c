@@ -15,28 +15,31 @@ int main(void) {
     FILE *fptr = fopen(TOKEN_PATH, "r");
     if(fptr == NULL) {
         printf("Failed to open src file\n");
-        return -1;
+        return 1;
     }
-
+    if(parse_initialise() != _SUCCESS_) {
+        printf("Failed to initialise parser\n");
+        return 1;
+    }
 
     for(size_t i = 0; fgets(lineInputBuffer, SRC_BUFFER_SIZE, fptr) != NULL; i++) {
 
         if(tokenise(lineInputBuffer, &tokensOut) != _SUCCESS_) {
             
             printf("Error occured on line %zu\n", i);
-            return -2;
+            return 1;
         }
         /*
         if(print_tokens(&tokensOut) != _SUCCESS_) {
 
             printf("Failed to print tokens\n");
-            return -3;
+            return 1;
         }
         */
 
        if(parse(&tokensOut) != _SUCCESS_) {
-            printf("Error occured on line %zu\n", i);
-            return -3;
+            printf("Line: %zu\n", i);
+            return 1;
         }
     }
     
