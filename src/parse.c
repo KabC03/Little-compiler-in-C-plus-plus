@@ -12,105 +12,19 @@
         return _INVALID_ARG_PASS_;\
     }
 
-typedef struct RegisterData { //Could definitely optimise the 'inUse' member but make it more readable for now
-    //Held within the variableStorage string hashmap
-    size_t baseOffset;     //Where the variable is stored on the stack
-    size_t registerNumber; //Which register the variable is stoed in (-1 if not stored in register)
-    size_t timesRequested; //Times this variable has been used (higher usage means it will stay in registers longer)
-    bool inUse;            //If this register space is in use (to specify empty space in register state vector)
-
-} RegisterData;
 
 
 
-StringHashmap variableStorage;  //Hashmap containing name -> RegisterData
-Vector registerStates;          //Registers storing data, index -> RegisterData
-size_t nextFreebaseOffset = 0; //Next free stack offset available
+
+StringHashmap variableStorage;  //Hashmap containing name -> VariableData
+Vector registerStates;          //Registers storing data, index -> VariableData
+size_t nextFreebaseOffset = 0;  //Next free memory offset available
 FILE *globalIROut = NULL;
 
 
 
-//Push a variable into a register for storage, blacklist a register
-RETURN_CODE internal_push_into_registers(RegisterData *variable, size_t blacklistedRegisterIndex) {
-
-    if(variable == NULL) {
-        return _INVALID_ARG_PASS_;
-    }
-
-    size_t minUsedRegisterIndex = 0;
-    for(size_t i = 0; i < vector_get_length(&registerStates) + 1; i++) {
-        RegisterData *currentRegister = (RegisterData*)vector_get_index(&registerStates, i);
-        if(currentRegister == NULL) {
-            return _INTERNAL_ERROR_;
-        }
-
-        if(i == blacklistedRegisterIndex) {
-            continue;;
-        } else if(currentRegister->inUse == false) { //If register isnt being used then allow it to be used
-            variable->registerNumber = i;
-            break;
-
-        } else if(currentRegister->timesRequested < minUsedRegisterIndex) {
-            variable->registerNumber = i;
-        }
-    }
-
-    //Save the register being pushed out
-    internal_macro_save(minUsedRegisterIndex, ((RegisterData*)vector_get_index(&registerStates, minUsedRegisterIndex))->baseOffset, globalIROut);
-
-
-    variable->timesRequested++; //Increment the times requested
-    //Push mark the new variable as being stored in the register
-    if(vector_set_index(&registerStates, variable->registerNumber, variable) == false) {
-        return _INTERNAL_ERROR_;
-    }
-
-    return _SUCCESS_;
-}
-
-
-//Request a register to hold an immediate (marks it as unused so it can be overwritten), blacklist a register
-RETURN_CODE internal_request_immediate_register(size_t *indexOut, size_t blacklistedRegisterIndex) {
-
-    if(indexOut == NULL) {
-        return _INVALID_ARG_PASS_;
-    }
-
-    RegisterData *currentRegister = NULL;
-
-    size_t minUsedRegisterIndex = 0;
-    for(size_t i = 0; i < vector_get_length(&registerStates) + 1; i++) {
-        currentRegister = (RegisterData*)vector_get_index(&registerStates, i);
-        if(currentRegister == NULL) {
-            return _INTERNAL_ERROR_;
-        }
-
-        if(i == blacklistedRegisterIndex) {
-            continue;;
-        } else if(currentRegister->inUse == false) { //If register isnt being used then allow it to be used
-            *indexOut = i;
-            return _SUCCESS_;
-
-        } else if(currentRegister->timesRequested < minUsedRegisterIndex) {
-            *indexOut = i;
-        }
-    }
-
-    currentRegister->inUse = false; //Set the new register as unused
-
-    //Save the register being pushed out
-    internal_macro_save(minUsedRegisterIndex, ((RegisterData*)vector_get_index(&registerStates, minUsedRegisterIndex))->baseOffset, globalIROut);
-
-    return _SUCCESS_;
-}
-
-
-
-
-
-
 //Parse an expression
-RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, RegisterData *destRegMetadata) {
+RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, VariableData *destRegMetadata) {
 
 
     if(tokens == NULL || destRegMetadata == NULL) {
@@ -125,120 +39,10 @@ RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, Registe
 
 
     //Expect num, op, num, op, ...
-    
-
-
-    //TODO:
-    //Set up source and destination registers
-    //Should be based on how much its been used
-    //Save the register that is pushed out to its stack address
 
 
 
-    size_t accumulatorRegister = -1;
 
-    
-    if(destRegMetadata->registerNumber == -1) { //If variable not in register, load it into a register
-        //Request a empty register
-        if(internal_push_into_registers(destRegMetadata, -1) != _SUCCESS_) {
-            return _INTERNAL_ERROR_;
-        }
-        accumulatorRegister = destRegMetadata->registerNumber;
-    }
-    size_t regDestination = destRegMetadata->registerNumber;
-
-
-
-    Token *currentToken = NULL;
-    bool expectOperator = false;
-    VALID_TOKEN_ENUM prevOp = TOK_ADD;
-
-
-    for(size_t i = indexStart; i < vector_get_length(tokens) + 1; i++) {
-        currentToken = (Token*)vector_get_index(tokens, i);
-        if(currentToken == NULL) {
-            return _INTERNAL_ERROR_;
-        }
-        if(expectOperator == true) {
-            if(i == indexStart + 1) {
-                prevOp = currentToken->tokenEnum;
-                continue; //This is really unoptimised
-            }
-
-            switch (prevOp) {
-            case TOK_ADD:
-                internal_macro_addition(regDestination, accumulatorRegister, globalIROut);
-                break;
-            case TOK_SUB:
-                internal_macro_subtraction(regDestination, accumulatorRegister, globalIROut);
-                break;
-            case TOK_MUL:
-                internal_macro_multiplication(regDestination, accumulatorRegister, globalIROut);
-                break;
-            case TOK_DIV:
-                internal_macro_division(regDestination, accumulatorRegister, globalIROut);
-                break;
-            case EOF_TOKEN:
-                return _SUCCESS_;
-                break;
-
-            default:
-                printf("Expected operator - ");
-                return _INVALID_ARG_PASS_;
-                break;
-            }
-            prevOp = currentToken->tokenEnum;
-
-        } else {
-
-
-            switch (currentToken->tokenEnum) {
-            case USER_STRING: {
-
-                //If variable not in register, load it from memory into the temp register
-                const char *varToLoad = dynamic_string_read(&(currentToken->userString));
-                RegisterData *currentLoadVariable = (RegisterData*)string_hashmap_get_value(&variableStorage, (void*)varToLoad, strlen(varToLoad));
-
-                if(currentLoadVariable == NULL) {
-
-                    printf("Variable '%s' not defined - ", varToLoad);
-                    return _INVALID_ARG_PASS_;
-
-                } else if(currentLoadVariable->registerNumber == -1) { //Load into register
-                    if(internal_push_into_registers(currentLoadVariable, regDestination) != _SUCCESS_) {
-                        return _INTERNAL_ERROR_;
-                    }
-                    internal_macro_load(destRegMetadata->registerNumber, destRegMetadata->baseOffset, globalIROut);
-                
-                } else {
-                    accumulatorRegister = currentLoadVariable->registerNumber;
-                }
-            }
-
-                break;
-            case INT_IMMEDIATE:
-                //Should optimise this later so that immediates can directly be used with add/sub/mul/div instructions
-                //Check in operator branch if previous/nextitem is an immediate, if so then use immediate arithmatic instructions
-
-
-                //Request a free register for the immediate
-                if(internal_request_immediate_register(&accumulatorRegister, regDestination) != _SUCCESS_) {
-                    return _INTERNAL_ERROR_;
-                }
-
-                internal_macro_load_immediate(accumulatorRegister, currentToken->intImmediate, globalIROut);
-                break;
-
-            default:
-                printf("Expected operand - ");
-                return _INVALID_ARG_PASS_;
-                break;
-            }
-
-        }
-
-        expectOperator = !expectOperator;
-    }
 
 
 
@@ -268,7 +72,7 @@ RETURN_CODE internal_parse_set(Vector *tokens) {
     const char *variableStr = dynamic_string_read(&(tokenOut->userString));
 
     //Get metadata
-    RegisterData *varWriteMetadata = (RegisterData*)string_hashmap_get_value(&variableStorage, (void*)variableStr, strlen(variableStr) + 1);
+    VariableData *varWriteMetadata = (VariableData*)string_hashmap_get_value(&variableStorage, (void*)variableStr, strlen(variableStr) + 1);
     if(varWriteMetadata == NULL) {
         printf("Undeclared variable '%s' - ", variableStr);
         return _INTERNAL_ERROR_;
@@ -319,13 +123,13 @@ RETURN_CODE internal_parse_dec(Vector *tokens) {
     const char *variableStr = dynamic_string_read(&(tokenOut->userString));
 
     //Get metadata
-    RegisterData *varWriteMetadata = (RegisterData*)string_hashmap_get_value(&variableStorage, (void*)variableStr, strlen(variableStr));
+    VariableData *varWriteMetadata = (VariableData*)string_hashmap_get_value(&variableStorage, (void*)variableStr, strlen(variableStr));
     if(varWriteMetadata != NULL) {
         printf("Redeclaration of variable '%s' - ", variableStr);
         return _INTERNAL_ERROR_;
     }
 
-    RegisterData newVariableMetadata;
+    VariableData newVariableMetadata;
     newVariableMetadata.baseOffset = nextFreebaseOffset;
     nextFreebaseOffset += STACK_DATASIZE;
     newVariableMetadata.registerNumber = -1; //Specify new variable is not in a register
@@ -345,7 +149,7 @@ RETURN_CODE internal_parse_dec(Vector *tokens) {
 
 
     //Add new variable to hashmap
-    if(string_hashmap_set(&variableStorage, variableStr, strlen(variableStr) + 1, &newVariableMetadata, sizeof(RegisterData)) == false) {
+    if(string_hashmap_set(&variableStorage, variableStr, strlen(variableStr) + 1, &newVariableMetadata, sizeof(VariableData)) == false) {
         return _INTERNAL_ERROR_;
     }
 
@@ -373,11 +177,11 @@ RETURN_CODE parse_initialise(void) {
     if(string_hashmap_initialise(&variableStorage, VARIABLE_HASHMAP_SIZE) != true) {
         return _INTERNAL_ERROR_;
     }
-    if(vector_initialise(&registerStates, sizeof(RegisterData)) != true) {
+    if(vector_initialise(&registerStates, sizeof(VariableData)) != true) {
         return _INTERNAL_ERROR_;
     }
 
-    RegisterData padding;
+    VariableData padding;
     padding.inUse = false;
     for(size_t i = 0; i < NUMBER_OF_REGISTERS; i++) { //Pad it with empty data
         if(vector_quick_append(&registerStates, &padding, 1) == false) {
