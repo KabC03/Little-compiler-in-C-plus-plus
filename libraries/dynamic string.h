@@ -20,7 +20,7 @@ typedef struct DynamicString {
 
 
 RETURN_CODE dynamic_string_initialise(DynamicString *dynamicString);
-RETURN_CODE dynamic_string_set(DynamicString *dynamicString, char *inputString);
+RETURN_CODE dynamic_string_set(DynamicString *dynamicString, const char *inputString);
 const char *dynamic_string_read(const DynamicString *dynamicString);
 RETURN_CODE dynamic_string_concatanate(DynamicString *dynamicString, char *inputString);
 RETURN_CODE dynamic_string_destroy(DynamicString *dynamicString);

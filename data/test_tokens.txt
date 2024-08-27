@@ -1,1 +1,4 @@
-dec abc = -1+2
+dec abc = -1 + 2 *2;
+dec x = 1 + abc + 2;
+
+dec y = x;

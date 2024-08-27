@@ -44,7 +44,7 @@ RETURN_CODE dynamic_string_initialise(DynamicString *dynamicString) {
  * Return: RETURN_CODE - T/F depending on if addition was successful
  * 
  */
-RETURN_CODE dynamic_string_set(DynamicString *dynamicString, char *inputString) {
+RETURN_CODE dynamic_string_set(DynamicString *dynamicString, const char *inputString) {
 
     if(dynamicString == NULL || inputString == NULL) {
         return _INVALID_ARG_PASS_;

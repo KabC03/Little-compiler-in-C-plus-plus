@@ -84,7 +84,7 @@ tokens = {
     #Misc
     "<" : "TOK_OPEN_ANGLE", ">" : "TOK_CLOSE_ANGLE", "[" : "TOK_OPEN_SQUAER", "]" : "TOK_CLOSE_SQUARE", 
     "(" : "TOK_OPEN_PAREN", ")" : "TOK_CLOSE_PAREN", "{" : "TOK_OPEN_CURLEY", "}" : "TOK_CLOSE_CURLEY", 
-    "," : "TOK_COMMA", "." : "TOK_DOT", "\'" :"TOK_SINGLE_QUOTE",
+    "," : "TOK_COMMA", "." : "TOK_DOT", "\'" :"TOK_SINGLE_QUOTE", ";": "TOK_SEMICOLEN",
 };
 
 numberOfTokens = 0;

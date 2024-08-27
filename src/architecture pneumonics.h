@@ -49,6 +49,8 @@ add eax ecx //Add second argument
 #define internal_macro_division(regDest, rSrc, destFptr)\
     if(fprintf(destFptr, "DIV R%zu R%zu\n",regDest, rSrc) < 0) {return _INTERNAL_ERROR_;}
 
+#define internal_macro_modulo(regDest, rSrc, destFptr)\
+    if(fprintf(destFptr, "MOD R%zu R%zu\n",regDest, rSrc) < 0) {return _INTERNAL_ERROR_;}
 
 
 
