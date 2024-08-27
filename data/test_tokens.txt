@@ -1,1 +1,1 @@
-dec abc = -10 + -1-y
+dec abc = -1+2

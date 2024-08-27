@@ -32,22 +32,22 @@ add eax ecx //Add second argument
 */
 
 #define internal_macro_load_immediate(regDest, immediate, destFptr)\
-    if(fprintf(destFptr, "LOD R%zu %zu\n",regDest, immediate)) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "LOD R%zu %d\n",regDest, immediate) < 0) {/*printf("HERE");*/ return _INTERNAL_ERROR_;}
 
 #define internal_macro_move(regDest, rSrc, destFptr)\
-    if(fprintf(destFptr, "MOV R%zu R%zu\n",regDest, rSrc)) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "MOV R%zu R%zu\n",regDest, rSrc) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_addition(regDest, rSrc, destFptr)\
-    if(fprintf(destFptr, "ADD R%zu R%zu\n",regDest, regSrc) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "ADD R%zu R%zu\n",regDest, rSrc) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_subtraction(regDest, rSrc, destFptr)\
-    if(fprintf(destFptr, "SUB R%zu R%zu\n",regDest, regSrc) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "SUB R%zu R%zu\n",regDest, rSrc) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_multiplication(regDest, rSrc, destFptr)\
-    if(fprintf(destFptr, "MUL R%zu R%zu\n",regDest, regSrc) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "MUL R%zu R%zu\n",regDest, rSrc) < 0) {return _INTERNAL_ERROR_;}
 
 #define internal_macro_division(regDest, rSrc, destFptr)\
-    if(fprintf(destFptr, "DIV R%zu R%zu\n",regDest, regSrc) < 0) {return _INTERNAL_ERROR_;}
+    if(fprintf(destFptr, "DIV R%zu R%zu\n",regDest, rSrc) < 0) {return _INTERNAL_ERROR_;}
 
 
 

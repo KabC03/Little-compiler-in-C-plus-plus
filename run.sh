@@ -16,7 +16,7 @@ fi
 
 #Create directory and compile
 mkdir -p ./output
-clang ./src/*.c ./libraries/*.c -Wall -Werror -fsanitize=address -o ./output/executable
+clang ./src/*.c ./libraries/*.c -Wall -Werror -fsanitize=address -g -fno-inline -o ./output/executable
 if [[ $? -ne 0 ]]; then
 
     printf "\n\n[SHELL] Compilation failed\n\n"
