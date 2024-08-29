@@ -55,19 +55,14 @@ tokens = {
     "invalid" : "TOK_INVALID",
 
     #Instructions
-    "set" : "TOK_SET", "dec" : "TOK_VAR_DECL", "cal" : "TOK_FUN_CALL", "fnc" : "TOK_FUN_DECL", 
-
-
-    #Datatypes
-    "int" : "TOK_INT", "=" : "TOK_ASSIGN",
-
+    "set" : "TOK_SET", "dec" : "TOK_DEC", 
+    "if" : "TOK_IF", "endif" : "TOK_ENDIF", "goto" : "TOK_GOTO", "label" : "TOK_LABEL",
 
     #Operators
     "+" : "TOK_ADD", "-" : "TOK_SUB", "*" : "TOK_MUL", "/" : "TOK_DIV","\%" : "TOK_MOD", 
-    "<<" : "TOK_LESS", "==" : "TOK_EQUAL", "<=" : "TOK_LESS_EQUAL",
+    "<<" : "TOK_LESS", "==" : "TOK_EQUAL", "<=" : "TOK_LESS_EQUAL", "=" : "TOK_ASSIGN",
 
-    #Control flow
-    "if" : "TOK_IF", "endif" : "TOK_ENDIF", "goto" : "TOK_GTO", "label" : "TOK_LBL",
+
 
 };
 

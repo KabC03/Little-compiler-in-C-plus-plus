@@ -6,11 +6,11 @@ const char validTokens[NUMBER_OF_TOKENS][MAX_TOKEN_LENGTH] = {
 
 
 
-    "invalid","set","dec","cal","fnc",
+    "invalid","set","dec","if","endif",
 
 
 
-    "int","=","+","-","*",
+    "goto","label","+","-","*",
 
 
 
@@ -18,7 +18,7 @@ const char validTokens[NUMBER_OF_TOKENS][MAX_TOKEN_LENGTH] = {
 
 
 
-    "if","endif","goto","label",
+    "=",
 
 };
 

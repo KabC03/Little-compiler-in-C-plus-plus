@@ -2,7 +2,7 @@
 #define COMPILER_DATA_HH
 
 
-#define NUMBER_OF_TOKENS 19
+#define NUMBER_OF_TOKENS 16
 #define MAX_TOKEN_LENGTH 8
 
 
@@ -19,13 +19,13 @@ typedef enum TOKEN_TYPE {
 
     TOK_INVALID = 0,
     TOK_SET = 1,
-    TOK_VAR_DECL = 2,
-    TOK_FUN_CALL = 3,
-    TOK_FUN_DECL = 4,
+    TOK_DEC = 2,
+    TOK_IF = 3,
+    TOK_ENDIF = 4,
 
 
-    TOK_INT = 5,
-    TOK_ASSIGN = 6,
+    TOK_GOTO = 5,
+    TOK_LABEL = 6,
     TOK_ADD = 7,
     TOK_SUB = 8,
     TOK_MUL = 9,
@@ -38,10 +38,7 @@ typedef enum TOKEN_TYPE {
     TOK_LESS_EQUAL = 14,
 
 
-    TOK_IF = 15,
-    TOK_ENDIF = 16,
-    TOK_GTO = 17,
-    TOK_LBL = 18,
+    TOK_ASSIGN = 15,
 
 
 } TOKEN_TYPE;

@@ -2,7 +2,7 @@
 #include "tokenise.h++"
 #define TOKEN_VECTOR_RESERVE 10
 #define TOKEN_STRING_WINDOW_RESERVE 5
-
+unordered_map<string, int> tokenMap;
 
 
 
@@ -17,14 +17,40 @@ void debug_tokenise_map_print(unordered_map<string, int> &tokenMap) {
     return;
 }
 
+
+
+//Print a single token
+void debug_tokenise_singular_token_print(Token &token) {
+
+
+    switch(token.tokenType) {//Int immediate/string will have negative index
+
+    case TOK_IMM_INT: {
+        cout << "Type: TOK_IMM" << endl;
+        break;
+    } case TOK_STRING: {
+        cout << "Type: TOK_STRING" << endl;
+        break;
+    } default: {
+        cout << "Type: " << setw(10) << validTokens[token.tokenType] << endl; //Enum can directly index into token array
+        break;
+    }
+    }
+    cout << "\tImm: " << setw(10) << token.immInt << endl;
+    cout << "\tStr: " << setw(10) << token.string << endl;
+    cout << endl;
+
+    return;
+}
+
+
 //Print a token vector
 void debug_tokenise_tokens_print(vector<Token> &tokens) {
 
+    cout << "---Tokens: " << tokens.size() << "---" << endl;
     for(auto i = tokens.begin(); i != tokens.end(); i++) {
-        cout << "Type: " << setw(10) << validTokens[(*i).tokenType] << endl; //Enum can directly index into token array
-        cout << "\tImm: " << setw(10) << (*i).immInt << endl;
-        cout << "\tStr: " << setw(10) << (*i).string << endl;
-        cout << endl;
+
+        debug_tokenise_singular_token_print((*i));
     }
 
     return;
@@ -39,22 +65,22 @@ void debug_tokenise_tokens_print(vector<Token> &tokens) {
  * Brief: Initialises internal tokeniser structures, call once in main
  * 
  * Param: 
- *        void
+ *         void
  * 
- * Return: tokenMap - Token map associating string::TOKEN_TYPE
+ * Return: void
  * 
  */
-unordered_map<string, int> tokeniser_initialise_map(void) {
+void tokeniser_initialise_map(void) {
 
     unordered_map<string, int> tokenMap;
     for(int i = 0; i < NUMBER_OF_TOKENS; i++) {
 
         tokenMap[validTokens[i]] = i;
     }
+    
 
-    return tokenMap;
+    return;
 }
-
 
 
 
@@ -64,12 +90,13 @@ unordered_map<string, int> tokeniser_initialise_map(void) {
  * Brief: Tokenise an input string
  * 
  * Param: 
- *        inputString - Input string to be tokenised
+ *        &inputString - Input string to be tokenised
+*         &tokenMap - Token map to be used to validate tokens
  * 
  * Return: tokens - Vector of output tokens
  * 
  */
-vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string, int> &tokenMap) {
+vector<Token> tokeniser_tokenise(const string &inputString) {
 
     //Reserve some space to avoid resizing
     string stringWindow = "\0";
@@ -80,9 +107,11 @@ vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string
 
     int j = 0;
     bool endOfToken = false;
-    for(auto i = inputString.begin(); i != inputString.end(); i++, j++) {
+
+    Token newToken;
+    for(auto i = inputString.begin(); i != inputString.end(); i++, j++) { //Maybe unsafe... (OOB access)
         
-        Token newToken;
+
         newToken.immInt = INT_MAX;
         newToken.string = "INV";
         newToken.tokenType = TOK_INVALID;
@@ -105,11 +134,12 @@ vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string
         stringWindow += *i;
         if(endOfToken == true) {
 
-            auto hashWindow = tokenMap.find(stringWindow);
-            if(hashWindow != tokenMap.end()) { //Keyword found
-                newToken.tokenType = (TOKEN_TYPE)hashWindow->second; 
+
+            auto mapIterator = tokenMap.find(stringWindow);
+            if(mapIterator != tokenMap.end()) { //Keyword found
+                newToken.tokenType = (TOKEN_TYPE)mapIterator->second; 
                 //Cast to int so the compiler doesnt complain
-                outputTokensVector.push_back(newToken);
+
 
             } else {
 
@@ -119,9 +149,11 @@ vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string
                     return {};
 
                 } else if(isalpha(stringWindow[0]) == true) { //Variable
+                    newToken.tokenType = TOK_STRING;
                     newToken.string = stringWindow;
 
                 } else if(isdigit(stringWindow[0]) == true) { //Immediate
+                    newToken.tokenType = TOK_IMM_INT;
                     newToken.immInt = stoi(stringWindow);
 
                 } else {
@@ -130,13 +162,18 @@ vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string
                 }
 
             }
-            
+            outputTokensVector.push_back(newToken);
             stringWindow.clear();
             endOfToken = false;
         }
         
     }
 
+    //Similar to '\0' in C
+    newToken.immInt = INT_MAX;
+    newToken.string = "INV";
+    newToken.tokenType = TOK_END_OF_STREAM;
+    outputTokensVector.push_back(newToken);
 
     return outputTokensVector;
 }
