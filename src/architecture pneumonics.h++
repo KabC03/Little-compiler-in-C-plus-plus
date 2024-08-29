@@ -1,9 +1,9 @@
-//10 Aug 2024
+//30 Aug 2024
 //Includes macros for assembly generation by parser
 //Some architectures may require multiple lines to perform the same operations as others
 
-#ifndef ARCHITECTURE_PNEUMONICS_H
-#define ARCHITECTURE_PNEUMONICS_H
+#ifndef ARCHITECTURE_PNEUMONICS_HH
+#define ARCHITECTURE_PNEUMONICS_HH
 
 #define NUMBER_OF_REGISTERS 5 //Number of general purpose registers
 #define STACK_DATASIZE 4
@@ -103,7 +103,7 @@ je my_label
 
 
 
-#endif // ARCHITECTURE_PNEUMONICS_H 
+#endif // ARCHITECTURE_PNEUMONICS_HH
 
 
 

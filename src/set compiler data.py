@@ -1,4 +1,4 @@
-# 10, Jul, 24
+# 30 Aug 2024
 # This file generates the compiler data.h and compiler data.c files
 import sys
 
@@ -13,36 +13,37 @@ tokenStruct = """
 
 typedef struct Token {
 
-    VALID_TOKEN_ENUM tokenEnum;
+    TOKEN_TYPE tokenType;
 
     //Immediates and variables
-    union {
-        DynamicString userString;  //User string (func name, variable, etc - parser must determine based on context)
+    std::string string;  //User string (func name, variable, etc - parser must determine based on context)
 
-        char charImmediate;        //Used if immediate char 'f'
-        int intImmediate;          //Used for immediate int '3'
-        float floatImmediate;      //Used for immediate float '3.32'
-    };
+    int immInt;     //Integer immediate
 
 } Token;
 """;
 
 
+librariesToInclude = [
+
+    "<string>",
+];
+
+
+
 outputFolder = "./src/";
 
-hFile = "compiler data.h";
-cFile = "compiler data.c";
-headerGuardName = "COMPILE_H";
+hFile = "compiler data.h++";
+cFile = "compiler data.c++";
+headerGuardName = "COMPILER_DATA_HH";
 
 
 #Tokens to pre-append (Appear in .h but not .c file)
 tokensPreappend = [
 
-    "EOF_TOKEN",
-    "INT_IMMEDIATE",
-    "FLOAT_IMMEDIATE",
-    "CHAR_IMMEDIATE",
-    "USER_STRING",
+    "TOK_END_OF_STREAM",
+    "TOK_IMM_INT",
+    "TOK_STRING",
 
 ];
 
@@ -51,40 +52,23 @@ tokensPreappend = [
 tokens = {
 
     #Internal types
-    "invalid" : "INVALID_TOKEN",
+    "invalid" : "TOK_INVALID",
 
     #Instructions
     "set" : "TOK_SET", "dec" : "TOK_VAR_DECL", "cal" : "TOK_FUN_CALL", "fnc" : "TOK_FUN_DECL", 
-    "if" : "TOK_IF", "gto" : "TOK_GTO", "lbl" : "TOK_LBL", "endfn" : "TOK_END_FN", "endif" : "TOK_ENDIF",
-
-
 
 
     #Datatypes
-    "int" : "TOK_INT", "flt" : "TOK_FLT", "chr" : "TOK_CHR", "@" : "TOK_PTR", "=" : "TOK_EQUALS_ASSIGNMENT",
+    "int" : "TOK_INT", "=" : "TOK_ASSIGN",
+
 
     #Operators
-    "+" : "TOK_ADD", "-" : "TOK_SUB", "*" : "TOK_MUL", "/" : "TOK_DIV","\%" : "TOK_MOD","||" : "TOK_OR", "&&" : "TOK_AND",
-    "==" : "TOK_EQUAL_TO", "!=" : "TOK_NOT_EQUAL_TO", ">=" : "TOK_GREATER_EQUAL_TO", "<=" : "TOK_LESS_EQUAL_TO", ">>" : "TOK_GREATER_TO", "<<" : "TOK_LESS_TO",
-    "?" : "TOK_DEREFERENCE_PTR",
-
+    "+" : "TOK_ADD", "-" : "TOK_SUB", "*" : "TOK_MUL", "/" : "TOK_DIV","\%" : "TOK_MOD", 
+    "<<" : "TOK_LESS", "==" : "TOK_EQUAL", "<=" : "TOK_LESS_EQUAL",
 
     #Control flow
-    #"if" : "TOK_IF", "gto" : "TOK_GTO", "lbl" : "TOK_LBL",
+    "if" : "TOK_IF", "endif" : "TOK_ENDIF", "goto" : "TOK_GTO", "label" : "TOK_LBL",
 
-    #Functions
-    #"fn" : "TOK_FN", "ret" : "TOK_RET",
-
-    #Inbuilt functions
-    "allocate" : "TOK_ALLOCATE", "free" : "TOK_FREE", "sizeof" : "TOK_SIZEOF",
-
-    #Organisation
-    "//" : "TOK_COMMENT",
-
-    #Misc
-    "<" : "TOK_OPEN_ANGLE", ">" : "TOK_CLOSE_ANGLE", "[" : "TOK_OPEN_SQUAER", "]" : "TOK_CLOSE_SQUARE", 
-    "(" : "TOK_OPEN_PAREN", ")" : "TOK_CLOSE_PAREN", "{" : "TOK_OPEN_CURLEY", "}" : "TOK_CLOSE_CURLEY", 
-    "," : "TOK_COMMA", "." : "TOK_DOT", "\'" :"TOK_SINGLE_QUOTE", ";": "TOK_SEMICOLEN",
 };
 
 numberOfTokens = 0;
@@ -93,18 +77,6 @@ maxTokenSize = 0;
 
 
 
-librariesToInclude = [
-
-    "<stdlib.h>",
-    "<stdio.h>",
-    "<stdbool.h>",
-    "<string.h>",
-    "<stdint.h>",
-    "\"../libraries/vector.h\"",
-    "\"../libraries/datastructures.h\"",
-    "\"../libraries/static hashmap.h\"",
-    "\"../libraries/dynamic string.h\"",
-];
 
 
 
@@ -130,7 +102,7 @@ def write_h_file():
 
             file.write("extern const char validTokens[" + str(defineNameNumberOfTokens) + "][" + str(defineNameMaxTokenLength) + "];\n" ) 
 
-            file.write("\n\ntypedef enum VALID_TOKEN_ENUM {\n\n");
+            file.write("\n\ntypedef enum TOKEN_TYPE {\n\n");
 
 
             counter = -1;
@@ -150,7 +122,7 @@ def write_h_file():
                 file.write("    " + str(value) + " = " + str(counter) + ",\n");
                 counter += 1;
 
-            file.write("\n\n} VALID_TOKEN_ENUM;\n");
+            file.write("\n\n} TOKEN_TYPE;\n");
 
 
             file.write("\n\n" + str(tokenStruct) + "\n\n");
