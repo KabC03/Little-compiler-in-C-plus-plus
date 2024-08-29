@@ -87,7 +87,7 @@ size_t register_load_to_register(Vector *registerStates, StringHashmap *variable
                     if(currentVarName == NULL) {
                         return _INTERNAL_ERROR_;
                     }
-                    VariableData *currentVar = (VariableData*)string_hashmap_get_value(&variableMap, (void*)currentVarName, strlen(currentVarName) + 1);
+                    VariableData *currentVar = (VariableData*)string_hashmap_get_value(variableMap, (void*)currentVarName, strlen(currentVarName) + 1);
                     if(currentVar == NULL) {
                         return _INTERNAL_ERROR_;
                     }
