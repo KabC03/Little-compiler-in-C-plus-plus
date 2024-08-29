@@ -83,9 +83,11 @@ size_t register_load_to_register(Vector *registerStates, VariableData *newVariab
                     currentRegister->inUse = false;
                 }
                 return i;
+                internal_macro_load(i, newVariable->baseOffset, irFilePtr);
             }
         }
 
+        //Push out least used register
 
 
 
