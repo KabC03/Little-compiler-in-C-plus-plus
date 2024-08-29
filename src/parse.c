@@ -131,13 +131,10 @@ RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, size_t 
         expectOperator = !expectOperator;
     }
 
-    const char *currentVarName = dynamic_string_read(&(destRegMetadata->name));
-    if(currentVarName == NULL) {
-        return _INTERNAL_ERROR_;
-    }
+
     destRegMetadata->inUse = true;
     destRegMetadata->registerNumber = rDest;
-    if(string_hashmap_set(&variableStorage, currentVarName, strlen(currentVarName) + 1, destRegMetadata, sizeof(VariableData)) == false) {
+    if(string_hashmap_set(&variableStorage, destRegMetadata->name, strlen(destRegMetadata->name) + 1, destRegMetadata, sizeof(VariableData)) == false) {
         //This will leak memory...
         return _INTERNAL_ERROR_;
     }
