@@ -61,6 +61,35 @@ size_t register_load_to_register(Vector *registerStates, VariableData *newVariab
 
     } else {
 
+        //Search for unused register
+        for(size_t i = 0; i < vector_get_length(registerStates) + 1; i++) {
+            VariableData *currentRegister = (VariableData*)vector_get_index(registerStates, i);
+            if(currentRegister == NULL) {
+                return _INTERNAL_ERROR_;
+            }
+            if(i == blacklistedIndex) {
+                continue;
+            }
+
+            if(currentRegister->inUse == false) {
+
+                if(newVariable != NULL) {
+                    currentRegister->baseOffset = newVariable->baseOffset;
+                    currentRegister->inUse = true;
+                    currentRegister->registerNumber = newVariable->registerNumber;
+                    currentRegister->name = newVariable->name;
+                    currentRegister->timesRequested = newVariable->timesRequested;
+                } else {
+                    currentRegister->inUse = false;
+                }
+                return i;
+            }
+        }
+
+
+
+
+
 
     }
 

@@ -41,50 +41,103 @@ RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, size_t 
 
     //Expect num, op, num, op, ...
 
-    bool expectOperator = true;
-    VALID_TOKEN_ENUM prevOp = TOK_ADD;
+    bool expectOperator = false;
+    VALID_TOKEN_ENUM prevOp = INVALID_TOKEN;
     size_t rDest = -1;
     size_t rSrc = -1;
 
 
     for(size_t i = indexStart; i < indexEnd; i++) {
 
-        Token *currentToken = vector_get_index(tokens, i);
+        Token *currentToken = (Token*)vector_get_index(tokens, i);
         if(currentToken == NULL) {
             return _INTERNAL_ERROR_;
         }
-
         if(expectOperator == true) {
 
             switch(prevOp) {
             case TOK_ADD: {
                 
                 internal_macro_addition(rDest, rSrc, globalIROut);
+                break;
             } case TOK_SUB: {
 
-
+                internal_macro_subtraction(rDest, rSrc, globalIROut);
+                break;
             } case TOK_MUL: {
 
-
+                internal_macro_multiplication(rDest, rSrc, globalIROut);
+                break;
             } case TOK_DIV: {
 
+                internal_macro_division(rDest, rSrc, globalIROut);
+                break;
 
+            } case INVALID_TOKEN: {
+
+                rDest = rSrc;
+                break;
+
+            } default: {
+                printf("Expected operator - ");
+                return _INVALID_ARG_PASS_;
+                break;
             }
             }
             prevOp = currentToken->tokenEnum;
 
         } else {
 
-        }
+            switch(currentToken->tokenEnum) {
+            case INT_IMMEDIATE: {
 
+                //Load immediate into a register
+                rSrc = register_load_to_register(&registerStates, NULL, rDest, currentToken->intImmediate, globalIROut);
+                internal_macro_load_immediate(rSrc, currentToken->intImmediate, globalIROut);
+                break;
+            } case USER_STRING: {
+
+                //If variable in register set rSrc to its index
+                
+
+                //If variable not in register, load it into one
+                const char *currentVarName = dynamic_string_read(&(currentToken->userString));
+                if(currentVarName == NULL) {
+                    return _INTERNAL_ERROR_;
+                }
+                VariableData *currentVar = (VariableData*)string_hashmap_get_value(&variableStorage, (void*)currentVarName, strlen(currentVarName) + 1);
+                if(currentVar == NULL) {
+                    return _INTERNAL_ERROR_;
+                }
+
+                if(currentVar->registerNumber != -1) { //In a register
+                    rSrc = currentVar->registerNumber;
+                 
+                } else { //Must load into register
+                    rSrc = register_load_to_register(&registerStates, currentVar, rDest, currentToken->intImmediate, globalIROut) != _SUCCESS_;
+                }
+                internal_macro_load(rSrc, currentVar->baseOffset, globalIROut);
+
+                currentVar->registerNumber = rSrc;
+                //Update the hashmap
+                if(string_hashmap_set(&variableStorage, currentVarName, strlen(currentVarName) + 1, currentVar, sizeof(VariableData)) == false) {
+                    //This will leak memory...
+                    return _INTERNAL_ERROR_;
+                }
+                break;
+
+            } default: {
+                printf("Expected operand - ");
+                return _INVALID_ARG_PASS_;
+                break;
+            }
+            }
+
+        }
 
         expectOperator = !expectOperator;
     }
-
-
-
-
-
+    return _SUCCESS_;
 }
 
 
