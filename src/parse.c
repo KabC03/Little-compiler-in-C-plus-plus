@@ -41,119 +41,50 @@ RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, size_t 
 
     //Expect num, op, num, op, ...
 
-    bool expectingOperator = false;
-    bool prevWasImmediate = false;
-    VALID_TOKEN_ENUM prevOp = INVALID_TOKEN;
+    bool expectOperator = true;
+    VALID_TOKEN_ENUM prevOp = TOK_ADD;
     size_t rDest = -1;
-    size_t rSrc = destRegMetadata->registerNumber;
-    
-    for(size_t i = indexStart; i <= indexEnd; i++) {
-        Token *currentToken = (Token*)vector_get_index(tokens, i);
+    size_t rSrc = -1;
+
+
+    for(size_t i = indexStart; i < indexEnd; i++) {
+
+        Token *currentToken = vector_get_index(tokens, i);
         if(currentToken == NULL) {
-            return _INVALID_ARG_PASS_;
+            return _INTERNAL_ERROR_;
         }
-        if(expectingOperator == true) {
 
-            switch (prevOp) {
+        if(expectOperator == true) {
+
+            switch(prevOp) {
             case TOK_ADD: {
+                
                 internal_macro_addition(rDest, rSrc, globalIROut);
-                break;
             } case TOK_SUB: {
-                internal_macro_subtraction(rDest, rSrc, globalIROut);
-                break;
+
+
             } case TOK_MUL: {
-                internal_macro_multiplication(rDest, rSrc, globalIROut);
-                break;
+
+
             } case TOK_DIV: {
-                internal_macro_division(rDest, rSrc, globalIROut);
-                break;
-            } case TOK_MOD: {
-                internal_macro_modulo(rDest, rSrc, globalIROut);
-                break;
-            } case INVALID_TOKEN: {
 
-                if(prevWasImmediate == true) {
-                    rDest = rSrc;
 
-                } else { //Copy contents to new register
-
-                    VariableData *save = (VariableData*)vector_get_index(&registerStates, rSrc);
-                    if(save == NULL) {
-                        return _INTERNAL_ERROR_;
-                    }
-                    rDest = register_load_to_register(&registerStates, save, rDest, 0, globalIROut);
-                }
-
-                //First time run so do nothing
-                break;
-            } default: {
-                printf("Expected operator - ");
-                return _INTERNAL_ERROR_;
-                break;
             }
             }
             prevOp = currentToken->tokenEnum;
 
         } else {
-            switch (currentToken->tokenEnum) {
-            case USER_STRING: {
-                prevWasImmediate = false;
-                //Check if variable is in register
-                //If not in register, load it
-                const char* varToLoadName = dynamic_string_read(&(currentToken->userString));
-                if(varToLoadName == NULL) {
-                    return _INTERNAL_ERROR_;
-                }
 
-                VariableData *loadVariable = (VariableData*)string_hashmap_get_value(&variableStorage, (void*)varToLoadName, strlen(varToLoadName) + 1);
-                if(loadVariable == NULL) {
-                    printf("Undeclared variable '%s' - ", varToLoadName);
-                    return _INTERNAL_ERROR_;
-                }
-
-                if(loadVariable->registerNumber == -1) { //Not in register, must load it in
-                    rSrc = register_load_to_register(&registerStates, loadVariable, rDest, 0, globalIROut);
-                } else {
-                    rSrc = loadVariable->registerNumber;
-                }
-
-                break;
-            
-            } case INT_IMMEDIATE: {
-                
-                prevWasImmediate = true;
-                rSrc = register_load_to_register(&registerStates, NULL, rDest, currentToken->intImmediate, globalIROut);
-                break;
-
-            } default: {
-                printf("Expected operand - ");
-                return _INTERNAL_ERROR_;
-                break;
-            }
-            }
         }
 
-        expectingOperator = !expectingOperator;
-        destRegMetadata->registerNumber = rDest; //Update this every loop, otherwise x = x + 1 and similar is undefined behaviour
+
+        expectOperator = !expectOperator;
     }
 
-    destRegMetadata->inUse = true;
-    destRegMetadata->registerNumber = rDest;
-    const char* name  = dynamic_string_read(&(destRegMetadata->name));
-    if(name == NULL) {
-        return _INTERNAL_ERROR_;
-    }
 
-    //Update the hashmap
-    if(string_hashmap_set(&variableStorage, name, strlen(name) + 1, destRegMetadata, sizeof(VariableData)) == false) {
-        return _INTERNAL_ERROR_;
-    }
 
-    if(vector_set_index(&registerStates, rDest, destRegMetadata) == false) {
-        return _INTERNAL_ERROR_;
-    }
 
-    return _SUCCESS_;
+
 }
 
 
