@@ -22,7 +22,7 @@ typedef struct VariableData { //Could definitely optimise the 'inUse' member but
 } VariableData;
 
 RETURN_CODE register_print(Vector *registerStates);
-size_t register_load_to_register(Vector *registerStates, VariableData *newVariable, size_t blacklistedIndex, int immediate, FILE *irFilePtr);
+size_t register_load_to_register(Vector *registerStates, StringHashmap *variableMap,VariableData *newVariable, size_t blacklistedIndex, int immediate, FILE *irFilePtr) {
 
 
 

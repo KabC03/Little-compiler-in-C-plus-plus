@@ -45,6 +45,7 @@ RETURN_CODE register_print(Vector *registerStates) {
  * Brief: Load a variable OR immediate into a register and save whats pushed out
  * 
  * Param: *registerStates - Vector of register states
+ *        *variableMap - Variable hashmap
  *        *newVariable - Variable of interest (NOTE: If NULL this means an immediate will be taken)
  *        blacklistedIndex - Index that should not be overwritten
  *        immediate - Integer immediate
@@ -52,7 +53,7 @@ RETURN_CODE register_print(Vector *registerStates) {
  * Return: RETURN_CODE - Indicating succes or type of failure 
  * 
  */
-size_t register_load_to_register(Vector *registerStates, VariableData *newVariable, size_t blacklistedIndex, int immediate, FILE *irFilePtr) {
+size_t register_load_to_register(Vector *registerStates, StringHashmap *variableMap,VariableData *newVariable, size_t blacklistedIndex, int immediate, FILE *irFilePtr) {
 
     size_t index = -1;
     if(registerStates == NULL || irFilePtr == NULL) {
@@ -79,6 +80,22 @@ size_t register_load_to_register(Vector *registerStates, VariableData *newVariab
                     currentRegister->registerNumber = newVariable->registerNumber;
                     currentRegister->name = newVariable->name;
                     currentRegister->timesRequested = newVariable->timesRequested;
+
+                    newVariable->registerNumber = i;
+                    //Update the hashmap
+                    const char *currentVarName = dynamic_string_read(&(newVariable->name));
+                    if(currentVarName == NULL) {
+                        return _INTERNAL_ERROR_;
+                    }
+                    VariableData *currentVar = (VariableData*)string_hashmap_get_value(&variableMap, (void*)currentVarName, strlen(currentVarName) + 1);
+                    if(currentVar == NULL) {
+                        return _INTERNAL_ERROR_;
+                    }
+                    if(string_hashmap_set(variableMap, currentVarName, strlen(currentVarName) + 1, currentVar, sizeof(VariableData)) == false) {
+                        //This will leak memory...
+                        return _INTERNAL_ERROR_;
+                    }
+
                 } else {
                     currentRegister->inUse = false;
                 }

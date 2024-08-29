@@ -92,7 +92,7 @@ RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, size_t 
             case INT_IMMEDIATE: {
 
                 //Load immediate into a register
-                rSrc = register_load_to_register(&registerStates, NULL, rDest, currentToken->intImmediate, globalIROut);
+                rSrc = register_load_to_register(&registerStates, &variableStorage, NULL, rDest, currentToken->intImmediate, globalIROut);
                 internal_macro_load_immediate(rSrc, currentToken->intImmediate, globalIROut);
                 break;
             } case USER_STRING: {
@@ -114,16 +114,9 @@ RETURN_CODE internal_parse_expression(Vector *tokens, size_t indexStart, size_t 
                     rSrc = currentVar->registerNumber;
                  
                 } else { //Must load into register
-                    rSrc = register_load_to_register(&registerStates, currentVar, rDest, currentToken->intImmediate, globalIROut) != _SUCCESS_;
+                    rSrc = register_load_to_register(&registerStates, &variableStorage, currentVar, rDest, currentToken->intImmediate, globalIROut) != _SUCCESS_;
                 }
-                internal_macro_load(rSrc, currentVar->baseOffset, globalIROut);
 
-                currentVar->registerNumber = rSrc;
-                //Update the hashmap
-                if(string_hashmap_set(&variableStorage, currentVarName, strlen(currentVarName) + 1, currentVar, sizeof(VariableData)) == false) {
-                    //This will leak memory...
-                    return _INTERNAL_ERROR_;
-                }
                 break;
 
             } default: {
