@@ -30,6 +30,9 @@ void debug_tokenise_singular_token_print(Token &token) {
     } case TOK_STRING: {
         cout << "Type: TOK_STRING" << endl;
         break;
+    } case TOK_END_OF_STREAM: {
+        cout << "Type: TOK_END_OF_STREAM" << endl;
+        break;
     } default: {
         cout << "Type: " << setw(10) << validTokens[token.tokenType] << endl; //Enum can directly index into token array
         break;

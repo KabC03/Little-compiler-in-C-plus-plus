@@ -35,12 +35,12 @@ int main(void) {
     for(size_t i = 0; getline(tokenData.inputFile, inputString); i++) { //Read line by line
         vector<Token> tokeniserOut = tokeniser_tokenise(inputString, tokenData);
         if(tokeniserOut.size() == 0) {
-            cout << "Line:" << i << endl;
+            cout << "Line: " << i << endl;
             returnValue = 3;
             break; //Error in tokeniser
         }
 
-        //debug_tokenise_tokens_print(tokensOut);
+        //debug_tokenise_tokens_print(tokeniserOut);
         if(parser_parse(tokeniserOut, parserData) == false) {
             cout << "Line:" << i << endl;
             returnValue = 4;

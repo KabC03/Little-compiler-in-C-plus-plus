@@ -1,1 +1,1 @@
-label x
+dec x def ghi jkl
