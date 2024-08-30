@@ -21,8 +21,8 @@ int main(void) {
     int returnValue = 0;
 
     //Initialise structures
-    tokeniser_initialise_map();
-    parser_initialise_registers();
+    auto tokenMap = tokeniser_initialise_map();
+    auto parserData = parser_initialise(outputFile);
 
     if(srcFile.is_open() == false) {
         cout << "ERROR: Unable to open source file" << endl;
@@ -36,14 +36,14 @@ int main(void) {
     }
 
     for(size_t i = 0; getline(srcFile, inputString); i++) { //Read line by line
-        vector<Token> tokeniserOut = tokeniser_tokenise(inputString);
+        vector<Token> tokeniserOut = tokeniser_tokenise(inputString, tokenMap);
         if(tokeniserOut.size() == 0) {
             cout << "Line:" << i << endl;
             returnValue = 3;
             break; //Error in tokeniser
         }
         //debug_tokenise_tokens_print(tokensOut);
-        if(parser_parse(tokeniserOut) == false) {
+        if(parser_parse(tokeniserOut, parserData) == false) {
             cout << "Line:" << i << endl;
             returnValue = 4;
             break; //Error in parser

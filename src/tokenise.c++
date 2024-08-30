@@ -2,7 +2,6 @@
 #include "tokenise.h++"
 #define TOKEN_VECTOR_RESERVE 10
 #define TOKEN_STRING_WINDOW_RESERVE 5
-unordered_map<string, int> tokenMap;
 
 
 
@@ -67,10 +66,10 @@ void debug_tokenise_tokens_print(vector<Token> &tokens) {
  * Param: 
  *         void
  * 
- * Return: void
+ * Return: unordered_map<string, int> 
  * 
  */
-void tokeniser_initialise_map(void) {
+unordered_map<string, int> tokeniser_initialise_map(void) {
 
     unordered_map<string, int> tokenMap;
     for(int i = 0; i < NUMBER_OF_TOKENS; i++) {
@@ -78,8 +77,7 @@ void tokeniser_initialise_map(void) {
         tokenMap[validTokens[i]] = i;
     }
     
-
-    return;
+    return tokenMap;
 }
 
 
@@ -96,7 +94,7 @@ void tokeniser_initialise_map(void) {
  * Return: tokens - Vector of output tokens
  * 
  */
-vector<Token> tokeniser_tokenise(const string &inputString) {
+vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string, int> tokenMap) {
 
     //Reserve some space to avoid resizing
     string stringWindow = "\0";

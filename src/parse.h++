@@ -21,8 +21,24 @@
 using namespace std;
 
 
-void parser_initialise_registers(void);
-bool parser_parse(vector<Token> &tokens);
+typedef struct Operand {
+
+    string varName;      //Variable name
+    size_t memoryOffset; //Memory offset from base
+
+    bool isVar;          //If false, can overwrite this register space
+
+} Operand;
+typedef struct ParserStructures {
+    vector<Operand> registerStates;             //Track items in register
+    unordered_map<string, Operand> operandMap;  //Track known variables
+    unordered_set<string> knownLabels;          //Track known labels
+    ofstream outputFile;                        //Output file
+    stack<string> ifStack;                      //Stack to track if statement depth, contains labels
+} ParserStructures;
+
+ParserStructures parser_initialise(ofstream &outputFileSet);
+bool parser_parse(vector<Token> &tokens, ParserStructures &parserStructures);
 
 
 

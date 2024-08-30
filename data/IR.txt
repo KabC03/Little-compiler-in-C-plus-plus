@@ -1,7 +1,0 @@
-
-LOD R0 -1
-LOD R1 1
-SUB R0 R1
-LOD R1 2
-
-LOD R0 -1
