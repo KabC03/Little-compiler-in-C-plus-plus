@@ -21,14 +21,18 @@
  * Param: 
  *        outputFilePath
  * 
- * Return: ParserData 
+ * Return: bool 
  * 
  */
-ParserData parser_initialise(string outputFilePath) {
+bool parser_initialise(string outputFilePath, ParserData &parserData) {
 
     //outputFile = outputFileSet;
-    ParserData parserData;
-    
+
+    parserData.outputFile.open(outputFilePath);
+    if(parserData.outputFile.is_open() == false) {
+        cout << "ERROR: Unable to open output file" << endl;
+        return false;
+    }
     
     Operand operand;
     operand.isVar = false; //Indicates position can be overwritten
@@ -38,10 +42,9 @@ ParserData parser_initialise(string outputFilePath) {
 
     parserData.operandMap.reserve(OPERAND_RESERVE);
     parserData.knownLabels.reserve(LABEL_RESERVE);
-    parserData.outputFile.open(outputFilePath);
 
 
-    return parserData;
+    return true;
 }
 
 
@@ -57,7 +60,7 @@ bool internal_parse_endif(vector<Token> &tokens, size_t numberOfTokens, ParserDa
             return false;
         }
 
-        //macro_pneumonic_print_label(ifStack.top(), outputFile);
+        macro_pneumonic_print_label(parserData.ifStack.top(), parserData.outputFile);
         parserData.ifStack.pop();
     }
 
@@ -85,7 +88,7 @@ bool internal_parse_label_dec(vector<Token> &tokens, size_t numberOfTokens, Pars
 
         } else {
             
-            //macro_pneumonic_print_label(tokens[1].string, outputFile);
+            macro_pneumonic_print_label(tokens[1].string, parserData.outputFile);
             parserData.knownLabels.insert(tokens[1].string);
             return false;
         }
@@ -108,7 +111,7 @@ bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens, ParserDat
         auto labelMapIterator = parserData.knownLabels.find(tokens[1].string);
         if(labelMapIterator != parserData.knownLabels.end()) { //Label found
 
-            //macro_pneumonic_unconditional_jump(tokens[1].string, outputFile);
+            macro_pneumonic_unconditional_jump(tokens[1].string, parserData.outputFile);
         } else {
 
             internal_macro_parser_print_invalid_token("ERROR: Unrecognised label:", tokens[1]);

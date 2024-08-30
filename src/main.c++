@@ -19,10 +19,15 @@ int main(void) {
     int returnValue = 0;
 
     //Initialise structures
-    auto tokenData = tokeniser_initialise_map(SRC_FILE_PATH);
-    auto parserData = parser_initialise(OUTPUT_FILE_PATH);
-    if(tokenData.inputFile.is_open() == false) returnValue = 1; goto A;
-    if(parserData.outputFile.is_open() == false) returnValue = 2; goto B;
+    TokeniserData tokenData;
+    ParserData parserData;
+    if(tokeniser_initialise_map(SRC_FILE_PATH, tokenData) == false) {
+        goto A;
+    }
+    if(parser_initialise(OUTPUT_FILE_PATH, parserData) == false) {
+        goto B;
+    }
+
 
 
 
@@ -34,6 +39,7 @@ int main(void) {
             returnValue = 3;
             break; //Error in tokeniser
         }
+
         //debug_tokenise_tokens_print(tokensOut);
         if(parser_parse(tokeniserOut, parserData) == false) {
             cout << "Line:" << i << endl;
@@ -46,7 +52,7 @@ int main(void) {
 
     tokenData.inputFile.close();
 B:
-    srcFile.inputFile.close();
+    parserData.outputFile.close();
 A:
 
     return returnValue;

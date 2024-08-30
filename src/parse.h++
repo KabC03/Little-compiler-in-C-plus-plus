@@ -37,7 +37,7 @@ typedef struct ParserData {
     stack<string> ifStack;                      //Stack to track if statement depth, contains labels
 } ParserData;
 
-ParserData parser_initialise(string outputFilePath);
+bool parser_initialise(string outputFilePath, ParserData &parserData);
 bool parser_parse(vector<Token> &tokens, ParserData &parserData);
 
 

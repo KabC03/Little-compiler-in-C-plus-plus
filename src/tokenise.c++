@@ -65,24 +65,24 @@ void debug_tokenise_tokens_print(vector<Token> &tokens) {
  * 
  * Param: 
  *         srcFilePath
+ *         tokenData - Empty token data
  * 
  * Return: TokeniserData
  * 
  */
-TokeniserData tokeniser_initialise_map(string srcFilePath) {
-
-    TokeniserData tokenData;
+bool tokeniser_initialise_map(string srcFilePath, TokeniserData &tokenData) {
 
     tokenData.inputFile.open(srcFilePath);
     if(tokenData.inputFile.is_open() == false) {
         cout << "ERROR: Unable to open source file" << endl;
+        return false;
     }
     for(int i = 0; i < NUMBER_OF_TOKENS; i++) {
 
         tokenData.tokenMap[validTokens[i]] = i;
     }
     
-    return tokenData;
+    return true;
 }
 
 

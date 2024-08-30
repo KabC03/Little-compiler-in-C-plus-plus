@@ -24,7 +24,7 @@ typedef struct TokeniserData {
 void debug_tokenise_map_print(unordered_map<string, int> &tokenMap);
 void debug_tokenise_singular_token_print(Token &token);
 void debug_tokenise_tokens_print(vector<Token> &tokens);
-TokeniserData tokeniser_initialise_map(string srcFilePath);
+bool tokeniser_initialise_map(string srcFilePath, TokeniserData &tokenData);
 vector<Token> tokeniser_tokenise(const string &inputString, TokeniserData &tokenData);
 
 
