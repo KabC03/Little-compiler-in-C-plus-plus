@@ -19,12 +19,12 @@
  * Brief: Initialise register vector with empty values and set the global file pointer
  * 
  * Param: 
- *         &outputFile - Output file that will be written to
+ *        outputFilePath
  * 
  * Return: ParserData 
  * 
  */
-ParserData parser_initialise(ofstream &outputFileSet) {
+ParserData parser_initialise(string outputFilePath) {
 
     //outputFile = outputFileSet;
     ParserData parserData;
@@ -38,6 +38,8 @@ ParserData parser_initialise(ofstream &outputFileSet) {
 
     parserData.operandMap.reserve(OPERAND_RESERVE);
     parserData.knownLabels.reserve(LABEL_RESERVE);
+    parserData.outputFile.open(outputFilePath);
+
 
     return parserData;
 }

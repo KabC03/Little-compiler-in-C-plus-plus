@@ -9,17 +9,23 @@
 #include <unordered_map>
 #include <cerrno>
 #include <iomanip>
+#include <fstream>
 #include <cctype>
 #include "compiler data.h++"
 using namespace std;
 
-typedef struct TokeniserData
+typedef struct TokeniserData {
+
+    unordered_map<string, int> tokenMap;
+    ifstream inputFile;
+
+} TokeniserData;
 
 void debug_tokenise_map_print(unordered_map<string, int> &tokenMap);
 void debug_tokenise_singular_token_print(Token &token);
 void debug_tokenise_tokens_print(vector<Token> &tokens);
-unordered_map<string, int> tokeniser_initialise_map(void);
-vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string, int> tokenMap);
+TokeniserData tokeniser_initialise_map(string srcFilePath);
+vector<Token> tokeniser_tokenise(const string &inputString, TokeniserData &tokenData);
 
 
 

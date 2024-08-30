@@ -64,20 +64,25 @@ void debug_tokenise_tokens_print(vector<Token> &tokens) {
  * Brief: Initialises internal tokeniser structures, call once in main
  * 
  * Param: 
- *         void
+ *         srcFilePath
  * 
- * Return: unordered_map<string, int> 
+ * Return: TokeniserData
  * 
  */
-unordered_map<string, int> tokeniser_initialise_map(void) {
+TokeniserData tokeniser_initialise_map(string srcFilePath) {
 
-    unordered_map<string, int> tokenMap;
+    TokeniserData tokenData;
+
+    tokenData.inputFile.open(srcFilePath);
+    if(tokenData.inputFile.is_open() == false) {
+        cout << "ERROR: Unable to open source file" << endl;
+    }
     for(int i = 0; i < NUMBER_OF_TOKENS; i++) {
 
-        tokenMap[validTokens[i]] = i;
+        tokenData.tokenMap[validTokens[i]] = i;
     }
     
-    return tokenMap;
+    return tokenData;
 }
 
 
@@ -89,12 +94,12 @@ unordered_map<string, int> tokeniser_initialise_map(void) {
  * 
  * Param: 
  *        &inputString - Input string to be tokenised
-*         &tokenMap - Token map to be used to validate tokens
+*         &tokenData - Token data to be used to validate tokens
  * 
  * Return: tokens - Vector of output tokens
  * 
  */
-vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string, int> tokenMap) {
+vector<Token> tokeniser_tokenise(const string &inputString, TokeniserData &tokenData) {
 
     //Reserve some space to avoid resizing
     string stringWindow = "\0";
@@ -133,8 +138,8 @@ vector<Token> tokeniser_tokenise(const string &inputString, unordered_map<string
         if(endOfToken == true) {
 
 
-            auto mapIterator = tokenMap.find(stringWindow);
-            if(mapIterator != tokenMap.end()) { //Keyword found
+            auto mapIterator = tokenData.tokenMap.find(stringWindow);
+            if(mapIterator != tokenData.tokenMap.end()) { //Keyword found
                 newToken.tokenType = (TOKEN_TYPE)mapIterator->second; 
                 //Cast to int so the compiler doesnt complain
 
