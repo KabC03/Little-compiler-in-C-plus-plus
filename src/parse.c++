@@ -1,5 +1,6 @@
 //30 Aug 2024
 #include "parse.h++"
+#define APPEND_INPUT_LABEL_STR "USR"
 #define OPERAND_RESERVE 10
 #define LABEL_RESERVE 10
 #define IF_STACK_RESERVE 10
@@ -22,7 +23,7 @@ vector<Operand> registerStates;             //Track items in register
 unordered_map<string, Operand> operandMap;  //Track known variables
 unordered_set<string> knownLabels;          //Track known labels
 ofstream outputFile;                        //Output file
-stack ifStack;                              //Stack to track if statement depth
+stack<string> ifStack;                      //Stack to track if statement depth, contains labels
 
 /**
  * parser_initialise
@@ -37,7 +38,7 @@ stack ifStack;                              //Stack to track if statement depth
  */
 void parser_initialise(ofstream &outputFileSet) {
 
-    //outputFile = outputFileSet;
+    outputFile = outputFileSet;
     Operand operand;
     operand.isVar = false; //Indicates position can be overwritten
     operand.memoryOffset = -1;
@@ -51,12 +52,29 @@ void parser_initialise(ofstream &outputFileSet) {
 }
 
 
+//Parse an endif statement
+bool internal_parse_endif(vector<Token> &tokens, size_t numberOfTokens) {
 
+    if(numberOfTokens != 1) {
+        cout << "ERROR: Expected endif" << endl;
+        return false;
+    } else {
+        if(ifStack.size() == 0) {
+            cout << "ERROR: Expected an if statement" << endl;
+            return false;
+        }
+
+        macro_pneumonic_print_label(ifStack.top(), outputFile);
+        ifStack.pop();
+    }
+
+    return true;
+}
 
 
 
 //Parse a label  statement
-bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens) {
+bool internal_parse_label_dec(vector<Token> &tokens, size_t numberOfTokens) {
 
     //goto label
     if(numberOfTokens != 2) {
@@ -65,17 +83,19 @@ bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens) {
 
     } else {
 
+        //Preappend string to garuntee it will not collide with compiler labels
+        tokens[1].string += APPEND_INPUT_LABEL_STR;
         auto labelMapIterator = knownLabels.find(tokens[1].string);
 
         if(labelMapIterator != knownLabels.end()) { //Label found
             cout << "Redefinition of '" << tokens[1].string << "'" << endl;
 
         } else {
-
+            
             macro_pneumonic_print_label(tokens[1].string, outputFile);
+            knownLabels.insert(tokens[1].string);
             return false;
         }
-
     }
 
     return true;
@@ -93,8 +113,6 @@ bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens) {
     } else {
 
         auto labelMapIterator = knownLabels.find(tokens[1].string);
-
-
         if(labelMapIterator != knownLabels.end()) { //Label found
 
             macro_pneumonic_unconditional_jump(tokens[1].string, outputFile);
@@ -144,15 +162,16 @@ bool parser_parse(vector<Token> &tokens) {
 
         break;
     } case TOK_ENDIF: {
-
+        if(internal_parse_endif(tokens, numberOfTokens) == false) {
+            return false;
+        }
         break;
     } case TOK_LABEL: {
-        if(internal_parse_goto(tokens, numberOfTokens) == false) {
+        if(internal_parse_label_dec(tokens, numberOfTokens) == false) {
             return false;
         }
         break;
     } case TOK_GOTO: {
-
         if(internal_parse_goto(tokens, numberOfTokens) == false) {
             return false;
         }
