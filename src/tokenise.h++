@@ -13,6 +13,7 @@
 #include "compiler data.h++"
 using namespace std;
 
+typedef struct TokeniserData
 
 void debug_tokenise_map_print(unordered_map<string, int> &tokenMap);
 void debug_tokenise_singular_token_print(Token &token);

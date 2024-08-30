@@ -29,16 +29,16 @@ typedef struct Operand {
     bool isVar;          //If false, can overwrite this register space
 
 } Operand;
-typedef struct ParserStructures {
+typedef struct ParserData {
     vector<Operand> registerStates;             //Track items in register
     unordered_map<string, Operand> operandMap;  //Track known variables
     unordered_set<string> knownLabels;          //Track known labels
     ofstream outputFile;                        //Output file
     stack<string> ifStack;                      //Stack to track if statement depth, contains labels
-} ParserStructures;
+} ParserData;
 
-ParserStructures parser_initialise(ofstream &outputFileSet);
-bool parser_parse(vector<Token> &tokens, ParserStructures &parserStructures);
+ParserData parser_initialise(ofstream &outputFileSet);
+bool parser_parse(vector<Token> &tokens, ParserData &parserData);
 
 
 

@@ -27,12 +27,10 @@ int main(void) {
     if(srcFile.is_open() == false) {
         cout << "ERROR: Unable to open source file" << endl;
         returnValue = 1;
-        goto A;
     }
     if(outputFile.is_open() == false) {
         cout << "ERROR: Unable to open output file" << endl;
         returnValue = 2;
-        goto B;
     }
 
     for(size_t i = 0; getline(srcFile, inputString); i++) { //Read line by line
@@ -53,9 +51,8 @@ int main(void) {
 
 
     outputFile.close();
-B:
     srcFile.close();
-A:
+
     return returnValue;
 }
 
