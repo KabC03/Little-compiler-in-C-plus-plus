@@ -18,17 +18,10 @@
 #include "compiler data.h++"
 #include "tokenise.h++"
 #include "architecture pneumonics.h++"
+#include "register.h++"
 using namespace std;
 
 
-typedef struct Operand {
-
-    string varName;      //Variable name
-    size_t memoryOffset; //Memory offset from base
-
-    bool isVar;          //If false, can overwrite this register space
-
-} Operand;
 typedef struct ParserData {
     vector<Operand> registerStates;             //Track items in register
     unordered_map<string, Operand> operandMap;  //Track known variables

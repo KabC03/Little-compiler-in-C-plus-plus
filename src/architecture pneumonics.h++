@@ -17,7 +17,12 @@ should use one of the general purpose registers in macros below (not allow compi
     outputFile << "JUM " << labelName << endl;
 #define macro_pneumonic_print_label(labelName, outputFile)\
     outputFile << "label: " << labelName << endl;
-
+#define macro_pneumonic_save(registerIndex, baseOffset, outputFile)\
+    outputFile << "save R" << registerIndex << " esp + " << baseOffset << endl;
+#define macro_pneumonic_load(registerIndex, baseOffset, outputFile)\
+    outputFile << "load R" << registerIndex << " esp + " << baseOffset << endl;
+#define macro_pneumonic_load_immediate(registerIndex, immediate, outputFile)\
+    outputFile << "immediate R" << registerIndex << " " << immediate << endl;
 
 #endif // ARCHITECTURE_PNEUMONICS_HH
 

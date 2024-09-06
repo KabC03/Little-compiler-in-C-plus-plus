@@ -35,9 +35,8 @@ bool parser_initialise(string outputFilePath, ParserData &parserData) {
     }
 
     Operand operand;
-    operand.isVar = false; //Indicates position can be overwritten
-    operand.memoryOffset = -1;
-    operand.varName = "\0";
+    operand.memoryOffset = 0;
+    operand.varID = 0;
     parserData.registerStates.resize(NUMBER_OF_REGISTERS, operand); //Fill with operand
 
     parserData.operandMap.reserve(OPERAND_RESERVE);
@@ -68,6 +67,7 @@ bool parse_expression(vector<Token> &tokens, size_t startIndex, size_t stopIndex
 bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
 
     static size_t newVarMemOffset = 0; //Base offset address
+    static int varIDCounter = 0;
     if(numberOfTokens < 5) {
         cout << "ERROR: Expected declaration expression but recieved: " << endl;
         return false;
@@ -86,10 +86,11 @@ bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
         } else {
             Operand newOperand;
-            newOperand.isVar = true;
             newOperand.memoryOffset = newVarMemOffset+=DATA_SIZE;
-            newOperand.varName = tokens[1].string; //Used for debugging, remove later
+            newOperand.varID = varIDCounter++;
+            newOperand.timesRequested = 0;
             parserData.operandMap[tokens[1].string] = newOperand;
+
         }
 
 
