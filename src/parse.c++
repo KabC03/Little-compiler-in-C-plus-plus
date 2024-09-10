@@ -96,7 +96,7 @@ bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
 
         //Expect an equals
-        if(tokens[2].tokenType != TOK_EQUAL) {
+        if(tokens[2].tokenType != TOK_ASSIGN) {
             internal_macro_parser_print_invalid_token("Expected assignment operator but recieved: \n", tokens[2]);
         }
 
@@ -137,7 +137,7 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
 
         //Expect an equals
-        if(tokens[2].tokenType != TOK_EQUAL) {
+        if(tokens[2].tokenType != TOK_ASSIGN) {
             internal_macro_parser_print_invalid_token("Expected assignment operator but recieved: \n", tokens[2]);
         }
 

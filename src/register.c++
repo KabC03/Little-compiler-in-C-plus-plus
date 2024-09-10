@@ -7,19 +7,19 @@
  * Brief: Push a variable/immediate to a register - operandMap must be updated seperately
  * 
  * Param: 
- *        &registers - Vector of registers of interest
+ *        &parserData - Parser data struct to adjust
  *        &outputFile - Output file to write to
  *        &operand - Operand to write
  * 
  * Return: bool 
  * 
  */
-bool register_push(vector<Operand> &registers, ofstream &outputFile, Operand &operand) {
+bool register_push(ParserData &parserData, ofstream &outputFile, Operand &operand) {
 
     //Look for a free space
 
-    auto min = registers.begin();
-    for(auto it = registers.begin(); it != registers.end(); it++) {
+    auto min = parserData.registerStates.begin();
+    for(auto it = parserData.registerStates.begin(); it != parserData.registerStates.end(); it++) {
 
         if((*it).varID == 0) { //Found a free space
             break;
@@ -29,7 +29,7 @@ bool register_push(vector<Operand> &registers, ofstream &outputFile, Operand &op
     }
 
     //Convert iterator to index
-    auto index = distance(registers.begin(), min);
+    auto index = distance(parserData.registerStates.begin(), min);
 
     //Save position
     if((*min).varID != 0) {

@@ -1,11 +1,16 @@
 #ifndef REGISTER_H
 #define REGISTER_H
 
-#include <vector>
 #include <string>
+#include <iostream>
+#include <vector>
 #include <unordered_map>
-#include <iterator>
+#include <cerrno>
 #include <fstream>
+#include <stack>
+#include <unordered_set>
+#include <iomanip>
+#include <cctype>
 #include "architecture pneumonics.h++"
 
 using namespace std;
@@ -20,7 +25,15 @@ typedef struct Operand {
 
 } Operand;
 
-bool register_push(vector<Operand> &registers, ofstream &outputFile, Operand &operand);
+typedef struct ParserData {
+    vector<Operand> registerStates;             //Track items in register
+    unordered_map<string, Operand> operandMap;  //Track known variables
+    unordered_set<string> knownLabels;          //Track known labels
+    ofstream outputFile;                        //Output file
+    stack<string> ifStack;                      //Stack to track if statement depth, contains labels
+} ParserData;
+
+bool register_push(ParserData &parserData, ofstream &outputFile, Operand &operand);
 
 
 #endif //REGISTER_H

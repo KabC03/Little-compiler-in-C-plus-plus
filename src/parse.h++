@@ -22,13 +22,6 @@
 using namespace std;
 
 
-typedef struct ParserData {
-    vector<Operand> registerStates;             //Track items in register
-    unordered_map<string, Operand> operandMap;  //Track known variables
-    unordered_set<string> knownLabels;          //Track known labels
-    ofstream outputFile;                        //Output file
-    stack<string> ifStack;                      //Stack to track if statement depth, contains labels
-} ParserData;
 
 bool parser_initialise(string outputFilePath, ParserData &parserData);
 bool parser_parse(vector<Token> &tokens, ParserData &parserData);
