@@ -34,7 +34,7 @@ void debug_tokenise_singular_token_print(Token &token) {
         cout << "Type: TOK_END_OF_STREAM" << endl;
         break;
     } default: {
-        cout << "Type: " << setw(10) << validTokens[token.tokenType] << endl; //Enum can directly index into token array
+        cout << "Type: " << setw(10) << validTokens[token.tokenType] << setw(10) << "AKA: " << token.tokenType << endl; //Enum can directly index into token array
         break;
     }
     }

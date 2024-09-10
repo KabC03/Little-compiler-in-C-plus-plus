@@ -1,1 +1,9 @@
-dec x def ghi jkl
+dec x = 10
+
+
+
+
+
+
+
+

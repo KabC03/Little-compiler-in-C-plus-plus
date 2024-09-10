@@ -4,9 +4,10 @@
 #define OPERAND_RESERVE 10
 #define LABEL_RESERVE 10
 #define IF_STACK_RESERVE 10
-#define internal_macro_parser_print_invalid_token(stringToPrint, tokenToPrint)  cout << stringToPrint;\
+#define internal_macro_parser_print_invalid_token(stringToPrint, tokenToPrint)\
+    cout << stringToPrint;\
     debug_tokenise_singular_token_print(tokenToPrint);\
-    cout << "" << endl;
+    cout << endl;
 
 
 
