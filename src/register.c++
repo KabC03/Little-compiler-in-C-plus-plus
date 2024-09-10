@@ -32,21 +32,22 @@ bool register_push(ParserData &parserData, ofstream &outputFile, Operand &operan
     auto index = distance(parserData.registerStates.begin(), min);
 
     //Save position
-    if((*min).varID != 0) {
+    if((*min).varID != 0) { //Variable
         macro_pneumonic_save(index, (*min).memoryOffset, outputFile);
+        //Update position in hashmap
+        (*min).registerIndex = -1; //Indicate variable was pushed out of registers
     }
     
-    //Write to the new position
     operand.registerIndex = index;
-
     if(operand.varID == 0) {
         macro_pneumonic_load_immediate(operand.registerIndex, operand.immediate, outputFile);
     } else {
         macro_pneumonic_load(operand.registerIndex, operand.memoryOffset, outputFile);
         operand.timesRequested++;
+        operand.registerIndex = index;
     }
 
-    (*min) = operand;
+    (*min) = operand; //Put into register 
     return true;
 }
 
