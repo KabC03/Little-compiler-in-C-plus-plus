@@ -26,19 +26,19 @@ typedef enum TOKEN_TYPE {
 
     TOK_GOTO = 5,
     TOK_LABEL = 6,
-    TOK_ADD = 7,
-    TOK_SUB = 8,
-    TOK_MUL = 9,
+    TOK_MOV = 7,
+    TOK_ADD = 8,
+    TOK_SUB = 9,
 
 
-    TOK_DIV = 10,
-    TOK_MOD = 11,
-    TOK_LESS = 12,
-    TOK_EQUAL = 13,
-    TOK_LESS_EQUAL = 14,
+    TOK_MUL = 10,
+    TOK_DIV = 11,
+    TOK_MOD = 12,
+    TOK_LESS = 13,
+    TOK_EQUAL = 14,
 
 
-    TOK_ASSIGN = 15,
+    TOK_LESS_EQUAL = 15,
 
 
 } TOKEN_TYPE;

@@ -11,6 +11,7 @@
 #include <unordered_set>
 #include <iomanip>
 #include <cctype>
+#include <algorithm>
 #include "architecture pneumonics.h++"
 
 using namespace std;
@@ -33,7 +34,7 @@ typedef struct ParserData {
     stack<string> ifStack;                      //Stack to track if statement depth, contains labels
 } ParserData;
 
-bool register_push(ParserData &parserData, ofstream &outputFile, Operand &operand);
+bool register_push(ParserData &parserData, Operand &operand);
 
 
 #endif //REGISTER_H

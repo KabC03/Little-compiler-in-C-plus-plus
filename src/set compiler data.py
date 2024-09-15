@@ -59,8 +59,8 @@ tokens = {
     "if" : "TOK_IF", "endif" : "TOK_ENDIF", "goto" : "TOK_GOTO", "label" : "TOK_LABEL",
 
     #Operators
-    "+" : "TOK_ADD", "-" : "TOK_SUB", "*" : "TOK_MUL", "/" : "TOK_DIV","\%" : "TOK_MOD", 
-    "<<" : "TOK_LESS", "==" : "TOK_EQUAL", "<=" : "TOK_LESS_EQUAL", "=" : "TOK_ASSIGN",
+    "=" : "TOK_MOV", "+=" : "TOK_ADD", "-=" : "TOK_SUB", "*=" : "TOK_MUL", "/=" : "TOK_DIV","\%=" : "TOK_MOD", 
+    "<<" : "TOK_LESS", "==" : "TOK_EQUAL", "<=" : "TOK_LESS_EQUAL", 
 
 
 

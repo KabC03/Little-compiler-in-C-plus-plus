@@ -48,20 +48,6 @@ bool parser_initialise(string outputFilePath, ParserData &parserData) {
 }
 
 
-//Parse an expression
-bool parse_expression(vector<Token> &tokens, size_t startIndex, size_t stopIndex, ParserData &parserData) {
-
-
-    return true;
-}
-
-
-
-
-
-
-
-
 
 
 //Parse a variable declaration
@@ -69,20 +55,20 @@ bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
     static size_t newVarMemOffset = 0; //Base offset address
     static int varIDCounter = 0;
-    if(numberOfTokens < 5) {
+    if(numberOfTokens < 3) {
         cout << "ERROR: Expected declaration expression but recieved: " << endl;
         return false;
     } else {
 
         //Expect a variable name
         if(tokens[1].tokenType != TOK_STRING) {
-            internal_macro_parser_print_invalid_token("Expected variable: \n", tokens[1]);
+            internal_macro_parser_print_invalid_token("ERROR: Expected variable: \n", tokens[1]);
         }
 
         //Check for redefinition
         auto varMapIterator = parserData.operandMap.find(tokens[1].string);
         if(varMapIterator != parserData.operandMap.end()) { //Variable found
-            cout << "Redefinition of '" << tokens[1].string << "'" << endl;
+            cout << "ERROR: Redefinition of '" << tokens[1].string << "'" << endl;
             return false;
 
         } else {
@@ -94,17 +80,7 @@ bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
         }
 
-
-        //Expect an equals
-        if(tokens[2].tokenType != TOK_ASSIGN) {
-            internal_macro_parser_print_invalid_token("Expected assignment operator but recieved: \n", tokens[2]);
-        }
-
-
-        //Parse expression    
-        if(parse_expression(tokens, 3, numberOfTokens - 1, parserData) == false) {
-            return false;
-        }
+        parserData.outputFile << "##DEC " << tokens[1].string << endl;
     }
 
     return true;
@@ -121,7 +97,7 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
         //Expect a variable name
         if(tokens[1].tokenType != TOK_STRING) {
-            internal_macro_parser_print_invalid_token("Expected variable: \n", tokens[1]);
+            internal_macro_parser_print_invalid_token("ERROR: Expected variable: \n", tokens[1]);
         }
 
         //Check for redefinition
@@ -131,20 +107,90 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
 
         } else {
-            cout << "Unrecognised variable: '" << tokens[1].string << "'" << endl;
+            cout << "ERROR: Unrecognised variable: '" << tokens[1].string << "'" << endl;
             return false;
         }
 
 
-        //Expect an equals
-        if(tokens[2].tokenType != TOK_ASSIGN) {
-            internal_macro_parser_print_invalid_token("Expected assignment operator but recieved: \n", tokens[2]);
+
+
+
+
+        Token &arithmaticOperator = tokens[2];
+
+        Operand operand;
+
+        int targetRegister = 0;
+        int sourceRegister = 0;  
+
+        if(tokens[3].tokenType == TOK_IMM_INT) {
+            operand.immediate = tokens[2].immInt;
+
+        } else if(tokens[3].tokenType == TOK_STRING) {
+
+            auto varMapIterator = parserData.operandMap.find(tokens[1].string);
+            if(varMapIterator != parserData.operandMap.end()) { //Variable found
+                cout << "ERROR: Unrecognised variable '" << tokens[1].string << "'" << endl;
+                return false;
+
+            } else {
+                operand = parserData.operandMap[tokens[2].string];
+            }
+
+        } else {
+            internal_macro_parser_print_invalid_token("ERROR: Expected operand but recieved: \n", tokens[2]);
+            return false;
+        }
+        register_push(parserData, operand);
+        sourceRegister = operand.registerIndex;
+
+        //Target register
+        register_push(parserData, parserData.operandMap[tokens[1].string]);
+        targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
+
+
+
+        sourceRegister = operand.registerIndex;
+        switch (arithmaticOperator.tokenType) {
+        
+        case TOK_MOV: {
+            macro_pneumonic_move(targetRegister, sourceRegister, parserData.outputFile);
+            break;
+
+        } case TOK_ADD: {
+            macro_pneumonic_add(targetRegister, sourceRegister, parserData.outputFile);
+            break;
+
+        } case TOK_SUB: {
+            macro_pneumonic_sub(targetRegister, sourceRegister, parserData.outputFile);
+            break;
+
+        } case TOK_MUL: {
+            macro_pneumonic_mul(targetRegister, sourceRegister, parserData.outputFile);
+            break;
+
+        } case TOK_DIV: {
+            macro_pneumonic_div(targetRegister, sourceRegister, parserData.outputFile);
+            break;
+
+        } case TOK_MOD: {
+            macro_pneumonic_mod(targetRegister, sourceRegister, parserData.outputFile);
+            break;
+
+        } default: {
+            internal_macro_parser_print_invalid_token("ERROR: Expected arithmatic operator but recieved: \n", tokens[2]);
+            break;
+        }
+        
         }
 
 
-        //Parse expression    
-        if(parse_expression(tokens, 3, numberOfTokens - 1, parserData) == false) {
-            return false;
+        if(tokens[1].tokenType == TOK_IMM_INT) {
+
+            parserData.outputFile << "##SET " << tokens[1].immInt << endl;
+        } else {
+
+            parserData.outputFile << "##SET " << tokens[1].string << endl;
         }
     }
 
@@ -194,7 +240,7 @@ bool internal_parse_label(vector<Token> &tokens, size_t numberOfTokens, ParserDa
         auto labelMapIterator = parserData.knownLabels.find(tokens[1].string);
 
         if(labelMapIterator != parserData.knownLabels.end()) { //Label found
-            cout << "Redefinition of '" << tokens[1].string << "'" << endl;
+            cout << "ERROR: Redefinition of '" << tokens[1].string << "'" << endl;
             return false;
 
         } else {
@@ -203,6 +249,8 @@ bool internal_parse_label(vector<Token> &tokens, size_t numberOfTokens, ParserDa
             parserData.knownLabels.insert(tokens[1].string);
         }
     }
+
+    parserData.outputFile << "##LAB " << tokens[1].string<< endl;
 
     return true;
 }
@@ -228,6 +276,7 @@ bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens, ParserDat
             return false;
         }
 
+        parserData.outputFile << "##GOTO " << tokens[1].string<< endl;
     }
 
     return true;

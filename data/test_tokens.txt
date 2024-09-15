@@ -1,4 +1,6 @@
-dec x = 10
+dec x
+
+set x = 10
 
 
 

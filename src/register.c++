@@ -8,15 +8,20 @@
  * 
  * Param: 
  *        &parserData - Parser data struct to adjust
- *        &outputFile - Output file to write to
  *        &operand - Operand to write
  * 
  * Return: bool 
  * 
  */
-bool register_push(ParserData &parserData, ofstream &outputFile, Operand &operand) {
+bool register_push(ParserData &parserData, Operand &operand) {
 
     //Look for a free space
+
+
+    if(operand.registerIndex != -1) {
+        return true;
+    }
+
 
     auto min = parserData.registerStates.begin();
     for(auto it = parserData.registerStates.begin(); it != parserData.registerStates.end(); it++) {
@@ -33,16 +38,16 @@ bool register_push(ParserData &parserData, ofstream &outputFile, Operand &operan
 
     //Save position
     if((*min).varID != 0) { //Variable
-        macro_pneumonic_save(index, (*min).memoryOffset, outputFile);
+        macro_pneumonic_save(index, (*min).memoryOffset, parserData.outputFile);
         //Update position in hashmap
         (*min).registerIndex = -1; //Indicate variable was pushed out of registers
     }
     
     operand.registerIndex = index;
     if(operand.varID == 0) {
-        macro_pneumonic_load_immediate(operand.registerIndex, operand.immediate, outputFile);
+        macro_pneumonic_load_immediate(operand.registerIndex, operand.immediate, parserData.outputFile);
     } else {
-        macro_pneumonic_load(operand.registerIndex, operand.memoryOffset, outputFile);
+        macro_pneumonic_load(operand.registerIndex, operand.memoryOffset, parserData.outputFile);
         operand.timesRequested++;
         operand.registerIndex = index;
     }

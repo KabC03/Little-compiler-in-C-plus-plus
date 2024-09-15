@@ -21,8 +21,23 @@ should use one of the general purpose registers in macros below (not allow compi
     outputFile << "save R" << registerIndex << " esp + " << baseOffset << endl;
 #define macro_pneumonic_load(registerIndex, baseOffset, outputFile)\
     outputFile << "load R" << registerIndex << " esp + " << baseOffset << endl;
-#define macro_pneumonic_load_immediate(registerIndex, immediate, outputFile)\
-    outputFile << "immediate R" << registerIndex << " " << immediate << endl;
+
+
+
+#define macro_pneumonic_load_immediate(dest, immediate, outputFile)\
+    outputFile << "immediate R" << dest << " " << immediate << endl;
+#define macro_pneumonic_move(dest, source, outputFile)\
+    outputFile << "move R" << dest << " " << source << endl;
+#define macro_pneumonic_add(dest, source, outputFile)\
+    outputFile << "add R" << dest << " " << source << endl;
+#define macro_pneumonic_sub(dest, source, outputFile)\
+    outputFile << "sub R" << dest  << " " << source << endl;
+#define macro_pneumonic_mul(dest, source, outputFile)\
+    outputFile << "mul R" << dest << " " << source << endl;
+#define macro_pneumonic_div(dest, source, outputFile)\
+    outputFile << "div R" << dest << " " << source << endl;
+#define macro_pneumonic_mod(dest, source, outputFile)\
+    outputFile << "mod R" << dest << " " << source << endl;
 
 #endif // ARCHITECTURE_PNEUMONICS_HH
 
