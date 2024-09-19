@@ -1,3 +1,5 @@
 ##DEC x
-move R1 1804741472
+save R0 esp + 0
+load R0 esp + 1862265792
+move R0 R0
 ##SET x

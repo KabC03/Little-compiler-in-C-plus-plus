@@ -18,7 +18,7 @@ using namespace std;
 
 typedef struct Operand {
 
-    int varID;             //ID of variable - value of 0 indicates free position
+    bool isFree;             //ID of variable - value of 0 indicates free position
     size_t memoryOffset;   //Memory offset from base
     int registerIndex;  //Index of register item is in (-1 if not in register)
     size_t timesRequested; //Times a variable has been requested
@@ -31,7 +31,7 @@ typedef struct ParserData {
     unordered_map<string, Operand> operandMap;  //Track known variables
     unordered_set<string> knownLabels;          //Track known labels
     ofstream outputFile;                        //Output file
-    stack<string> ifStack;                      //Stack to track if statement depth, contains labels
+    stack<int> ifStack;                      //Stack to track if statement depth, contains labels
 } ParserData;
 
 bool register_push(ParserData &parserData, Operand &operand);

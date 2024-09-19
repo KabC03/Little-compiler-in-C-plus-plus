@@ -25,19 +25,26 @@ should use one of the general purpose registers in macros below (not allow compi
 
 
 #define macro_pneumonic_load_immediate(dest, immediate, outputFile)\
-    outputFile << "immediate R" << dest << " " << immediate << endl;
+    outputFile << "immediate R" << dest << " R" << immediate << endl;
 #define macro_pneumonic_move(dest, source, outputFile)\
-    outputFile << "move R" << dest << " " << source << endl;
+    outputFile << "move R" << dest << " R" << source << endl;
 #define macro_pneumonic_add(dest, source, outputFile)\
-    outputFile << "add R" << dest << " " << source << endl;
+    outputFile << "add R" << dest << " R" << source << endl;
 #define macro_pneumonic_sub(dest, source, outputFile)\
-    outputFile << "sub R" << dest  << " " << source << endl;
+    outputFile << "sub R" << dest  << " R " << source << endl;
 #define macro_pneumonic_mul(dest, source, outputFile)\
-    outputFile << "mul R" << dest << " " << source << endl;
+    outputFile << "mul R" << dest << " R" << source << endl;
 #define macro_pneumonic_div(dest, source, outputFile)\
-    outputFile << "div R" << dest << " " << source << endl;
+    outputFile << "div R" << dest << " R" << source << endl;
 #define macro_pneumonic_mod(dest, source, outputFile)\
-    outputFile << "mod R" << dest << " " << source << endl;
+    outputFile << "mod R" << dest << " R" << source << endl;
+
+#define macro_pneumonic_equal(dest, source, label, outputFile)\
+    outputFile << "equal R" << dest << " R" << source << " " << label << endl;
+#define macro_pneumonic_less(dest, source, label, outputFile)\
+    outputFile << "equal R" << dest << " R" << source << " " << label << endl;
+#define macro_pneumonic_less_equal(dest, source, label,  outputFile)\
+    outputFile << "equal R" << dest << " R" << source << " " << label << endl;
 
 #endif // ARCHITECTURE_PNEUMONICS_HH
 
