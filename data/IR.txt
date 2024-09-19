@@ -1,5 +1,3 @@
 ##DEC x
-save R0 esp + 0
-load R0 esp + 1862265792
-move R0 R0
+immediate R0 2147483647
 ##SET x

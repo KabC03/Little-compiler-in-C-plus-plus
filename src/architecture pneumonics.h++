@@ -25,7 +25,7 @@ should use one of the general purpose registers in macros below (not allow compi
 
 
 #define macro_pneumonic_load_immediate(dest, immediate, outputFile)\
-    outputFile << "immediate R" << dest << " R" << immediate << endl;
+    outputFile << "immediate R" << dest << " " << immediate << endl;
 #define macro_pneumonic_move(dest, source, outputFile)\
     outputFile << "move R" << dest << " R" << source << endl;
 #define macro_pneumonic_add(dest, source, outputFile)\

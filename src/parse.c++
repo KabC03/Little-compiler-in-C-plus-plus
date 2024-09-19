@@ -153,7 +153,10 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
         switch (arithmaticOperator.tokenType) {
         
         case TOK_MOV: {
-            macro_pneumonic_move(targetRegister, sourceRegister, parserData.outputFile);
+
+            //WORK HERE
+            parserData.operandMap[tokens[1].string].registerIndex = sourceRegister;
+            //macro_pneumonic_move(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_ADD: {
