@@ -26,7 +26,7 @@ bool register_push(ParserData &parserData, Operand &operand) {
     auto min = parserData.registerStates.begin();
     for(auto it = parserData.registerStates.begin(); it != parserData.registerStates.end(); it++) {
 
-        if((*it).isFree == false) { //Found a free space
+        if((*it).isFree == true) { //Found a free space
             break;
         } else if((*min).timesRequested > (*it).timesRequested) { //Search for minimum
             min = it;
@@ -37,14 +37,14 @@ bool register_push(ParserData &parserData, Operand &operand) {
     auto index = distance(parserData.registerStates.begin(), min);
 
     //Save position
-    if((*min).isFree == true) { //Variable
+    if((*min).isFree == false) { //Variable
         macro_pneumonic_save(index, (*min).memoryOffset, parserData.outputFile);
         //Update position in hashmap
         (*min).registerIndex = -1; //Indicate variable was pushed out of registers
     }
     
     operand.registerIndex = index;
-    if(operand.isFree == false) {
+    if(operand.isFree == true) {
         macro_pneumonic_load_immediate(operand.registerIndex, operand.immediate, parserData.outputFile);
     } else {
         macro_pneumonic_load(operand.registerIndex, operand.memoryOffset, parserData.outputFile);
