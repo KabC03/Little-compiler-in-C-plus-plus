@@ -200,6 +200,17 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
 //Parse if statement
 bool internal_parse_if(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
 
+    static int labelNumber = 0;
+    if(numberOfTokens != 4) {
+        cout << "ERROR: Expected if" << endl;
+        return false;
+    } else {
+        
+        parserData.ifStack.push(labelNumber);
+        labelNumber++;
+    }
+
+
 
     return true;
 }
