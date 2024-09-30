@@ -1,23 +1,17 @@
-dec a
-dec b
-dec c
-dec d
-dec e
-dec f
-dec g
+dec var1
+dec var2
+dec var3
 
 
-
-set a = 1
-set b = 2
-set c = 3
-set d = 4
-set e = 5
+label reset
 
 
-
-set a += 1
-
-
+set var1 = var2
+set var3 += 3
 
 
+if var1 == var3
+    var3 += 1
+endif
+
+goto reset
