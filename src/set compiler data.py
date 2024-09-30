@@ -62,8 +62,8 @@ tokens = {
     "=" : "TOK_MOV", "+=" : "TOK_ADD", "-=" : "TOK_SUB", "*=" : "TOK_MUL", "/=" : "TOK_DIV","\%=" : "TOK_MOD", 
     "<<" : "TOK_LESS", "==" : "TOK_EQUAL", "<=" : "TOK_LESS_EQUAL", 
 
-
-
+    #IO
+    "output" : "TOK_OUTPUT",
 };
 
 numberOfTokens = 0;

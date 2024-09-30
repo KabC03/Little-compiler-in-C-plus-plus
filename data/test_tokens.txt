@@ -1,17 +1,24 @@
-dec var1
-dec var2
-dec var3
+dec varA
+dec varB
+dec varC
+dec varD
+dec varE
 
 
 label reset
 
 
-set var1 = var2
-set var3 += 3
+set varA = 1 
+set varB = 0
+set varC = 3
+set varC = 1
+set varD = 1
+set varE = 0
 
-
-if var1 == var3
-    var3 += 1
+if varA == varC
+    set varC += 1
 endif
+
+output varE
 
 goto reset

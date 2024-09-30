@@ -46,6 +46,12 @@ should use one of the general purpose registers in macros below (not allow compi
 #define macro_pneumonic_less_equal(dest, source, label,  outputFile)\
     outputFile << "equal R" << dest << " R" << source << " " << label << endl;
 
+
+
+#define macro_pneumonic_output(source, outputFile)\
+    outputFile << "output R" << source << endl;
+
+
 #endif // ARCHITECTURE_PNEUMONICS_HH
 
 

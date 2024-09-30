@@ -2,7 +2,7 @@
 #define COMPILER_DATA_HH
 
 
-#define NUMBER_OF_TOKENS 16
+#define NUMBER_OF_TOKENS 17
 #define MAX_TOKEN_LENGTH 8
 
 
@@ -39,6 +39,7 @@ typedef enum TOKEN_TYPE {
 
 
     TOK_LESS_EQUAL = 15,
+    TOK_OUTPUT = 16,
 
 
 } TOKEN_TYPE;

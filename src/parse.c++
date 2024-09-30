@@ -51,9 +51,9 @@ bool parser_initialise(string outputFilePath, ParserData &parserData) {
 
 
 //Parse a variable declaration
-bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
+bool internal_parse_dec(vector<Token> &tokens, int numberOfTokens, ParserData &parserData) {
 
-    static size_t newVarMemOffset = 0; //Base offset address
+    static int newVarMemOffset = 0; //Base offset address
     if(numberOfTokens < 3) {
         cout << "ERROR: Expected declaration expression but recieved: " << endl;
         return false;
@@ -89,7 +89,7 @@ bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
 
 //Parse set
-bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
+bool internal_parse_set(vector<Token> &tokens, int numberOfTokens, ParserData &parserData) {
 
     if(numberOfTokens < 5) {
         cout << "ERROR: Expected declaration expression but recieved: " << endl;
@@ -243,7 +243,7 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
 }
 
 //Parse if statement
-bool internal_parse_if(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
+bool internal_parse_if(vector<Token> &tokens, int numberOfTokens, ParserData &parserData) {
 
     static int labelNumber = 0;
     if(numberOfTokens != 5) {
@@ -312,7 +312,7 @@ bool internal_parse_if(vector<Token> &tokens, size_t numberOfTokens, ParserData 
 }
 
 //Parse an endif statement
-bool internal_parse_endif(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
+bool internal_parse_endif(vector<Token> &tokens, int numberOfTokens, ParserData &parserData) {
 
     if(numberOfTokens != 2) {
         internal_macro_parser_print_invalid_token("ERROR: Expected endif but recieved: \n", tokens[0]); 
@@ -334,7 +334,7 @@ bool internal_parse_endif(vector<Token> &tokens, size_t numberOfTokens, ParserDa
 
 
 //Parse a label  statement
-bool internal_parse_label(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
+bool internal_parse_label(vector<Token> &tokens, int numberOfTokens, ParserData &parserData) {
 
     //goto label
     if(numberOfTokens != 3) {
@@ -365,7 +365,7 @@ bool internal_parse_label(vector<Token> &tokens, size_t numberOfTokens, ParserDa
 
 
 //Parse a goto  statement
-bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
+bool internal_parse_goto(vector<Token> &tokens, int numberOfTokens, ParserData &parserData) {
 
     //goto label
     if(numberOfTokens != 3) {
@@ -392,6 +392,28 @@ bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens, ParserDat
 
 
 
+//Parse output statement
+bool internal_parse_output(vector<Token> &tokens, int numberOfTokens, ParserData &parserData) {
+
+    if(numberOfTokens != 3) {
+        internal_macro_parser_print_invalid_token("ERROR: Expected output but recieved: \n", tokens[0]); 
+        return false;
+    } else {
+        Operand operand;
+        auto varMapIterator = parserData.operandMap.find(tokens[1].string);
+        if(varMapIterator != parserData.operandMap.end()) { //Variable found
+            operand = parserData.operandMap[tokens[1].string];
+        } else {
+            cout << "ERROR: Unrecognised variable: '" << tokens[1].string << "'" << endl;
+            return false;
+        }
+        register_push(parserData, parserData.operandMap[tokens[1].string], -1);
+        operand = parserData.operandMap[tokens[1].string];
+        macro_pneumonic_output(operand.registerIndex, parserData.outputFile);
+    }
+    return true;
+}
+
 
 /**
  * parser_parse 
@@ -407,7 +429,7 @@ bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens, ParserDat
 bool parser_parse(vector<Token> &tokens, ParserData &parserData) {
 
 
-    size_t numberOfTokens = tokens.size();
+    int numberOfTokens = tokens.size();
     if(numberOfTokens < 1) {
         cout << "ERROR: Insufficient tokens" << endl;
         return false;
@@ -445,6 +467,10 @@ bool parser_parse(vector<Token> &tokens, ParserData &parserData) {
             return false;
         }
         break;
+    } case TOK_OUTPUT: {
+        if(internal_parse_output(tokens, numberOfTokens, parserData) == false) {
+            return false;
+        }
     } case TOK_END_OF_STREAM: {
         break;
     } default: {

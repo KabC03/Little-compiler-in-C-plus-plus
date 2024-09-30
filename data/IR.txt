@@ -1,37 +1,50 @@
-##DEC a
+##DEC varA
 
-##DEC b
+##DEC varB
 
-##DEC c
+##DEC varC
 
-##DEC d
+##DEC varD
 
-##DEC e
+##DEC varE
 
-##DEC f
-
-##DEC g
+label: reset__USR
+##LABreset__USR
 
 immediate R0 1
-##SET a
+##SET varA
 
-immediate R1 2
-##SET b
+immediate R1 0
+##SET varB
 
 immediate R2 3
-##SET c
+##SET varC
 
-immediate R3 4
-##SET d
+immediate R3 1
+##SET varC
+
+immediate R2 1
+##SET varD
 
 save R0 esp + 4
-immediate R0 5
-##SET e
+immediate R0 0
+##SET varE
 
 save R0 esp + 20
 load R0 esp + 4
+equal R0 R3 0
+##IF2147483647
+
 save R1 esp + 8
 immediate R1 1
-add R0 R1
-##SET a
+add R3 R1
+##SET varC
+
+label: 0
+##ENDIF2147483647
+
+load R1 esp + 20
+output R1
+JUM reset__USR
+##GOTOreset__USR
 
