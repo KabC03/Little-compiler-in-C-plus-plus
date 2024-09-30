@@ -14,7 +14,7 @@ should use one of the general purpose registers in macros below (not allow compi
 */
 
 #define macro_pneumonic_unconditional_jump(labelName, outputFile)\
-    outputFile << "JUM " << labelName << endl;
+    outputFile << "goto " << labelName << endl;
 #define macro_pneumonic_print_label(labelName, outputFile)\
     outputFile << "label: " << labelName << endl;
 #define macro_pneumonic_save(registerIndex, baseOffset, outputFile)\
@@ -25,7 +25,7 @@ should use one of the general purpose registers in macros below (not allow compi
 
 
 #define macro_pneumonic_load_immediate(dest, immediate, outputFile)\
-    outputFile << "immediate R" << dest << " " << immediate << endl;
+    outputFile << "imm R" << dest << " " << immediate << endl;
 #define macro_pneumonic_move(dest, source, outputFile)\
     outputFile << "move R" << dest << " R" << source << endl;
 #define macro_pneumonic_add(dest, source, outputFile)\
@@ -42,14 +42,14 @@ should use one of the general purpose registers in macros below (not allow compi
 #define macro_pneumonic_equal(dest, source, label, outputFile)\
     outputFile << "equal R" << dest << " R" << source << " " << label << endl;
 #define macro_pneumonic_less(dest, source, label, outputFile)\
-    outputFile << "equal R" << dest << " R" << source << " " << label << endl;
+    outputFile << "less R" << dest << " R" << source << " " << label << endl;
 #define macro_pneumonic_less_equal(dest, source, label,  outputFile)\
-    outputFile << "equal R" << dest << " R" << source << " " << label << endl;
+    outputFile << "less_equal R" << dest << " R" << source << " " << label << endl;
 
 
 
 #define macro_pneumonic_output(source, outputFile)\
-    outputFile << "output R" << source << endl;
+    outputFile << "out R" << source << endl;
 
 
 #endif // ARCHITECTURE_PNEUMONICS_HH
