@@ -122,9 +122,9 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
         int sourceRegister = 0;  
 
         if(tokens[3].tokenType == TOK_IMM_INT) {
-            operand.immediate = tokens[2].immInt;
+            operand.immediate = tokens[3].immInt;
             operand.isFree = true;
-
+            
         } else if(tokens[3].tokenType == TOK_STRING) {
 
             auto varMapIterator = parserData.operandMap.find(tokens[1].string);

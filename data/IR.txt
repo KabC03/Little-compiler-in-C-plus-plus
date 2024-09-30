@@ -1,3 +1,4 @@
 ##DEC x
-immediate R0 2147483647
+##DEC y
+immediate R0 10
 ##SET x
