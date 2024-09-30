@@ -303,7 +303,7 @@ bool internal_parse_if(vector<Token> &tokens, int numberOfTokens, ParserData &pa
         parserData.ifStack.push(labelNumber);
         labelNumber++;
 
-        parserData.outputFile << "##IF" << tokens[1].immInt << "\n" << endl;
+        parserData.outputFile << "##IF\n" << endl;
     }
 
 
@@ -327,7 +327,7 @@ bool internal_parse_endif(vector<Token> &tokens, int numberOfTokens, ParserData 
         parserData.ifStack.pop();
     }
 
-    parserData.outputFile << "##ENDIF" << tokens[1].immInt << "\n" << endl;
+    parserData.outputFile << "##ENDIF\n" << endl;
     return true;
 }
 
@@ -384,7 +384,7 @@ bool internal_parse_goto(vector<Token> &tokens, int numberOfTokens, ParserData &
             return false;
         }
 
-        parserData.outputFile << "##GOTO" << tokens[1].string << "\n" << endl;
+        parserData.outputFile << "##GOTO " << tokens[1].string << "\n" << endl;
     }
 
     return true;

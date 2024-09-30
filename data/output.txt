@@ -11,40 +11,40 @@
 label: reset__USR
 ##LABreset__USR
 
-immediate R0 1
+imm R0 1
 ##SET varA
 
-immediate R1 0
+imm R1 0
 ##SET varB
 
-immediate R2 3
+imm R2 3
 ##SET varC
 
-immediate R3 1
+imm R3 1
 ##SET varC
 
-immediate R2 1
+imm R2 1
 ##SET varD
 
 save R0 esp + 4
-immediate R0 0
+imm R0 0
 ##SET varE
 
 save R0 esp + 20
 load R0 esp + 4
 equal R0 R3 0
-##IF2147483647
+##IF
 
 save R1 esp + 8
-immediate R1 1
+imm R1 1
 add R3 R1
 ##SET varC
 
 label: 0
-##ENDIF2147483647
+##ENDIF
 
 load R1 esp + 20
-output R1
-JUM reset__USR
+out R1
+goto reset__USR
 ##GOTOreset__USR
 
