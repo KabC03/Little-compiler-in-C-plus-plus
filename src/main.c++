@@ -3,8 +3,8 @@
 #include "compiler data.h++"
 #include "tokenise.h++"
 #include "parse.h++"
-#define SRC_FILE_PATH "./data/test_tokens.txt"
-#define OUTPUT_FILE_PATH "./data/IR.txt"
+#define SRC_FILE_PATH "./data/input.txt"
+#define OUTPUT_FILE_PATH "./data/output.txt"
 
 using namespace std;
 
