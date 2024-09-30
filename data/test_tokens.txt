@@ -1,11 +1,22 @@
-dec x
-dec y
-set x = 1
-set y = 2
-set x += y
+dec a
+dec b
+dec c
+dec d
+dec e
+dec f
+dec g
 
 
 
+set a = 1
+set b = 2
+set c = 3
+set d = 4
+set e = 5
+
+
+
+set a += 1
 
 
 

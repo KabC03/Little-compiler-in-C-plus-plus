@@ -76,11 +76,12 @@ bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData
             newOperand.timesRequested = 0;
             newOperand.isFree = false;
             newOperand.registerIndex = -1;
+            newOperand.name = tokens[1].string;
             parserData.operandMap[tokens[1].string] = newOperand;
 
         }
 
-        parserData.outputFile << "##DEC " << tokens[1].string << endl;
+        parserData.outputFile << "##DEC " << tokens[1].string << "\n" << endl;
     }
 
     return true;
@@ -142,8 +143,6 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
             internal_macro_parser_print_invalid_token("ERROR: Expected operand but recieved: \n", tokens[2]);
             return false;
         }
-        register_push(parserData, operand);
-        sourceRegister = operand.registerIndex;
         
         
         switch (arithmaticOperator.tokenType) {
@@ -151,6 +150,9 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
         case TOK_MOV: {
 
             if(operand.isFree == true) { //Indicates immediate - directly reassign register number, no move needed
+
+                register_push(parserData, operand, -1);
+                sourceRegister = operand.registerIndex;
                 if(parserData.operandMap[tokens[1].string].registerIndex != -1) { //Mark old space free if
                     parserData.registerStates[parserData.operandMap[tokens[1].string].registerIndex].isFree = true;
                 }
@@ -158,39 +160,64 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
                 parserData.registerStates[sourceRegister] = parserData.operandMap[tokens[1].string];                
                 //Update new space
             } else {
-                register_push(parserData, parserData.operandMap[tokens[1].string]);
+
+                register_push(parserData, parserData.operandMap[tokens[1].string], -1);
                 targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
+
+                register_push(parserData, operand, targetRegister);
+                sourceRegister = operand.registerIndex;
                 macro_pneumonic_move(targetRegister, sourceRegister, parserData.outputFile); 
                 //Copy register contents
             }
             break;
 
         } case TOK_ADD: {
-            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            register_push(parserData, parserData.operandMap[tokens[1].string], -1);
             targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
+
+
+            register_push(parserData, operand, targetRegister);
+            sourceRegister = operand.registerIndex;
+
             macro_pneumonic_add(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_SUB: {
-            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            register_push(parserData, operand, -1);
+            sourceRegister = operand.registerIndex;
+
+
+            register_push(parserData, parserData.operandMap[tokens[1].string], targetRegister);
             targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_sub(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_MUL: {
-            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            register_push(parserData, operand, -1);
+            sourceRegister = operand.registerIndex;
+
+
+            register_push(parserData, parserData.operandMap[tokens[1].string], targetRegister);
             targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_mul(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_DIV: {
-            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            register_push(parserData, operand, -1);
+            sourceRegister = operand.registerIndex;
+
+
+            register_push(parserData, parserData.operandMap[tokens[1].string], sourceRegister);
             targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_div(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_MOD: {
-            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            register_push(parserData, operand, -1);
+            sourceRegister = operand.registerIndex;
+
+
+            register_push(parserData, parserData.operandMap[tokens[1].string], sourceRegister);
             targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_mod(targetRegister, sourceRegister, parserData.outputFile);
             break;
@@ -205,10 +232,10 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
         if(tokens[1].tokenType == TOK_IMM_INT) {
 
-            parserData.outputFile << "##SET " << tokens[1].immInt << endl;
+            parserData.outputFile << "##SET" << tokens[1].immInt << "\n" << endl;
         } else {
 
-            parserData.outputFile << "##SET " << tokens[1].string << endl;
+            parserData.outputFile << "##SET " << tokens[1].string << "\n" << endl;
         }
     }
 
@@ -219,7 +246,7 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
 bool internal_parse_if(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
 
     static int labelNumber = 0;
-    if(numberOfTokens != 4) {
+    if(numberOfTokens != 5) {
         cout << "ERROR: Expected if" << endl;
         return false;
     } else {
@@ -247,8 +274,8 @@ bool internal_parse_if(vector<Token> &tokens, size_t numberOfTokens, ParserData 
             return false;
         }
 
-        register_push(parserData, arg1);
-        register_push(parserData, arg2);
+        register_push(parserData, arg1, -1);
+        register_push(parserData, arg2, arg1.registerIndex);
         int arg1Register = arg1.registerIndex;
         int arg2Register = arg2.registerIndex;
 
@@ -276,7 +303,7 @@ bool internal_parse_if(vector<Token> &tokens, size_t numberOfTokens, ParserData 
         parserData.ifStack.push(labelNumber);
         labelNumber++;
 
-        parserData.outputFile << "##IF" << tokens[1].immInt << endl;
+        parserData.outputFile << "##IF" << tokens[1].immInt << "\n" << endl;
     }
 
 
@@ -287,7 +314,7 @@ bool internal_parse_if(vector<Token> &tokens, size_t numberOfTokens, ParserData 
 //Parse an endif statement
 bool internal_parse_endif(vector<Token> &tokens, size_t numberOfTokens, ParserData &parserData) {
 
-    if(numberOfTokens != 1) {
+    if(numberOfTokens != 2) {
         internal_macro_parser_print_invalid_token("ERROR: Expected endif but recieved: \n", tokens[0]); 
         return false;
     } else {
@@ -300,7 +327,7 @@ bool internal_parse_endif(vector<Token> &tokens, size_t numberOfTokens, ParserDa
         parserData.ifStack.pop();
     }
 
-    parserData.outputFile << "##ENDIF" << tokens[1].immInt << endl;
+    parserData.outputFile << "##ENDIF" << tokens[1].immInt << "\n" << endl;
     return true;
 }
 
@@ -331,7 +358,7 @@ bool internal_parse_label(vector<Token> &tokens, size_t numberOfTokens, ParserDa
         }
     }
 
-    parserData.outputFile << "##LAB " << tokens[1].string<< endl;
+    parserData.outputFile << "##LAB" << tokens[1].string << "\n" << endl;
 
     return true;
 }
@@ -357,7 +384,7 @@ bool internal_parse_goto(vector<Token> &tokens, size_t numberOfTokens, ParserDat
             return false;
         }
 
-        parserData.outputFile << "##GOTO " << tokens[1].string<< endl;
+        parserData.outputFile << "##GOTO" << tokens[1].string << "\n" << endl;
     }
 
     return true;
@@ -427,7 +454,7 @@ bool parser_parse(vector<Token> &tokens, ParserData &parserData) {
     }
     }
 
-
+    
 
 
     return true;

@@ -9,11 +9,12 @@
  * Param: 
  *        &parserData - Parser data struct to adjust
  *        &operand - Operand to write
+ *        blacklist - Blacklisted index not to be used
  * 
  * Return: bool 
  * 
  */
-bool register_push(ParserData &parserData, Operand &operand) {
+bool register_push(ParserData &parserData, Operand &operand, int blacklist) {
 
     //Look for a free space
 
@@ -26,7 +27,9 @@ bool register_push(ParserData &parserData, Operand &operand) {
     auto min = parserData.registerStates.begin();
     for(auto it = parserData.registerStates.begin(); it != parserData.registerStates.end(); it++) {
 
-        if((*it).isFree == true) { //Found a free space
+        if(distance(parserData.registerStates.begin(), it) == blacklist) {
+            continue;
+        } else if((*it).isFree == true) { //Found a free space
             min = it;
             break;
         } else if((*min).timesRequested > (*it).timesRequested) { //Search for minimum
@@ -41,6 +44,9 @@ bool register_push(ParserData &parserData, Operand &operand) {
     if((*min).isFree == false) { //Variable
         macro_pneumonic_save(index, (*min).memoryOffset, parserData.outputFile);
         //Update position in hashmap
+        parserData.operandMap[(*min).name].registerIndex = -1; //Indicate not in register anymore
+
+
         (*min).registerIndex = -1; //Indicate variable was pushed out of registers
     }
     

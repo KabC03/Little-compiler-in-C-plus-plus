@@ -23,6 +23,7 @@ typedef struct Operand {
     int registerIndex;  //Index of register item is in (-1 if not in register)
     size_t timesRequested; //Times a variable has been requested
     int immediate; //Immediate
+    string name;
 
 } Operand;
 
@@ -34,7 +35,7 @@ typedef struct ParserData {
     stack<int> ifStack;                      //Stack to track if statement depth, contains labels
 } ParserData;
 
-bool register_push(ParserData &parserData, Operand &operand);
+bool register_push(ParserData &parserData, Operand &operand, int blacklist);
 
 
 #endif //REGISTER_H

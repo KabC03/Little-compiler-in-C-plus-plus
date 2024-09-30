@@ -1,8 +1,37 @@
-##DEC x
-##DEC y
+##DEC a
+
+##DEC b
+
+##DEC c
+
+##DEC d
+
+##DEC e
+
+##DEC f
+
+##DEC g
+
 immediate R0 1
-##SET x
+##SET a
+
 immediate R1 2
-##SET y
-move R0 R1
-##SET x
+##SET b
+
+immediate R2 3
+##SET c
+
+immediate R3 4
+##SET d
+
+save R0 esp + 4
+immediate R0 5
+##SET e
+
+save R0 esp + 20
+load R0 esp + 4
+save R1 esp + 8
+immediate R1 1
+add R0 R1
+##SET a
+

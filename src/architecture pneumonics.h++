@@ -5,7 +5,7 @@
 #ifndef ARCHITECTURE_PNEUMONICS_HH
 #define ARCHITECTURE_PNEUMONICS_HH
 
-#define NUMBER_OF_REGISTERS 5 //Number of general purpose registers
+#define NUMBER_OF_REGISTERS 4 //Number of general purpose registers
 #define DATA_SIZE 4
 /*
 Note: 
