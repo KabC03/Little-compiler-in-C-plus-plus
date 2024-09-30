@@ -74,6 +74,8 @@ bool internal_parse_dec(vector<Token> &tokens, size_t numberOfTokens, ParserData
             Operand newOperand;
             newOperand.memoryOffset = newVarMemOffset+=DATA_SIZE;
             newOperand.timesRequested = 0;
+            newOperand.isFree = false;
+            newOperand.registerIndex = -1;
             parserData.operandMap[tokens[1].string] = newOperand;
 
         }
@@ -129,11 +131,11 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
 
             auto varMapIterator = parserData.operandMap.find(tokens[1].string);
             if(varMapIterator != parserData.operandMap.end()) { //Variable found
-                cout << "ERROR: Unrecognised variable '" << tokens[1].string << "'" << endl;
-                return false;
+                operand = parserData.operandMap[tokens[3].string];
 
             } else {
-                operand = parserData.operandMap[tokens[2].string];
+                cout << "ERROR: Unrecognised variable '" << tokens[1].string << "'" << endl;
+                return false;
             }
 
         } else {
@@ -142,47 +144,54 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
         }
         register_push(parserData, operand);
         sourceRegister = operand.registerIndex;
-
-        //Target register
-        register_push(parserData, parserData.operandMap[tokens[1].string]);
-        targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
-
-
-
-        sourceRegister = operand.registerIndex;
+        
+        
         switch (arithmaticOperator.tokenType) {
         
         case TOK_MOV: {
 
-            //WORK HERE
-            if(operand.isFree == true) { //Indicates immediate
-                parserData.operandMap[tokens[1].string].registerIndex = sourceRegister; 
-                parserData.registerStates[sourceRegister] = parserData.registerStates[targetRegister];
-                parserData.registerStates[targetRegister].isFree = true; //Mark new space free
-                //Just move the source to destination
+            if(operand.isFree == true) { //Indicates immediate - directly reassign register number, no move needed
+                if(parserData.operandMap[tokens[1].string].registerIndex != -1) { //Mark old space free if
+                    parserData.registerStates[parserData.operandMap[tokens[1].string].registerIndex].isFree = true;
+                }
+                parserData.operandMap[tokens[1].string].registerIndex = sourceRegister;
+                parserData.registerStates[sourceRegister] = parserData.operandMap[tokens[1].string];                
+                //Update new space
             } else {
+                register_push(parserData, parserData.operandMap[tokens[1].string]);
+                targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
                 macro_pneumonic_move(targetRegister, sourceRegister, parserData.outputFile); 
                 //Copy register contents
             }
             break;
 
         } case TOK_ADD: {
+            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_add(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_SUB: {
+            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_sub(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_MUL: {
+            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_mul(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_DIV: {
+            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_div(targetRegister, sourceRegister, parserData.outputFile);
             break;
 
         } case TOK_MOD: {
+            register_push(parserData, parserData.operandMap[tokens[1].string]);
+            targetRegister = parserData.operandMap[tokens[1].string].registerIndex;
             macro_pneumonic_mod(targetRegister, sourceRegister, parserData.outputFile);
             break;
 

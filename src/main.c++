@@ -42,11 +42,10 @@ int main(void) {
 
         //debug_tokenise_tokens_print(tokeniserOut);
         if(parser_parse(tokeniserOut, parserData) == false) {
-            cout << "Line:" << i << endl;
+            cout << "Line: " << i + 1 << endl;
             returnValue = 4;
             break; //Error in parser
         }
-
     }
 
 

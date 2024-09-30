@@ -1,4 +1,8 @@
 ##DEC x
 ##DEC y
-immediate R0 10
+immediate R0 1
+##SET x
+immediate R1 2
+##SET y
+move R0 R1
 ##SET x

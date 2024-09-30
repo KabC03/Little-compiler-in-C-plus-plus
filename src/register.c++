@@ -27,6 +27,7 @@ bool register_push(ParserData &parserData, Operand &operand) {
     for(auto it = parserData.registerStates.begin(); it != parserData.registerStates.end(); it++) {
 
         if((*it).isFree == true) { //Found a free space
+            min = it;
             break;
         } else if((*min).timesRequested > (*it).timesRequested) { //Search for minimum
             min = it;
