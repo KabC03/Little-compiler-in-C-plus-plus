@@ -155,8 +155,15 @@ bool internal_parse_set(vector<Token> &tokens, size_t numberOfTokens, ParserData
         case TOK_MOV: {
 
             //WORK HERE
-            parserData.operandMap[tokens[1].string].registerIndex = sourceRegister;
-            //macro_pneumonic_move(targetRegister, sourceRegister, parserData.outputFile);
+            if(operand.isFree == true) { //Indicates immediate
+                parserData.operandMap[tokens[1].string].registerIndex = sourceRegister; 
+                parserData.registerStates[sourceRegister] = parserData.registerStates[targetRegister];
+                parserData.registerStates[targetRegister].isFree = true; //Mark new space free
+                //Just move the source to destination
+            } else {
+                macro_pneumonic_move(targetRegister, sourceRegister, parserData.outputFile); 
+                //Copy register contents
+            }
             break;
 
         } case TOK_ADD: {
